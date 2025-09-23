@@ -1,163 +1,185 @@
 <div class="form-container">
     <div class="form-header">
-      <h2>Información Personal</h2>
-      <div class="person-type-selector">
-        <div class="selector-tabs">
-          <input type="radio" id="natural-person" [(ngModel)]="personType" name="person-type" value="NATURAL" hidden>
-          <label for="natural-person" class="tab">
-            <span class="icon">👤</span>
-            <span class="text">Persona Natural</span>
-          </label>
-          
-          <input type="radio" id="juridical-person" [(ngModel)]="personType" name="person-type" value="JURIDIC" hidden>
-          <label for="juridical-person" class="tab">
-            <span class="icon">🏢</span>
-            <span class="text">Persona Jurídica</span>
-          </label>
-          
-          <div class="indicator"></div>
+        <h2>Información Personal</h2>
+        <div class="person-type-selector">
+            <div class="selector-tabs">
+                <input type="radio" id="natural-person" [(ngModel)]="personType" name="person-type" value="NATURAL"
+                    hidden>
+                <label for="natural-person" class="tab">
+                    <span class="icon">👤</span>
+                    <span class="text">Persona Natural</span>
+                </label>
+
+                <input type="radio" id="juridical-person" [(ngModel)]="personType" name="person-type" value="JURIDIC"
+                    hidden>
+                <label for="juridical-person" class="tab">
+                    <span class="icon">🏢</span>
+                    <span class="text">Persona Jurídica</span>
+                </label>
+
+                <div class="indicator"></div>
+            </div>
         </div>
-      </div>
     </div>
-    
+
     <div class="form-content">
-      @if (personType === 'NATURAL') {
+        @if (personType === 'NATURAL') {
         <div class="form-section animate-fade-in">
-          <ng-container *ngTemplateOutlet="naturalPersonTemplate"></ng-container>
+            <ng-container *ngTemplateOutlet="naturalPersonTemplate"></ng-container>
         </div>
-      } @else if (personType === 'JURIDIC') {
+        } @else if (personType === 'JURIDIC') {
         <div class="form-section animate-fade-in">
-          <ng-container *ngTemplateOutlet="juridicalPersonTemplate"></ng-container>
+            <ng-container *ngTemplateOutlet="juridicalPersonTemplate"></ng-container>
         </div>
-      }
-    </div>
-  </div>
-  
-  <ng-template #naturalPersonTemplate>
-    <div class="input-group">
-      <div class="input-with-action">
-        <label for="dni" class="input-label">
-          <span class="label-text">Documento de Identidad</span>
-          <span class="required">*</span>
-        </label>
-        <div class="input-container">
-          <input type="text" id="dni" name="dni" placeholder="12345678" pattern="{{ dniPattern }}" [(ngModel)]="naturalPerson.dni" class="form-input">
-          <button type="button" class="action-button" (click)="requestInformation()">
-            <span class="button-text">Buscar</span>
-            <span class="button-icon">🔍</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="input-group">
-        <label for="name" class="input-label">
-          <span class="label-text">Nombres</span>
-          <span class="required">*</span>
-        </label>
-        <input type="text" id="name" name="name" pattern="{{ namesPattern }}" placeholder="Nombres" [(ngModel)]="naturalPerson.name" [disabled]="hasResponseInNatural" class="form-input">
-      </div>
-      
-      <div class="input-group">
-        <label for="paternal-surname" class="input-label">
-          <span class="label-text">Apellido Paterno</span>
-          <span class="required">*</span>
-        </label>
-        <input type="text" id="paternal-surname" name="paternal-surname" pattern="{{ namesPattern }}" placeholder="Apellido Paterno" [(ngModel)]="naturalPerson.paternalSurname" [disabled]="hasResponseInNatural" class="form-input">
-      </div>
-      
-      <div class="input-group">
-        <label for="mother-surname" class="input-label">
-          <span class="label-text">Apellido Materno</span>
-          <span class="required">*</span>
-        </label>
-        <input type="text" id="mother-surname" name="mother-surname" pattern="{{ namesPattern }}" placeholder="Apellido Materno" [(ngModel)]="naturalPerson.motherSurname" [disabled]="hasResponseInNatural" class="form-input">
-      </div>
-    </div>
-    
-    <ng-container *ngTemplateOutlet="sharedInfo"></ng-container>
-  </ng-template>
-  
-  <ng-template #juridicalPersonTemplate>
-    <div class="input-group">
-      <div class="input-with-action">
-        <label for="ruc" class="input-label">
-          <span class="label-text">RUC</span>
-          <span class="required">*</span>
-        </label>
-        <div class="input-container">
-          <input type="text" id="ruc" name="ruc" pattern="{{ rucPattern }}" placeholder="12345678987" [(ngModel)]="juridicPerson.ruc" class="form-input">
-          <button type="button" class="action-button" (click)="requestInformation()">
-            <span class="button-text">Buscar</span>
-            <span class="button-icon">🔍</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="input-group">
-      <label for="trade-name" class="input-label">
-        <span class="label-text">Razón Social</span>
-        <span class="required">*</span>
-      </label>
-      <input type="text" id="trade-name" name="trade-name" pattern="{{ tradeNamePattern }}" placeholder="Empresa SAC" [(ngModel)]="juridicPerson.tradeName" [disabled]="hasResponseInJuridic" class="form-input">
-    </div>
-    
-    <ng-container *ngTemplateOutlet="sharedInfo"></ng-container>
-  </ng-template>
-  
-  <ng-template #sharedInfo>
-    @if (personType === 'JURIDIC') {
-      <div class="input-group">
-        <label for="legal-representator" class="input-label">
-          <span class="label-text">Representante Legal</span>
-        </label>
-        <input type="text" id="legal-representator" name="legal-representator" pattern="{{ namesPattern }}" placeholder="Nombre Completo del Representante" [(ngModel)]="person.legalRepresentator" class="form-input">
-      </div>
-    }
-  
-    <div class="input-group">
-      <label for="address" class="input-label">
-        <span class="label-text">Dirección</span>
-        <span class="required">*</span>
-      </label>
-      <input type="text" id="address" name="address" pattern="{{ addressPattern }}" placeholder="Calle Virrey Toledo N° 123" [(ngModel)]="person.address" class="form-input">
-    </div>
-    
-    <div class="form-row">
-      <div class="input-group">
-        <label for="fixed-phone" class="input-label">
-          <span class="label-text">Teléfono Fijo</span>
-        </label>
-        <input type="tel" id="fixed-phone" name="fixed-phone" pattern="{{ fixedPhonePattern }}" placeholder="123456" [(ngModel)]="person.fixedPhone" class="form-input">
-      </div>
-      
-      <div class="input-group">
-        <label for="first-phone" class="input-label">
-          <span class="label-text">Celular 1</span>
-          @if (!isDenounced) {
-            <span class="required">*</span>
-          }
-        </label>
-        <input type="tel" id="first-phone" name="first-phone" pattern="{{ phonePattern }}" placeholder="123456789" [(ngModel)]="person.firstPhone" class="form-input">
-      </div>
-      
-      <div class="input-group">
-        <label for="second-phone" class="input-label">
-          <span class="label-text">Celular 2</span>
-        </label>
-        <input type="tel" id="second-phone" name="second-phone" pattern="{{ phonePattern }}" placeholder="123456789" [(ngModel)]="person.secondPhone" class="form-input">
-      </div>
-    </div>
-    
-    <div class="input-group">
-      <label for="email" class="input-label">
-        <span class="label-text">Correo Electrónico</span>
-        @if (!isDenounced) {
-          <span class="required">*</span>
         }
-      </label>
-      <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" [(ngModel)]="person.email" class="form-input">
     </div>
-  </ng-template>
+</div>
+
+<ng-template #naturalPersonTemplate>
+    <div class="input-group">
+        <div class="input-with-action">
+            <label for="dni" class="input-label">
+                <span class="label-text">Documento de Identidad</span>
+                <span class="required">*</span>
+            </label>
+            <div class="input-container">
+                <input type="text" id="dni" name="dni" placeholder="12345678" pattern="{{ dniPattern }}"
+                    [(ngModel)]="naturalPerson.dni" class="form-input">
+                <button type="button" class="action-button" (click)="requestInformation()">
+                    <span class="button-text">Buscar</span>
+                    <span class="button-icon">🔍</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="input-group">
+            <label for="name">
+                <div class="important">
+                    Nombres
+                    <strong>(*)</strong>
+                </div>
+                <input type="text" id="name" name="name" pattern="{{ namesPattern }}" placeholder="Nombres"
+                    [(ngModel)]="naturalPerson.name" [disabled]="hasResponseInNatural" class="form-input">
+            </label>
+        </div>
+
+        <div class="input-group">
+            <label for="paternal-surname">
+                <div class="important">
+                    Apellido Paterno
+                    <strong>(*)</strong>
+                </div>
+                <input type="text" id="paternal-surname" name="paternal-surname" pattern="{{ namesPattern }}"
+                    placeholder="Apellido Paterno" [(ngModel)]="naturalPerson.paternalSurname"
+                    [disabled]="hasResponseInNatural" class="form-input">
+            </label>
+        </div>
+
+        <div class="input-group">
+            <label for="mother-surname">
+                <div class="important">
+                    Apellido Materno
+                    <strong>(*)</strong>
+                </div>
+                <input type="text" id="mother-surname" name="mother-surname" pattern="{{ namesPattern }}"
+                    placeholder="Apellido Materno" [(ngModel)]="naturalPerson.motherSurname"
+                    [disabled]="hasResponseInNatural" class="form-input">
+            </label>
+        </div>
+    </div>
+
+    <ng-container *ngTemplateOutlet="sharedInfo"></ng-container>
+</ng-template>
+
+<ng-template #juridicalPersonTemplate>
+    <div class="input-group">
+        <div class="input-with-action">
+            <label for="ruc" class="input-label">
+                <span class="label-text">RUC</span>
+                <span class="required">*</span>
+            </label>
+            <div class="input-container">
+                <input type="text" id="ruc" name="ruc" pattern="{{ rucPattern }}" placeholder="12345678987"
+                    [(ngModel)]="juridicPerson.ruc" class="form-input">
+                <button type="button" class="action-button" (click)="requestInformation()">
+                    <span class="button-text">Buscar</span>
+                    <span class="button-icon">🔍</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="trade-name" class="input-label">
+            <span class="label-text">Razón Social</span>
+            <span class="required">*</span>
+        </label>
+        <input type="text" id="trade-name" name="trade-name" pattern="{{ tradeNamePattern }}" placeholder="Empresa SAC"
+            [(ngModel)]="juridicPerson.tradeName" [disabled]="hasResponseInJuridic" class="form-input">
+    </div>
+
+    <ng-container *ngTemplateOutlet="sharedInfo"></ng-container>
+</ng-template>
+
+<ng-template #sharedInfo>
+    @if (personType === 'JURIDIC') {
+    <div class="input-group">
+        <label for="legal-representator" class="input-label">
+            <span class="label-text">Representante Legal</span>
+        </label>
+        <input type="text" id="legal-representator" name="legal-representator" pattern="{{ namesPattern }}"
+            placeholder="Nombre Completo del Representante" [(ngModel)]="person.legalRepresentator" class="form-input">
+    </div>
+    }
+
+    <div class="input-group">
+        <label for="address" class="input-label">
+            <span class="label-text">Dirección</span>
+            <span class="required">*</span>
+        </label>
+        <input type="text" id="address" name="address" pattern="{{ addressPattern }}"
+            placeholder="Calle Virrey Toledo N° 123" [(ngModel)]="person.address" class="form-input">
+    </div>
+
+    <div class="form-row">
+        <div class="input-group">
+            <label for="fixed-phone" class="input-label">
+                <span class="label-text">Teléfono Fijo</span>
+            </label>
+            <input type="tel" id="fixed-phone" name="fixed-phone" pattern="{{ fixedPhonePattern }}" placeholder="123456"
+                [(ngModel)]="person.fixedPhone" class="form-input">
+        </div>
+
+        <div class="input-group">
+            <label for="first-phone" class="input-label">
+                <span class="label-text">Celular 1</span>
+                @if (!isDenounced) {
+                <span class="required">*</span>
+                }
+            </label>
+            <input type="tel" id="first-phone" name="first-phone" pattern="{{ phonePattern }}" placeholder="123456789"
+                [(ngModel)]="person.firstPhone" class="form-input">
+        </div>
+
+        <div class="input-group">
+            <label for="second-phone" class="input-label">
+                <span class="label-text">Celular 2</span>
+            </label>
+            <input type="tel" id="second-phone" name="second-phone" pattern="{{ phonePattern }}" placeholder="123456789"
+                [(ngModel)]="person.secondPhone" class="form-input">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="email" class="input-label">
+            <span class="label-text">Correo Electrónico</span>
+            @if (!isDenounced) {
+            <span class="required">*</span>
+            }
+        </label>
+        <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" [(ngModel)]="person.email"
+            class="form-input">
+    </div>
+</ng-template>

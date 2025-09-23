@@ -109,6 +109,7 @@
   /* Grupos de entrada */
   .input-group {
     margin-bottom: 24px;
+    
   }
   
   .input-label {
@@ -124,7 +125,7 @@
   }
   
   .required {
-    color: var(--accent-color);
+    color: red;
     font-weight: bold;
   }
   
@@ -159,7 +160,9 @@
   .input-container {
     display: flex;
     gap: 10px;
+    
   }
+
   
   .input-container .form-input {
     flex: 1;
@@ -170,8 +173,7 @@
     align-items: center;
     justify-content: center;
     padding: 0 20px;
-    background: var(--primary-color);
-    color: white;
+    background-color: #a48bb4;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -179,6 +181,11 @@
     font-weight: 500;
     white-space: nowrap;
   }
+
+  .button-text {
+    margin-right: 6px;
+    color: black;
+}
   
   .action-button:hover {
     background: var(--primary-dark);
