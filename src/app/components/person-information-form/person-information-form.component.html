@@ -98,8 +98,9 @@
     <div class="input-group">
         <div class="input-with-action">
             <label for="ruc" class="input-label">
-                <span class="label-text">RUC</span>
-                <span class="required">*</span>
+                <span class="label-text">RUC
+                <span class="required">(*)</span>
+                </span>
             </label>
             <div class="input-container">
                 <input type="text" id="ruc" name="ruc" pattern="{{ rucPattern }}" placeholder="12345678987"
@@ -114,8 +115,9 @@
 
     <div class="input-group">
         <label for="trade-name" class="input-label">
-            <span class="label-text">Razón Social</span>
-            <span class="required">*</span>
+            <span class="label-text">Razón Social
+            <span class="required">(*)</span>
+            </span>
         </label>
         <input type="text" id="trade-name" name="trade-name" pattern="{{ tradeNamePattern }}" placeholder="Empresa SAC"
             [(ngModel)]="juridicPerson.tradeName" [disabled]="hasResponseInJuridic" class="form-input">

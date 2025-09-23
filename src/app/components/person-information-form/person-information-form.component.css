@@ -188,8 +188,10 @@
 }
   
   .action-button:hover {
-    background: var(--primary-dark);
     transform: translateY(-2px);
+    background-color: #a48bb4;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
   }
   
   .action-button:active {
