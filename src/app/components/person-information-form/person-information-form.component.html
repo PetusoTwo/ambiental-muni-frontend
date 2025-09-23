@@ -39,8 +39,9 @@
     <div class="input-group">
         <div class="input-with-action">
             <label for="dni" class="input-label">
-                <span class="label-text">Documento de Identidad</span>
+                <span class="label-text">Documento de Identidad
                 <span class="required">*</span>
+                </span>
             </label>
             <div class="input-container">
                 <input type="text" id="dni" name="dni" placeholder="12345678" pattern="{{ dniPattern }}"
@@ -136,8 +137,10 @@
 
     <div class="input-group">
         <label for="address" class="input-label">
-            <span class="label-text">Dirección</span>
-            <span class="required">*</span>
+            <span class="label-text">Dirección
+            <span class="required">(*)</span>
+
+            </span>
         </label>
         <input type="text" id="address" name="address" pattern="{{ addressPattern }}"
             placeholder="Calle Virrey Toledo N° 123" [(ngModel)]="person.address" class="form-input">
@@ -154,9 +157,10 @@
 
         <div class="input-group">
             <label for="first-phone" class="input-label">
-                <span class="label-text">Celular 1</span>
                 @if (!isDenounced) {
-                <span class="required">*</span>
+                <span class="label-text">Celular 1
+                <span class="required">(*)</span>
+                </span>
                 }
             </label>
             <input type="tel" id="first-phone" name="first-phone" pattern="{{ phonePattern }}" placeholder="123456789"
@@ -174,9 +178,12 @@
 
     <div class="input-group">
         <label for="email" class="input-label">
-            <span class="label-text">Correo Electrónico</span>
             @if (!isDenounced) {
-            <span class="required">*</span>
+            <span class="label-text">Correo Electrónico
+            <span class="required">(*)</span>
+
+            </span>
+
             }
         </label>
         <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" [(ngModel)]="person.email"
