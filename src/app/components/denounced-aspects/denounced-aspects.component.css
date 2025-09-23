@@ -1,0 +1,179 @@
+.previous-denounce-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 160px;
+}
+
+.wrapper {
+    overflow: auto;
+    height: 125px;
+    padding: 0 20px;
+}
+
+hr {
+    margin: 6px 16px;
+}
+
+.container {
+        
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;        
+    flex-wrap: nowrap;
+
+    label {
+
+        div.important {
+            width: 120px;
+        }
+    
+    }
+
+    &:not(:last-of-type) {
+        margin: 7px 0;
+    }
+
+    &:has(:first-child.media-container) {
+
+        @media screen and (width <= 1070px) {
+            height: 100px;
+        }
+
+    }
+
+    &:first-of-type {
+        @media screen and (min-width: 1070px) {
+            transform: translateY(-7px);
+        }
+    }
+
+    &:last-of-type {
+        height: 53px;
+
+        @media screen and (max-width: 1070px) {
+            height: 150px;
+            justify-content: space-between;
+            flex-direction: column;
+            gap: 0;
+
+            label {
+                width: 90%;
+            }
+
+        }
+
+    }
+    
+}
+
+div.content {
+    height: 295px;
+}
+
+label {
+    margin: 7px 0;
+    cursor: pointer;
+}
+
+select {
+    box-sizing: border-box;
+    height: 30px;
+    padding: 4px 12px;
+    font-size: clamp(12px, 2vw, 15px);
+    margin-left: 7px;
+}
+
+input, select {
+
+    width: 280px;
+
+    @media screen and (max-width: 600px) {
+
+        width: 210px;
+
+    }
+
+    @media screen and (max-width: 530px) {
+
+        width: 170px;
+
+    }
+
+    @media screen and (max-width: 465px) {
+
+        width: 120px;
+
+    }
+
+    @media screen and (max-width: 410px) {
+
+        width: 95px;
+
+    }
+
+}
+
+.switch {
+    position: relative;
+
+    .ball {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+        width: 11px;
+        height: 11px;
+        background-color: hsl(0, 0%, 75%);
+        border-radius: 50%;
+        z-index: 1;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    &:has(input:checked) {
+
+        .ball {
+            background-color: white;
+            transform: translate(8px, -55%);
+        }
+        
+        &::before {
+            border: none;
+            background-color: hsl(216, 98%, 52%);
+            box-shadow: 1px 1px 10px hsla(215, 97%, 88%, 99%), -1px -1px 10px hsla(215, 97%, 88%, 88%);
+        }
+
+    }
+
+    &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 80%;
+        transform: translate(-50%, -55%);
+        text-align: center;
+        width: 32px;
+        height: 18px;
+        color: white;
+        border-radius: 24px;
+        background-color: white;
+        box-sizing: border-box;
+        border: 2px solid hsl(0, 0%, 93%);
+        transition: background-color .3s ease, box-shadow .3s ease;
+        box-shadow: 1px 1px 13px hsla(215, 97%, 88%, 0), -1px -1px 13px hsla(215, 97%, 88%, 0);
+    }
+
+}
+
+input[type="radio"] {
+    width: 20px;
+    margin-left: 4px;
+}
+
+.switchable-container {
+    gap: 12px;
+}

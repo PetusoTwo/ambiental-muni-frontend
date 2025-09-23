@@ -1,0 +1,82 @@
+<div class="previous-denounces-container">
+    <h2>DENUNCIA PREVIA</h2>
+    <div class="wrapper">
+        <div class="container switchable-container">
+            <label for="hasPreviousDenounce">
+                ¿Has realizado denuncias previas?
+                <div class="switch">
+                    <div class="ball"></div>
+                    <input type="radio" id="hasPreviousDenounce" name="has-previous-denounce" (click)="processRadio($event)" [checked]="isChecked('hasPreviousDenounce')">
+                </div>
+            </label>
+            <label for="hasResponseDenounce">
+                ¿Obtuvo respuesta?
+                <div class="switch">
+                    <div class="ball"></div>
+                    <input type="radio" id="hasResponseDenounce" name="has-response-denounce" (click)="processRadio($event)" [checked]="isChecked('hasResponseDenounce')">
+                </div>
+            </label>
+            <label for="keepIdentity">
+                ¿Desea que se mantenga en reserva su identidad?
+                <div class="switch">
+                    <div class="ball"></div>
+                    <input type="radio" id="keepIdentity" name="keep-identity-denounce" (click)="processRadio($event)" [checked]="isChecked('keepIdentity')">
+                </div>
+            </label>
+        </div>
+        <div class="container">
+            
+            @if (denounce.previousDenounce.hasPreviousDenounce || denounce.previousDenounce.hasResponseDenounce) {
+                <div>
+                    @if (denounce.previousDenounce.hasPreviousDenounce) {
+                        <label for="directed-entity">
+                            <div class="important">
+                                ¿Ante que entidades?
+                                <strong>(*)</strong>
+                            </div>
+                            <input type="text" id="directed-entity" name="directed-entity" pattern="{{ textInputPattern }}" [(ngModel)]="this.denounce.previousDenounce.directedEntity" [disabled]="!denounce.previousDenounce.hasPreviousDenounce">
+                        </label>
+                    }
+                    @if (denounce.previousDenounce.hasResponseDenounce) {
+                        <label for="entity-response">
+                            <div class="important">
+                                ¿Cual fue la respuesta?
+                                <strong>(*)</strong>
+                            </div>
+                            <input type="text" id="entity-response" name="entity-response" pattern="{{ textInputPattern }}" [(ngModel)]="this.denounce.previousDenounce.entityResponse" [disabled]="!denounce.previousDenounce.hasResponseDenounce">
+                        </label>
+                    }
+                </div>
+            }
+
+            <div class="media-container">
+                <label for="communication-media">
+                    Medio de comunicacion
+                    <select name="communication-media" id="communication-media" [(ngModel)]="this.denounce.previousDenounce.communicationMedia">
+                        <option value="radio">Radio</option>
+                        <option value="redes sociales">Redes Sociales</option>
+                        <option value="correo electronico">Email</option>
+                        <option value="TV">TV</option>
+                        <option value="internet" selected>Internet</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </label>
+                <label for="source">
+                    Fuente
+                    <select name="source" id="source" [(ngModel)]="this.denounce.previousDenounce.source">
+                        <option value="revista">Revista</option>
+                        <option value="articulo">Articulo</option>
+                        <option value="sitio web" selected>Sitio Web</option>
+                        <option value="entrevista">Entrevista</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="content">
+    <h2>DATOS DEL DENUNCIADO</h2>
+    <app-person-information-form [person]="denounce.denounced" [isDenounced]="true"></app-person-information-form>
+</div>

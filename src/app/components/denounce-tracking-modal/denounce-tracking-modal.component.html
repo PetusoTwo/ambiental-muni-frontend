@@ -1,0 +1,123 @@
+<div class="modal" [ngClass]="{'closed': !show}">
+    <div class="popup">
+        <div class="delete-warning-modal" [ngClass]="{'closed': !showDeleteWarningModal}">
+            <div class="head">
+                <h3>Advertencia de eliminacion</h3>
+            </div>
+            <hr>
+            <div class="content">
+                <i class="bi bi-x" (click)="toggleDeleteWarningModal()"></i>
+
+                @switch (deleteResponseStatusCode) {
+                    @case ('IDLE') {
+                        <p>Esta seguro de eliminar el estado de esta denuncia?</p>
+                        <div class="warning-icon-container">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <button class="btn" (click)="processDelete()">
+                            Si, eliminar
+                        </button>
+                    }
+                    @case ('ERROR') {
+                        <p>Ocurrio un error al momento del eliminar, vuelva a intentar</p>
+                        <div class="warning-icon-container">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <button class="btn" (click)="processDelete()">
+                            Reintentar eliminacion
+                        </button>
+                    }
+                    @case ('SUCCESS') {
+                        <p>El estado de la denuncia ha sido eliminado exitosamente</p>
+                        <div class="warning-icon-container">
+                            <i class="bi bi-check"></i>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+        <div class="head">
+            <h3>Estado de denuncia</h3>
+        </div>
+        <hr>
+        <div class="content">
+            <div class="public-information">
+                <h4>Fecha de la denuncia<span>{{ publicInformation.date }}</span></h4>
+                <h4>Denunciado<span class="person-type {{ publicInformation.isNatural === 1 ? 'natural' : 'juridic' }}">{{ publicInformation.denouncedName }} - {{ publicInformation.denouncedDocNumber }} - {{ publicInformation.isNatural === 1 ? 'NATURAL' : 'JURIDICO' }}</span></h4>
+                <h4>Compromiso Ambiental<span>{{ publicInformation.ambientalPromise }}</span></h4>
+            </div>
+            <div class="wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Estado</th>
+                            
+                            @if (consultant === 'ADMIN') {
+                                <th>Descripcion</th>
+                                <th>Acciones</th>
+                            }
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (consultant === 'ADMIN') {
+
+                            @let tracking = denounceInformationAsAdmin;
+
+                            @for (info of tracking; track $index) {
+
+                                <tr>
+                                    <td>{{ info.date }}</td>
+                                    <td>
+                                        <div class="state-container">
+                                            <div class="state {{ setStateStyle(info.state) }}">{{ info.state.toLowerCase() }}</div>
+                                        </div>
+                                    </td>
+                                    <td>{{ info.description }}</td>
+                                    <td>
+                                        <div class="btn-container">
+                                            
+                                            @if (info.state !== 'REGISTRADO') {
+                                                <div class="action-btn delete-btn" (click)="prepareDeleteWarningModal(info.idTracking, info.state)">
+                                                    <i class="bi bi-trash"></i>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            }
+
+                        } @else {
+
+                            @let tracking = denounceInformationAsCivil;
+
+                            @for (info of tracking; track $index) {
+                                
+                                <tr>
+                                    <td>{{ info.date }}</td>
+                                    <td>
+                                        <div class="state-container">
+                                            <div class="state {{ setStateStyle(info.state) }}">{{ info.state.toLowerCase() }}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            }
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr>
+        <div class="footer">
+            <button class="close-modal-btn" (click)="toggleModal()">Cerrar</button>
+        </div>
+    </div>
+</div>

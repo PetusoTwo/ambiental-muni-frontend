@@ -1,0 +1,22 @@
+<div>
+    <h2>ASPECTOS GENERALES</h2>
+    <div class="container">
+        <label for="reception-media">
+            Medio de Recepcion de la denuncia
+            <input type="text" id="reception-media" name="reception-media" [value]="denounce.generalAspects.receptionMedia" [disabled]="true">
+        </label>
+        <label for="denounce-date">
+            Fecha de la denuncia
+            <input type="date" id="denounce-date" name="denounce-date" [value]="date" [disabled]="true">
+        </label>
+        <label for="denounce-code">
+            Codigo
+            <input type="text" id="denounce-code" name="denounce-code" [value]="denounce.generalAspects.code" [disabled]="true">
+        </label>
+    </div>
+</div>
+<hr>
+<div>
+    <h2>DATOS DEL DENUNCIANTE</h2>
+    <app-person-information-form [person]="denounce.denouncer"></app-person-information-form>
+</div>

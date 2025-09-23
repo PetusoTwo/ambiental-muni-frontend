@@ -1,0 +1,46 @@
+<div>
+    <h2>DESCRIPCION DE LOS HECHOS</h2>
+    <label for="address">
+        <div class="important">
+            Direccion
+            <strong>(*)</strong>
+        </div>
+        <input type="text" id="address" name="address" pattern="{{ addressPattern }}" [(ngModel)]="denounce.ambientalPromises.address">
+    </label>
+    <label for="reference">
+        <div class="important">
+            Referencia
+            <strong>(*)</strong>
+        </div>
+        <input type="text" id="reference" name="reference" pattern="{{ textInputPattern }}" [(ngModel)]="denounce.ambientalPromises.reference">
+    </label>
+    <textarea name="description" id="description" placeholder="Ingrese una descripcion de los hechos*" (input)="validateTextArea($event)" [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
+</div>
+<hr>
+<div>
+    <h2>COMPROMISOS AMBIENTALES</h2>
+    <div class="container">
+        <div>
+            <h4>COMPROMISO</h4>
+            <select name="ambiental-promise" id="ambiental-promise" [(ngModel)]="denounce.ambientalPromises.ambientalPromise">
+                <option value="agua" selected>Agua</option>
+                <option value="viento">Viento</option>
+                <option value="suelo">Suelo</option>
+                <option value="ruido">Ruido</option>
+            </select>
+        </div>
+        <div>
+            <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
+            <div (click)="processRadio($event)">
+                
+                @for (cause of causes; track $index) {
+                    <label for="{{ cause.id }}">
+                        {{ cause.description }}
+                        <input type="radio" id="{{ cause.id }}" name="{{ cause.id }}" value="{{ $index + 1 }}" [checked]="isChecked($index + 1)">
+                    </label>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

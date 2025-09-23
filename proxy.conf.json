@@ -1,0 +1,20 @@
+{
+  "/mdjlo/api/open/*": {
+    "target": "http://161.132.51.161",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/denunciaambiental/*": {
+      "target": "http://localhost:8080",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+  },
+  "/denunciaambiental/JLO_DENOUNCE_FORM_BACKEND/public/*": {
+    "target": "https://jloenlinea.munijlo.gob.pe",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+}
+}

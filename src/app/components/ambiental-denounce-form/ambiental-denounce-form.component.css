@@ -1,0 +1,51 @@
+label {
+    margin: 7px 0;
+}
+
+h4 {
+    font-size: clamp(7px, 2vw, 16px);
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 32px;
+    height: 120px;
+
+    transform: translateY(20px);
+
+    transition: transform .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    @media screen and (max-width: 400px) {
+        transform: translateY(35px);
+    }
+
+}
+
+textarea {
+    height: 105px;
+    font-size: clamp(12px, 2vw, 16px);
+}
+
+select {
+    font-size: clamp(11px, 2vw, 18px);
+}
+
+input[name="address"], input[name="reference"] {
+    width: 80%;
+
+    @media screen and (width <= 560px) {
+        width: 67%;
+    }
+
+}
+
+h4 strong {
+    color: red;
+    font-size: 14px;
+    margin-left: 4px;
+}

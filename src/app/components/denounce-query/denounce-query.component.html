@@ -1,0 +1,41 @@
+<main class="query-layout">
+    <section class="query-container" (keyup.enter)="getDenounceTrack()">
+        <h1>Consultar Denuncia</h1>
+        <div class="input-container">
+            <label for="query-id">Id de la Denuncia</label>
+            <input type="text" id="query-id" name="query-id" placeholder="Ingrese el ID de la denuncia" [(ngModel)]="idDenounce">
+        </div>
+        <div class="btn-container">
+            <button class="btn" (click)="getDenounceTrack()">Consultar</button>
+        </div>
+    </section>
+    <section class="table-container">
+        <div class="wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Estado</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (info of denouncesInformation; track $index) {
+                        <tr>
+                            <td>{{ info.date }}</td>
+                            <td>
+                                <div class="state-container">
+                                    <div class="state {{ setStateStyle(info.state) }}">{{ info.state.toLowerCase() }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <button (click)="trackingModal.prepareTrackingModal(info.idDenounce)" >Ver mas informacion</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<app-denounce-tracking-modal [consultant]="consultant" ></app-denounce-tracking-modal>

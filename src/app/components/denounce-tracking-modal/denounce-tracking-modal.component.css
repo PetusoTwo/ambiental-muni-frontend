@@ -1,0 +1,286 @@
+.content {
+    flex: 1 0 100px;
+    display: flex;
+    flex-direction: column;
+
+    .public-information {
+
+        h4 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: clamp(14px, 2vw, 18px);
+            margin: 6px 0;
+        }
+        
+        span {
+            font-size: clamp(12px, 2vw, 16px);
+            margin-left: 12px;
+            border-radius: 20px;
+            text-align: center;
+            padding: 2px 14px;
+            cursor: default;
+            background-color: white;
+            font-weight: 100;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        span.person-type {
+            color: white;
+
+            &.natural {
+                background-color: hsl(221, 100%, 57%);
+            }
+
+            &.juridic {
+                background-color: hsl(340, 100%, 56%);
+            }
+        }
+
+    }
+
+    .wrapper {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 16px;
+        flex: 1 0 100px;
+
+        &::-webkit-scrollbar-thumb {
+            background-color: black;
+        }
+
+    }
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 8px 0;
+
+    thead {
+        position: sticky;
+        top: 0px;
+
+        th {
+
+            font-size: clamp(8px, 2vw, 20px);
+            text-align: center;
+            padding: 10px 8px;
+
+            &:last-child {
+                border-radius: 0 12px 0 0;
+                box-shadow: 5px 0 1px hsl(0, 0%, 95%);
+            }
+    
+            &:first-child {
+                border-radius: 12px 0 0 0;
+                box-shadow: -5px 0 1px hsl(0, 0%, 95%);
+            }
+
+        }
+
+        background-color: black;
+        color: white;
+
+    }
+
+    tbody {
+
+        tr {
+            background-color: white;
+            color: black;
+        }
+
+        td {
+
+            text-align: center;
+            font-size: clamp(8px, 1.5vw, 16px);
+            padding: 8px 6px;
+
+            div.state-container {
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                div.state {
+                
+                    border-radius: 20px;
+                    text-align: center;
+                    padding: 2px 6px;
+                    cursor: default;
+                    text-transform: capitalize;
+                    width: 30%;
+    
+                    &.received {
+                        background-color: hsl(45, 100%, 51%);
+                    }
+    
+                    &.registered {
+                        background-color: hsl(354, 100%, 56%);
+                    }
+    
+                    &.served {
+                        background-color: hsl(133, 58%, 41%);
+                        cursor: default;
+                    }
+    
+                    &.registered, &.served {
+                        color: white;
+                    }
+    
+                }
+
+            }
+
+        }
+
+        tr:has(td:nth-child(3)) {
+
+            td:nth-child(2) {
+
+                div.state {
+                    font-size: clamp(8px, 1.5vw, 12px);
+                    width: 90%;
+                }
+
+            }
+
+            td:nth-child(3) {
+                width: 60%;
+                text-align: justify;
+            }
+
+            td:nth-child(4) {
+
+                div.btn-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                
+                div.delete-btn {
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                    width: 24px;
+                    padding: 8px 6px;
+                    border-radius: 12px;
+                    font-size: clamp(16px, 1.5vw, 18px);
+                    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+                    transition: background-color .2s cubic-bezier(0.445, 0.05, 0.55, 0.95), color .2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+                    
+                    background-color: hsl(354, 100%, 56%);
+                    color: white;
+
+                    &:hover {
+                        background-color: white;
+                        color: hsl(354, 100%, 56%);
+                    }
+
+                    &:active {
+                        background-color: hsl(354, 100%, 56%);
+                        color: white;
+                    }
+            
+                }
+
+
+            }
+
+        }
+
+    }
+
+}
+
+.modal .popup {
+
+    position: relative;
+
+    transition: height .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+    @media screen and (height >= 600px) {
+        height: 550px;
+    }
+
+    .delete-warning-modal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        .content {
+            flex: 1 0 100px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .warning-icon-container {
+
+                i.bi-exclamation-triangle {
+                    color: hsl(354, 100%, 56%);
+                    font-size: 80px;
+                }
+
+                i.bi-check {
+                    color: hsl(135, 85%, 40%);
+                    font-size: 180px;
+                }
+
+            }
+
+            button {
+                background-color: hsl(354, 100%, 56%);
+                color: white;
+                padding: 10px 20px;
+                font-size: clamp(14px, 2.5vw, 18px);
+            }
+
+            p {
+                font-size: clamp(16px, 2.5vw, 22px);
+            }
+
+            position: relative;
+
+            i.bi-x {
+                position: absolute;
+                top: -10px;
+                right: 20px;
+                font-size: 56px;
+                cursor: pointer;
+                color: hsl(0, 0%, 56%);
+                transition: color 0.3s ease;
+
+                &:hover {
+                    color: #ff0000;
+                }
+
+            }
+
+        }
+
+        &.closed {
+            display: none;
+        }
+
+    }
+
+}
+
+@media screen and (height < 600px) { 
+    .modal {
+        align-items: start;
+    }
+}

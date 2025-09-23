@@ -1,0 +1,150 @@
+.proof-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: hsl(0, 0%, 92%);
+    width: 45%;
+    height: 250px;
+    margin: 6px auto;
+    border: 1px solid hsla(0, 0%, 67%, 0.4);
+    border-radius: 12px;
+
+    h3 {
+        font-size: clamp(15px, 2vw, 16px);
+        text-align: center;
+        padding-bottom: 12px;
+    }
+
+    .upload-guide-message strong {
+        font-size: clamp(9px, 2vw, 15px);
+    }
+
+    input {
+        display: none;
+    }
+
+    i.bi-file-earmark-richtext {
+        font-size: 80px;
+        margin: 5px 0;
+    }
+
+    span {
+        font-size: clamp(8px, 2vw, 13px);
+        background-color: hsl(193, 65%, 61%);
+        padding: 5px 8px;
+        border-radius: 12px;
+        color: white;
+        transition: background-color .8s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+        &.valid {
+            background-color: hsl(145, 65%, 61%);
+        }
+
+    }
+
+    label, input {
+        cursor: pointer;
+    }
+
+    @media screen and (max-width: 760px) {
+        input {
+            display: none;
+        }
+
+        i.bi-file-earmark-richtext {
+            font-size: 16vw;
+        }
+    }
+
+}
+
+ul.upload-list {
+    font-size: clamp(7px, 1.8vw, 12px);
+    margin: 0 13px;
+}
+
+textarea {
+    height: 125px;
+}
+
+.file-container-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 80%;
+    height: 120px;
+    margin: 6px 2px;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+}
+
+.file-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 7px 5px;
+    height: 110px;
+    padding: 7px 3px;
+    box-sizing: border-box;
+}
+
+.file-upload {
+
+    position: relative;
+    box-sizing: border-box;
+    padding: 3px;
+    height: 60px;
+    width: 60px;
+    background-color: white;
+    border: 1px solid hsla(0, 0%, 67%, 0.4);
+    display: flex;
+    flex-direction: column;
+
+    .cross {
+        width: 18px;
+        height: 18px;
+        position: absolute;
+        background-color: red;
+        border-radius: 15px;
+        text-align: center;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: -7px;
+        left: 45px;
+        cursor: pointer;
+
+        i.bi-x {
+            font-size: 14px;
+        }
+
+    }
+
+    border-radius: 4px;
+
+    .file-icon-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    p {
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+}
+
+strong.important {
+    font-size: 12px;
+    color: red;
+    margin-left: 5px;
+}

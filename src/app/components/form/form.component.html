@@ -1,0 +1,84 @@
+<main class="form-layout">
+    <div class="global-container">
+        <section [ngClass]="{ 'expand': formActualStep === 1, 'reduce': formActualStep === 4 }">
+        
+            @if(formActualStep === 4) {
+        
+                <ng-container *ngTemplateOutlet="formFinished"></ng-container>
+        
+            } @else {
+        
+                <ng-container *ngTemplateOutlet="formContent"></ng-container>
+        
+            }
+        
+        </section>
+    </div>
+</main>
+<div class="error-popup-bg" [ngClass]="{'closed': !openModal}">
+    <div class="error-popup">
+        <div class="head">
+            <h3>Alerta de campo de formulario</h3>
+        </div>
+        <hr>
+        <div class="content">
+            <p>{{ modalErrorMsg }}</p>
+        </div>
+        <hr>
+        <div class="footer">
+            <button (click)="toggleModal()" id="close-error-popup-btn">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<ng-template #formFinished>
+    <article id="form-finished">
+        <div class="form-content">
+            
+            @if (!formSended) {
+                <h2>Enviando formulario</h2>
+                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            } @else {
+                <h2>Formulario enviado correctamente</h2>
+                <div class="check-container">
+                    <i class="bi bi-check"></i>
+                </div>
+                <p>
+                    Para hacer seguimiento de su denuncia, le hemos enviado una notificacion a su correo {{ denounce.denouncer.email }}.
+                    <strong>Si no encuentra el correo puede revisar su correo de spam o correo no deseado</strong>
+                </p>
+                <button type="button" id="newDenounceBtn" (click)="goToNewDenounce()">
+                    Realizar una nueva denuncia
+                </button>
+            }
+
+        </div>
+    </article>
+</ng-template>
+
+<ng-template #formContent>
+    <article>
+
+        <div class="form-content">
+            @switch (formActualStep) {
+                @case (0) {
+                    <app-general-aspects [denounce]="denounce"></app-general-aspects>
+                }
+                @case (1) {
+                    <app-denounced-aspects [denounce]="denounce"></app-denounced-aspects>
+                }
+                @case (2) {
+                    <app-ambiental-denounce-form [denounce]="denounce"></app-ambiental-denounce-form>
+                }
+                @case (3) {
+                    <app-proofs-form [proof]="denounce.proof" (proofUploadErrorEmitter)="processProofUploadError($event)"></app-proofs-form>
+                }
+            }
+        </div>
+
+    </article>
+    <footer>
+        <button class="btn" [ngClass]="{ 'desactivated': formActualStep === 0 }" id="back-btn" (click)="backStep()">Retroceder</button>
+        <button class="btn" [ngClass]="{ 'send': formActualStep === 3 }" id="next-btn" (click)="changeStep()">{{ formActualStep === 3 ? "Enviar Denuncia": "Continuar" }}</button>
+    </footer>
+</ng-template>

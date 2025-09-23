@@ -1,0 +1,36 @@
+div:nth-of-type(1) .container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 20px;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 100px;
+
+    input[type="date"] {
+        width: full;
+    }
+
+    input[type="text"] {
+        width: full;
+    }
+
+    @media screen and (max-width: 650px) {
+        
+        display: block;
+        
+        label {
+            margin: 5px 0;
+        }
+
+    }
+
+    @media screen and (max-width: 320px) {
+    
+        input[type="text"] {
+            width: 95px;
+        }
+
+    }
+
+}

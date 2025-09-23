@@ -1,0 +1,272 @@
+<main class="admin-layout">
+    <div class="logout" (click)="logout()">
+        <i class="bi bi-arrow-bar-left"></i>
+        <span>Cerrar Sesion</span>
+    </div>
+    <section>
+        <div class="wrapper">
+            <nav (change)="processFilter()">
+                <div class="item">
+                    <div class="filter-container">
+                        <h3>Filtrar por Documento de Denunciante</h3>
+                        <input type="text" id="denouncer-filter" name="denouncer-filter" [(ngModel)]="filterInformation.denouncerDocNumber" pattern="^\d{8}$|^\d{11}$">
+                    </div>
+                    <div class="filter-container">
+                        <h3>Filtrar por Documento de Denunciado</h3>
+                        <input type="text" id="denounced-filter" name="denounced-filter" [(ngModel)]="filterInformation.denouncedDocNumber" pattern="^\d{8}$|^\d{11}$">
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="filter-container">
+                        <h3>Filtrar por Fecha</h3>
+                        <input type="date" id="date" name="date" [(ngModel)]="filterInformation.date">
+                    </div>
+                    <div class="filter-container">
+                        <h3>Filtrar por estado</h3>
+                        <select name="state-filter" id="state-filter" [(ngModel)]="filterInformation.denounceType">
+                            <option value="null" selected>Todos</option>
+                            <option value="Registrado">Registrado</option>
+                            <option value="Recibido">Recibido</option>
+                            <option value="Atendido">Atendido</option>
+                        </select>
+                    </div>
+                </div>
+            </nav>
+            <table>
+                @if (denounces.length === 0) {
+                    <div class="nocontent">
+                        <i class="bi bi-file-earmark" style="font-size: 2rem;"></i>
+                        <p>No hay registros</p>
+                    </div>
+                }
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Denunciante</th>
+                        <th>Denunciado</th>
+                        <th>Motivo de Denuncia</th>
+                        <th>Anonimato</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (denounce of denounces; track denounce.idDenounce) {
+                        <tr>
+                            <td>{{ denounce.idDenounce }}</td>
+                            <td>
+                                <div class="person-flag {{ processIsNatural(denounce.denouncerDocNumber) ? 'natural' : 'juridic' }}">
+                                    <span>{{ processIsNatural(denounce.denouncerDocNumber) ? 'NATURAL' : 'JURIDICA' }}</span>
+                                    <strong>{{ denounce.denouncerDocNumber }}</strong>
+                                </div>
+                                <span>{{ denounce.denouncer }}</span>
+                            </td>
+                            <td>
+                                <div class="person-flag {{ processIsNatural(denounce.denouncedDocNumber) ? 'natural' : 'juridic' }}">
+                                    <span>{{ processIsNatural(denounce.denouncedDocNumber) ? 'NATURAL' : 'JURIDICA' }}</span>
+                                    <strong>{{ denounce.denouncedDocNumber }}</strong>
+                                </div>
+                                <span>{{ denounce.denounced }}</span>
+                            </td>
+                            <td><div><p>{{ denounce.reason }}</p></div></td>
+                            <td>
+                                {{ denounce.anonymous === 1 ? 'SI' : 'NO' }}
+                            </td>
+                            <td>{{ denounce.date }}</td>
+                            <td>
+                                <div class="state-checkbox">
+
+                                    @let availableStates = getAvailableStates(denounce.state);
+                                    @let denounceIndex = $index;
+
+                                    @for (state of availableStates; track $index) {
+
+                                        @if ($index === 0) {
+
+                                            <div class="state {{ setStateStyle(state) }}" (click)="processFocusOnChangeState($event)">{{ state.toLowerCase() }}</div>
+
+                                        } @else {
+
+                                            <div class="state {{ setStateStyle(state) }}" [ngStyle]="{ '--translate': $index * 34 + 'px' }" (click)="prepareUpdateDenounceModal(state, denounce.state, denounce.idDenounce, denounceIndex)">{{ state.toLowerCase() }}</div>
+
+                                        }
+
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-container">
+                                    <div class="action-btn details-btn" (click)="showDenounceDetails(denounce.idDenounce)">
+                                        <i class="bi bi-info-circle"></i>
+                                    </div>
+                                    <div class="action-btn pdf-btn" (click)="requestPDF(denounce.idDenounce)">
+                                        <i class="bi bi-file-pdf-fill"></i>
+                                    </div>
+                                    <div class="action-btn state-historial-btn" (click)="trackingModal.prepareTrackingModal(denounce.idDenounce, denounceIndex)">
+                                        <i class="bi bi-card-checklist"></i>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            <div class="page-number-container">
+
+                @let totalPagination = getTotalPagination();
+
+                <i class="bi bi-arrow-left-short" [ngClass]="{ 'invalid': actualOffset <= 1 || totalPagination === 0 }" (click)="processArrowPaginationBackward()"></i>
+                Pagina <input type="number" id="pagination-input" name="pagination-input" [(ngModel)]="actualOffset" min="0" max="{{ getTotalPagination() }}" (change)="processPaginationInput()">
+                <span>/{{ getTotalPagination() }}</span>
+                <i class="bi bi-arrow-right-short" [ngClass]="{ 'invalid': actualOffset >= totalPagination || totalPagination === 0 }" (click)="processArrowPaginationForward()"></i>
+            </div>
+        </div>
+    </section>
+</main>
+<div class="modal more-information-modal" [ngClass]="{'closed': !showMoreInformationModal}">
+    <div class="popup">
+        <div class="head">
+            <h3>Informacion de la denuncia</h3>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="content" [ngClass]="{'viewed': actualModalView !== 0, 'on-view': actualModalView === 0 }">
+                <div class="row">
+                    <h4>Codigo</h4>
+                    <span>{{ denounceDetails.code }}</span>
+                </div>
+                <div class="row">
+                    <h4>Fecha</h4>
+                    <span>{{ denounceDetails.date }}</span>
+                </div>
+                <div class="row">
+                    <h4>Direccion</h4>
+                    <span>{{ denounceDetails.address }}</span>
+                </div>
+                <div class="row">
+                    <h4>Referencia</h4>
+                    <span>{{ denounceDetails.reference }}</span>
+                </div>
+                <div class="row facts-description">
+                    <h4>Descripcion del hecho</h4>
+                    <span>{{ denounceDetails.factsDescription }}</span>
+                </div>
+            </div>
+            <div class="content" [ngClass]="{'viewed': actualModalView === 2, 'on-view': actualModalView === 1, 'unviewed': actualModalView !== 1 }">
+                <div class="row">
+                    <h4>Entidad dirigida</h4>
+                    <span>{{ denounceDetails.hasPreviousDenounce === 1 ? denounceDetails.directedEntity : 'NO REALIZO NINGUNA DENUNCIA PREVIA' }}</span>
+                </div>
+                <div class="row">
+                    <h4>Respuesta de entidad</h4>
+                    <span>{{ denounceDetails.hasResponse === 1 ? denounceDetails.entityResponse : 'SIN RESPUESTA' }}</span>
+                </div>
+                <div class="row">
+                    <h4>Mantener identidad privada</h4>
+                    <span>{{ denounceDetails.keepIdentity === 1 ? 'SI' : 'NO' }}</span>
+                </div>
+                <div class="row comunication-media">
+                    <h4>Medio de comunicacion</h4>
+                    <span>{{ denounceDetails.comunicationMedia }}</span>
+                </div>
+                <div class="row source">
+                    <h4>Fuente</h4>
+                    <span>{{ denounceDetails.source }}</span>
+                </div>
+            </div>
+            <div class="content" [ngClass]="{'on-view': actualModalView === 2, 'unviewed': actualModalView !== 2 }">
+                <div class="row ambiental-promise">
+                    <h4>Compromiso ambiental</h4>
+                    <span>{{ denounceDetails.ambientalPromise }}</span>
+                </div>
+                <div class="row">
+                    <h4>Causas Ambientales</h4>
+                    <div class="ambiental-container">
+                        <ul>
+
+                            @let ambientalCause = denounceDetails.ambientalCauses.split(',');
+
+                            @for (cause of ambientalCause; track $index) {
+                                <li>{{ cause }}</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <h4>Pruebas</h4>
+                    <div class="proof-container">
+                            
+                        @if (denounceDetails.proofs) {
+
+                            @let proofs = denounceDetails.proofs.split(',');
+
+                            <ul>
+                                @for (proof of proofs; track $index) {
+
+                                    @let proofName = proof.split('/')[2];
+                                    @let extension = proofName.split('.')[1];
+
+                                    <li (click)="requestProof(proof)" >
+
+                                        @switch (extension) {
+                                            @case ('pdf') {
+                                                <i class="bi bi-file-pdf"></i>
+                                            }
+                                            @case ('mp4') {
+                                                <i class="bi bi-camera-video"></i>
+                                            }
+                                            @default {
+                                                <i class="bi bi-image"></i>
+                                            }
+                                        }
+
+                                        <p>{{ proofName }}</p>
+                                    </li>
+                                }
+                            </ul>
+                            
+                        } @else {
+                            <p>No hay pruebas disponibles</p>
+                        }
+
+                    </div>
+                </div>
+                <div class="row proof-description">
+                    <h4>Descripcion de las pruebas</h4>
+                    <span>{{ denounceDetails.proofDescription.length === 0 ? 'NO ESPECIFICA' : denounceDetails.proofDescription }}</span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="footer">
+            <button (click)="closeDenounceDetailsModal()" class="close-modal-btn">Cerrar</button>
+            <div>
+                <button class="prev" [class.disabled-btn]="actualModalView === 0" (click)="backModalView()">Atras</button>
+                <button class="next" [class.disabled-btn]="actualModalView === 2"  (click)="nextModalView()">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal update-denounce-modal" [ngClass]="{'closed': !showUpdateDenounceModal}">
+    <div class="popup">
+        <div class="head">
+            <h3>Actualizar Estado de la denuncia</h3>
+        </div>
+        <hr>
+        <div class="content">
+            <h4>Estado Actual <span class="old-state">{{ updateDenounceModalInformation.oldState }}</span></h4>
+            <h4>Nuevo Estado <span class="new-state">{{ updateDenounceModalInformation.newState }}</span></h4>
+            <h4>Descripcion de acciones</h4>
+            <textarea name="description-update-modal" id="description-update-modal" [(ngModel)]="updateDenounceModalInformation.description"></textarea>
+        </div>
+        <hr>
+        <div class="footer">
+            <button class="close-modal-btn" (click)="toggleShowUpdateDenounceModal()">Cerrar</button>
+            <button class="update-btn" (click)="changeState()">Actualizar</button>
+        </div>
+    </div>
+</div>
+<app-denounce-tracking-modal [consultant]="consultant" (stateUpdate)="processDenounceStateUpdate($event)"></app-denounce-tracking-modal>
