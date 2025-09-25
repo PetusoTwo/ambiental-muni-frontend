@@ -13,123 +13,173 @@
     --border-radius: 12px;
     --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     --transition: all 0.3s ease;
-  }
+}
   
-  /* Estilos generales del formulario */
-  .form-container {
+/* Estilos generales del formulario */
+.form-container {
     max-width: 800px;
     margin: 0 auto;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+}
   
-  .form-header {
+.form-header {
     padding: 30px;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     text-align: center;
-  }
+}
   
-  .form-header h2 {
+.form-header h2 {
     margin: 0 0 20px 0;
     font-weight: 600;
     font-size: 1.8rem;
-  }
+}
   
-  /* Selector de tipo de persona */
-  .person-type-selector {
+/* Selector de tipo de persona mejorado */
+.person-type-selector {
     display: flex;
     justify-content: center;
-  }
+    width: 100%;
+}
   
-  .selector-tabs {
+.selector-tabs {
     display: flex;
-    position: relative;
-    /* background: rgba(2, 2, 2, 0.2); */
-    border-radius: 10px;
-    padding: 10px;
-  }
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    width: 100%;
+    max-width: 600px;
+    min-width: 400px;
+}
   
-  .selector-tabs .tab {
-    display: flex;
-    align-items: center;
-    padding: 12px 24px;
-    border-radius: 10px;
+.tab-option {
+    flex: 1;
+}
+  
+.tab-input {
+    display: none;
+}
+  
+.tab-label {
+    display: block;
     cursor: pointer;
     transition: var(--transition);
-    z-index: 2;
-    position: relative;
-  }
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+}
   
-  .selector-tabs .tab .icon {
-    margin-right: 8px;
-    font-size: 1.2rem;
-  }
-  
-  .selector-tabs .tab .text {
-    font-weight: 500;
-  }
-  
-  .selector-tabs input:checked + .tab {
-    color: var(--primary-color);
-  }
-  
-  .selector-tabs .indicator {
-    position: absolute;
-    height: 100px;
-    width: 50%;
-    background: rgb(165, 66, 66);
-    border-radius: 10px;
-    top: 5px;
-    left: 5px;
+.tab-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 32px;
+    background: rgba(248, 249, 250, 0.9);
+    border: 2px solid rgba(206, 212, 218, 0.6);
+    border-radius: 16px;
     transition: var(--transition);
-    z-index: 1;
-  }
+    min-height: 90px;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+}
   
-  #juridical-person:checked ~ .indicator {
-    transform: translateX(100%);
-  }
+.tab-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 10px;
+    color: #6c757d;
+    transition: var(--transition);
+}
   
-  /* Contenido del formulario */
-  .form-content {
+.tab-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    transition: var(--transition);
+    text-align: center;
+    line-height: 1.3;
+}
+  
+/* Estados del selector */
+.tab-label:hover .tab-content {
+    background: rgba(233, 236, 239, 0.95);
+    transform: translateY(-3px);
+    border-color: rgba(173, 181, 189, 0.8);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tab-label:hover .tab-icon {
+    color: #343a40;
+}
+
+.tab-label:hover .tab-text {
+    color: #212529;
+}
+  
+.tab-input:checked + .tab-label .tab-content {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    border-color: #343a40;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+  
+.tab-input:checked + .tab-label .tab-icon {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+  
+.tab-input:checked + .tab-label .tab-text {
+    color: #ffffff;
+    font-weight: 700;
+}
+  
+/* Contenido del formulario */
+.form-content {
     padding: 30px;
-  }
+}
   
-  .form-section {
+.form-section {
     animation: fadeIn 0.5s ease;
-  }
+}
   
-  @keyframes fadeIn {
+@keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
-  }
+}
   
-  /* Grupos de entrada */
-  .input-group {
+/* Grupos de entrada */
+.input-group {
     margin-bottom: 24px;
     
-  }
+}
   
-  .input-label {
+.input-label {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
     font-weight: 500;
     color: var(--dark-text);
-  }
+}
   
-  .label-text {
+.label-text {
     margin-right: 4px;
-  }
+}
   
-  .required {
+.required {
     color: red;
     font-weight: bold;
-  }
+}
   
-  .form-input {
+.form-input {
     width: 100%;
     padding: 14px 16px;
     border: 2px solid var(--border-color);
@@ -138,79 +188,79 @@
     transition: var(--transition);
     background-color: white;
     box-sizing: border-box;
-  }
+}
   
-  .form-input:focus {
+.form-input:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-  }
+}
   
-  .form-input:disabled {
+.form-input:disabled {
     background-color: #f8f9fa;
     color: var(--light-text);
     cursor: not-allowed;
-  }
+}
   
-  /* Entrada con botón de acción */
-  .input-with-action {
+/* Entrada con botón de acción */
+.input-with-action {
     margin-bottom: 24px;
-  }
+}
   
-  .input-container {
+.input-container {
     display: flex;
     gap: 10px;
     
   }
 
   
-  .input-container .form-input {
+.input-container .form-input {
     flex: 1;
-  }
+}
   
-  .action-button {
+.action-button {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 20px;
-    background-color: #a48bb4;
+    background-color: #6c757d;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: var(--transition);
     font-weight: 500;
     white-space: nowrap;
-  }
+}
 
-  .button-text {
+.button-text {
     margin-right: 6px;
-    color: black;
+    color: white;
 }
   
-  .action-button:hover {
+.action-button:hover {
     transform: translateY(-2px);
-    background-color: #a48bb4;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-
-  }
+    background-color: #5a6268;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
   
-  .action-button:active {
+.action-button:active {
     transform: translateY(0);
-  }
+}
   
-  .button-icon {
+.button-icon {
     margin-left: 6px;
-  }
+    color: white;
+}
   
-  /* Filas de formulario */
-  .form-row {
+/* Filas de formulario */
+.form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-  }
+}
   
-  /* Responsive */
-  @media screen and (max-width: 768px) {
+/* Responsive */
+@media screen and (max-width: 768px) {
     .form-header {
       padding: 20px;
     }
@@ -219,9 +269,25 @@
       padding: 20px;
     }
     
-    .selector-tabs .tab {
-      padding: 10px 16px;
-      font-size: 0.9rem;
+    .selector-tabs {
+        gap: 12px;
+        padding: 8px;
+        min-width: 320px;
+    }
+    
+    .tab-content {
+        padding: 16px 20px;
+        min-height: 80px;
+    }
+    
+    .tab-icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 8px;
+    }
+    
+    .tab-text {
+        font-size: 0.9rem;
     }
     
     .form-row {
@@ -237,29 +303,35 @@
       padding: 12px;
       margin-top: 8px;
     }
-  }
+}
   
-  @media screen and (max-width: 480px) {
+@media screen and (max-width: 480px) {
     .form-header h2 {
       font-size: 1.5rem;
     }
     
     .selector-tabs {
       flex-direction: column;
-      border-radius: var(--border-radius);
+      gap: 10px;
+      min-width: 280px;
+      width: 95%;
     }
     
-    .selector-tabs .indicator {
-      display: none;
+    .tab-content {
+      flex-direction: row;
+      gap: 16px;
+      padding: 16px 20px;
+      min-height: auto;
     }
     
-    .selector-tabs .tab {
-      justify-content: center;
-      border-radius: var(--border-radius);
-      margin-bottom: 5px;
+    .tab-icon {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 0;
     }
     
-    #juridical-person:checked ~ .indicator {
-      transform: none;
+    .tab-text {
+        font-size: 0.95rem;
+        text-align: left;
     }
-  }
+}
