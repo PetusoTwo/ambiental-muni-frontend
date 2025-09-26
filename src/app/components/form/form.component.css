@@ -34,6 +34,7 @@ article {
         flex: 1;
         padding: 0; /* Removemos el padding para que el componente hijo controle su espaciado */
         overflow-y: auto;
+        margin-bottom: 20px;
         
         /* Scrollbar personalizado */
         &::-webkit-scrollbar {
