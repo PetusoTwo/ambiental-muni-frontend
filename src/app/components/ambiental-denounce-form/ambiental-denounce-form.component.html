@@ -1,46 +1,151 @@
-<div>
-    <h2>DESCRIPCION DE LOS HECHOS</h2>
-    <label for="address">
-        <div class="important">
-            Direccion
-            <strong>(*)</strong>
+<div class="form-container">
+    <div class="facts-section">
+        <h2>DESCRIPCIÓN DE LOS HECHOS</h2>
+        
+        <div class="form-group">
+            <label for="address">
+                <div class="important">
+                    Dirección
+                    <strong>(*)</strong>
+                </div>
+            </label>
+            <input type="text" id="address" name="address" pattern="{{ addressPattern }}" 
+                   placeholder="Ingrese la dirección del incidente"
+                   [(ngModel)]="denounce.ambientalPromises.address">
         </div>
-        <input type="text" id="address" name="address" pattern="{{ addressPattern }}" [(ngModel)]="denounce.ambientalPromises.address">
-    </label>
-    <label for="reference">
-        <div class="important">
-            Referencia
-            <strong>(*)</strong>
+        
+        <div class="form-group">
+            <label for="reference">
+                <div class="important">
+                    Referencia
+                    <strong>(*)</strong>
+                </div>
+            </label>
+            <input type="text" id="reference" name="reference" pattern="{{ textInputPattern }}" 
+                   placeholder="Punto de referencia (cerca de, frente a, etc.)"
+                   [(ngModel)]="denounce.ambientalPromises.reference">
         </div>
-        <input type="text" id="reference" name="reference" pattern="{{ textInputPattern }}" [(ngModel)]="denounce.ambientalPromises.reference">
-    </label>
-    <textarea name="description" id="description" placeholder="Ingrese una descripcion de los hechos*" (input)="validateTextArea($event)" [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
-</div>
-<hr>
-<div>
-    <h2>COMPROMISOS AMBIENTALES</h2>
-    <div class="container">
-        <div>
-            <h4>COMPROMISO</h4>
-            <select name="ambiental-promise" id="ambiental-promise" [(ngModel)]="denounce.ambientalPromises.ambientalPromise">
-                <option value="agua" selected>Agua</option>
-                <option value="viento">Viento</option>
-                <option value="suelo">Suelo</option>
-                <option value="ruido">Ruido</option>
-            </select>
+        
+        <div class="form-group">
+            <textarea name="description" id="description" 
+                      placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*" 
+                      (input)="validateTextArea($event)" 
+                      [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
         </div>
-        <div>
-            <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
-            <div (click)="processRadio($event)">
-                
-                @for (cause of causes; track $index) {
-                    <label for="{{ cause.id }}">
-                        {{ cause.description }}
-                        <input type="radio" id="{{ cause.id }}" name="{{ cause.id }}" value="{{ $index + 1 }}" [checked]="isChecked($index + 1)">
-                    </label>
-                }
+    </div>
 
+    <hr>
+
+    <div class="environmental-section">
+        <h2>COMPROMISOS AMBIENTALES</h2>
+        
+        <div class="container">
+            <div class="compromise-section">
+                <h4>COMPROMISO</h4>
+                <select name="ambiental-promise" id="ambiental-promise" 
+                        [(ngModel)]="denounce.ambientalPromises.ambientalPromise">
+                    <option value="">Seleccione el tipo de compromiso</option>
+                    <option value="agua">💧 Agua</option>
+                    <option value="viento">🌬️ Aire</option>
+                    <option value="suelo">🌱 Suelo</option>
+                    <option value="ruido">🔊 Ruido</option>
+                </select>
+            </div>
+
+            <div class="causes-section">
+                <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
+                
+                <div class="radio-group" (click)="processRadio($event)">
+                    @for (cause of causes; track $index) {
+                        <label for="{{ cause.id }}">
+                            <input type="radio" 
+                                   id="{{ cause.id }}" 
+                                   name="environmental-cause" 
+                                   value="{{ $index + 1 }}" 
+                                   [checked]="isChecked($index + 1)">
+                            {{ cause.description }}
+                        </label>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<!-- 
+<div class="form-container">
+    <div class="facts-section">
+        <h2>DESCRIPCIÓN DE LOS HECHOS</h2>
+        
+        <div class="form-group">
+            <label for="address">
+                <div class="important">
+                    Dirección
+                    <strong>(*)</strong>
+                </div>
+            </label>
+            <input type="text" id="address" name="address" pattern="{{ addressPattern }}" 
+                   placeholder="Ingrese la dirección del incidente"
+                   [(ngModel)]="denounce.ambientalPromises.address">
+        </div>
+        
+        <div class="form-group">
+            <label for="reference">
+                <div class="important">
+                    Referencia
+                    <strong>(*)</strong>
+                </div>
+            </label>
+            <input type="text" id="reference" name="reference" pattern="{{ textInputPattern }}" 
+                   placeholder="Punto de referencia (cerca de, frente a, etc.)"
+                   [(ngModel)]="denounce.ambientalPromises.reference">
+        </div>
+        
+        <div class="form-group">
+            <textarea name="description" id="description" 
+                      placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*" 
+                      (input)="validateTextArea($event)" 
+                      [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="environmental-section">
+        <h2>COMPROMISOS AMBIENTALES</h2>
+        
+        <div class="container">
+            <div class="compromise-section">
+                <h4>COMPROMISO</h4>
+                <select name="ambiental-promise" id="ambiental-promise" 
+                        [(ngModel)]="denounce.ambientalPromises.ambientalPromise">
+                    <option value="">Seleccione el tipo de compromiso</option>
+                    <option value="agua">💧 Agua</option>
+                    <option value="viento">🌬️ Aire</option>
+                    <option value="suelo">🌱 Suelo</option>
+                    <option value="ruido">🔊 Ruido</option>
+                </select>
+            </div>
+
+            <div class="causes-section">
+                <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
+                <p class="selection-hint">Puede seleccionar múltiples opciones</p>
+                
+                <div class="checkbox-group" (click)="processRadio($event)">
+                    @for (cause of causes; track $index) {
+                        <label for="{{ cause.id }}" class="checkbox-label">
+                            <input type="checkbox" 
+                                   id="{{ cause.id }}" 
+                                   name="environmental-cause" 
+                                   value="{{ $index + 1 }}" 
+                                   [checked]="isChecked($index + 1)">
+                            <span class="checkmark"></span>
+                            <span class="label-text">{{ cause.description }}</span>
+                        </label>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
