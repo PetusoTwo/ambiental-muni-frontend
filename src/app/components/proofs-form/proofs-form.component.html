@@ -1,29 +1,28 @@
-<div>
+<div class="proofs-container">
     <h2>DOCUMENTACIÓN O MUESTRA SUSTENTATORIA</h2>
-    <div class="proof-container">
+    
+    <div class="proof-container" [class.valid-upload]="proof.proofData.length > 0">
         <h3 class="upload-guide-message">Adjuntar evidencia</h3>
+        
         <ul class="upload-list">
-            <li><strong>Formatos validos: PDF, PNG, JPEG, MP4</strong></li>
-            <li><strong>Tamaño maximo: 10MB</strong></li>
+            <li><strong>Formatos válidos: PDF, PNG, JPEG, MP4</strong></li>
+            <li><strong>Tamaño máximo: 10MB</strong></li>
         </ul>
+        
         @if (proof.proofData.length === 0) {
             <label for="proof">
                 <i class="bi bi-file-earmark-richtext"></i>
             </label>
         } @else {
-
             <div class="file-container-wrapper">
                 <div class="file-container">
-
-                    @for (proof of proof.proofData; track $index) {
-                        
+                    @for (proofItem of proof.proofData; track $index) {
                         <div class="file-upload">
                             <div class="cross" (click)="deleteUploadedFile($index)">
                                 <i class="bi bi-x"></i>
                             </div>
                             <div class="file-icon-container">
-    
-                                @switch (proof.proofType) {
+                                @switch (proofItem.proofType) {
                                     @case ('pdf') {
                                         <i class="bi bi-file-pdf"></i>
                                     }
@@ -34,21 +33,23 @@
                                         <i class="bi bi-image"></i>
                                     }
                                 }
-    
                             </div>
-                            <p>{{ proof.name }}</p>
+                            <p>{{ proofItem.name }}</p>
                         </div>
-    
                     }
-    
                 </div>
             </div>
-
         }
+        
         <label for="proof">
             <span>SELECCIONAR ARCHIVO</span>
         </label>
         <input type="file" id="proof" name="proof" [accept]="acceptedTypes" (change)="checkFile($event)">
     </div>
-    <textarea id="proof-description" name="proof-description" (input)="validateTextArea($event)" [(ngModel)]="proof.proofDescription" placeholder="Ingrese una descripcion adicional"></textarea>
+    
+    <textarea id="proof-description" 
+              name="proof-description" 
+              (input)="validateTextArea($event)" 
+              [(ngModel)]="proof.proofDescription" 
+              placeholder="Ingrese una descripción adicional de las evidencias adjuntadas..."></textarea>
 </div>
