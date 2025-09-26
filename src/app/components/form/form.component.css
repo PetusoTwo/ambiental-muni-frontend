@@ -165,6 +165,7 @@ i.bi-check {
     transform: translateY(-50%);
     border-radius: 16px;
     color: black;
+    text-align: center;
     border: 1px solid hsla(0, 0%, 32%, 0.212);
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
 
