@@ -50,10 +50,20 @@ class User extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function verifyUser($email, $password): array | null
+    public function verifyUser(string $email, string $password)
     {
-        $sql = "CALL usp_verifyUser(?,?)";
-        $result = $this->db->query($sql, [$email, $password])->getResultArray();
-        return (empty($result)) ? null : $result[0];
+        $user = $this->where('email', $email)->first();
+        
+        if ($user === null) {
+            return null;
+        }
+
+        // Verify password hash matches
+        if (password_verify($password, $user['password'])) {
+            unset($user['password']); // Remove password from result
+            return $user;
+        }
+
+        return null;
     }
 }

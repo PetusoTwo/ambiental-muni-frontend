@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\AmbientalDenounce\v1;
+namespace App\Controllers\denuncias_ambiental\AmbientalDenounce\v1;
 
 use App\Libraries\AmbientalDenounce\EmailProvider;
 use App\Libraries\AmbientalDenounce\ExportPDF;
@@ -34,56 +34,83 @@ class FormController extends ResourceController
         
     }
 
-    public function saveForm() {
+    public function saveForm() 
+    {
+        try {
+            // Validate input JSON
+            $formData = $this->request->getJSON(true);
+            if (!isset($formData['proof']) || !isset($formData['proof']['proofData'])) {
+                return $this->respond(new Response(false, "Datos del formulario inválidos"), 400);
+            }
 
-        $formData = $this->request->getJSON(assoc: true);
+            // Setup storage paths
+            $projectDir = dirname(getcwd());
+            $storagePath = $projectDir . '/storage/uploads/';
 
-        $files = $formData['proof']['proofData'];
-
-        $projectDir = dirname(getcwd());
-
-        $storagePath = $projectDir . '/storage';
-
-        if (!empty($files)) {
-
-            $tempFiles = array();
-
-            foreach ($files as $file) {
-
-                $fileBuffer = base64_decode($file['data']);
-                $path = $storagePath . $file['proofPath'];
-                file_put_contents($path, $fileBuffer);
-
-                $formatValidator = new FileFormatValidator($file['proofType'], $path);
-
-                array_push($tempFiles, $formatValidator);
-
-                if (!$formatValidator->isValid()) {
-
-                    foreach ($tempFiles as $tempFile) {
-
-                        unlink($tempFile->getPath());
-                    }
-
-                    $response = new Response(false, "Formato invalido en archivo " . $file['name']);
-
-                    return $this->respond($response, 500);
+            // Create storage directory if it doesn't exist
+            if (!is_dir($storagePath)) {
+                if (!mkdir($storagePath, 0777, true)) {
+                    throw new Exception("No se pudo crear el directorio de almacenamiento");
                 }
             }
-        }
 
-        helper('form_helper');
+            $tempFiles = [];
+            $files = $formData['proof']['proofData'];
 
-        try {
+            // Process files if any
+            if (!empty($files)) {
+                foreach ($files as $file) {
+                    // Validate required file data
+                    if (!isset($file['data']) || !isset($file['proofPath']) || !isset($file['proofType'])) {
+                        throw new Exception("Datos de archivo incompletos");
+                    }
 
+                    // Sanitize filename and create full path
+                    $safeFileName = basename($file['proofPath']);
+                    $fullPath = $storagePath . $safeFileName;
+
+                    // Decode and validate base64 content
+                    $fileBuffer = base64_decode($file['data'], true);
+                    if ($fileBuffer === false) {
+                        throw new Exception("Error decodificando archivo: " . $file['name']);
+                    }
+
+                    // Save file
+                    if (file_put_contents($fullPath, $fileBuffer) === false) {
+                        throw new Exception("Error guardando archivo: " . $file['name']);
+                    }
+
+                    // Validate file format
+                    $formatValidator = new FileFormatValidator($file['proofType'], $fullPath);
+                    $tempFiles[] = $formatValidator;
+
+                    if (!$formatValidator->isValid()) {
+                        // Clean up temporary files if validation fails
+                        foreach ($tempFiles as $tempFile) {
+                            @unlink($tempFile->getPath());
+                        }
+                        return $this->respond(new Response(false, 
+                            "Formato inválido en archivo " . $file['name']), 400);
+                    }
+                }
+            }
+
+            // Start database transaction
+            helper('form_helper');
             $db = \Config\Database::connect();
             $db->transException(true)->transStart();
 
-            $generalAspects = $formData['generalAspects'];
-            $previousDenounce = $formData['previousDenounce'];
-            $ambientalPromises = $formData['ambientalPromises'];
-            $proof = $formData['proof'];
-        
+            // Extract form data
+            $generalAspects = $formData['generalAspects'] ?? null;
+            $previousDenounce = $formData['previousDenounce'] ?? null;
+            $ambientalPromises = $formData['ambientalPromises'] ?? null;
+            $proof = $formData['proof'] ?? null;
+
+            if (!$generalAspects || !$previousDenounce || !$ambientalPromises) {
+                throw new Exception("Datos del formulario incompletos");
+            }
+
+            // Get table instances
             $denounceTbl = $db->table('denounce');
             $personTbl = $db->table('person');
             $personDenounceTbl = $db->table('person_denounce');
@@ -91,71 +118,84 @@ class FormController extends ResourceController
             $denounceActionTbl = $db->table('denounce_action');
             $proofTbl = $db->table('proof');
 
+            // Process form data
             $denounceData = getDenounceData($generalAspects, $previousDenounce, $ambientalPromises, $proof);
             $denouncerData = getPersonData($formData['denouncer']);
             $denouncedData = getPersonData($formData['denounced']);
 
-            $denounceTbl->insert($denounceData);
+            // Insert main denounce
+            if (!$denounceTbl->insert($denounceData)) {
+                throw new Exception("Error al guardar la denuncia");
+            }
             $idDenounce = $db->insertID();
-            
-            $personTbl->insert($denouncerData);
+
+            // Insert persons
+            if (!$personTbl->insert($denouncerData)) {
+                throw new Exception("Error al guardar datos del denunciante");
+            }
             $idDenouncer = $db->insertID();
-            
-            $personTbl->insert($denouncedData);
+
+            if (!$personTbl->insert($denouncedData)) {
+                throw new Exception("Error al guardar datos del denunciado");
+            }
             $idDenounced = $db->insertID();
 
+            // Insert person-denounce relationships
             $personDenouncerData = getPersonDenounceData($idDenounce, $idDenouncer, true);
             $personDenouncedData = getPersonDenounceData($idDenounce, $idDenounced, false);
 
             $personDenounceTbl->insert($personDenouncerData);
             $personDenounceTbl->insert($personDenouncedData);
+
+            // Insert initial status
             $denounceActionTbl->insert([
                 "id_denounce" => $idDenounce,
                 "id_denounce_status" => 1,
                 "description" => "Se registro la denuncia"
             ]);
 
+            // Process environmental causes
             foreach ($ambientalPromises['causes'] as $cause) {
-
-                $promise = [
+                $denounceAmbientalCauseTbl->insert([
                     "id_ambiental_cause" => $cause,
                     "id_denounce" => $idDenounce
-                ];
-
-                $denounceAmbientalCauseTbl->insert($promise);
+                ]);
             }
 
-            $files = $proof['proofData'];
-
+            // Process proof files
             if (!empty($files)) {
-
                 foreach ($files as $file) {
-
-                    $proofData = [
+                    $proofTbl->insert([
                         "id_denounce" => $idDenounce,
                         "path" => $file['proofPath']
-                    ];
-
-                    $proofTbl->insert($proofData);
+                    ]);
                 }
             }
 
+            // Send confirmation email
             $email = new EmailProvider();
-
             $emailName = $denouncerData['is_natural_person'] ? $denouncerData['name'] : $denouncerData['trade_name'];
-
             $email->sendEmail($denouncerData['email'], $emailName, $idDenounce, $denounceData['ambiental_promise']);
 
+            // Complete transaction
             $db->transComplete();
 
+            return $this->respond(new Response(true, "Denuncia enviada satisfactoriamente"), 200);
+
         } catch (Exception $e) {
+            // Clean up any temporary files
+            if (!empty($tempFiles)) {
+                foreach ($tempFiles as $tempFile) {
+                    @unlink($tempFile->getPath());
+                }
+            }
 
-            return $this->respond(new Response(false, "Ha ocurrido un error en el servidor, intente de nuevo en unos momentos"), 500);
+            // Log error
+            log_message('error', '[SaveForm] ' . $e->getMessage());
 
+            return $this->respond(new Response(false, 
+                "Ha ocurrido un error en el servidor: " . $e->getMessage()), 500);
         }
-
-        return $this->respond(new Response(true, "Denuncia enviada satisfactoriamente"), 200);
-
     }
 
     public function findDenouncesByOffset() {
