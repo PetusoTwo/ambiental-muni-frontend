@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Evitar bucles si ya estamos en /public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    # Si el archivo/directorio no existe físicamente
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Reescribir todo a public/index.php (front controller de CI4)
+    RewriteRule ^(.*)$ public/index.php/$1 [QSA,L]
+</IfModule>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
