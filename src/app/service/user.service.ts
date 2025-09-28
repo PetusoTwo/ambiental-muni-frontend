@@ -22,7 +22,7 @@ export class UserService {
 
   public login(user: UserDumpData): Observable<never> {
 
-    const userDumpData: UserDumpData = { email: user.email, password: sha512(user.password) };
+    const userDumpData: UserDumpData = { email: user.email, password: user.password };
 
     return this.httpClient.post<UserData>(`${this.BASE_URL}/login`, userDumpData, { withCredentials: true }).pipe(map(
       userData => {
