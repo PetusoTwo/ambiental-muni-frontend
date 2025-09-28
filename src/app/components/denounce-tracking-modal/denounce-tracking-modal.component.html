@@ -1,42 +1,5 @@
 <div class="modal" [ngClass]="{'closed': !show}">
     <div class="popup">
-        <div class="delete-warning-modal" [ngClass]="{'closed': !showDeleteWarningModal}">
-            <div class="head">
-                <h3>Advertencia de eliminacion</h3>
-            </div>
-            <hr>
-            <div class="content">
-                <i class="bi bi-x" (click)="toggleDeleteWarningModal()"></i>
-
-                @switch (deleteResponseStatusCode) {
-                    @case ('IDLE') {
-                        <p>Esta seguro de eliminar el estado de esta denuncia?</p>
-                        <div class="warning-icon-container">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
-                        <button class="btn" (click)="processDelete()">
-                            Si, eliminar
-                        </button>
-                    }
-                    @case ('ERROR') {
-                        <p>Ocurrio un error al momento del eliminar, vuelva a intentar</p>
-                        <div class="warning-icon-container">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
-                        <button class="btn" (click)="processDelete()">
-                            Reintentar eliminacion
-                        </button>
-                    }
-                    @case ('SUCCESS') {
-                        <p>El estado de la denuncia ha sido eliminado exitosamente</p>
-                        <div class="warning-icon-container">
-                            <i class="bi bi-check"></i>
-                        </div>
-                    }
-                }
-
-            </div>
-        </div>
         <div class="head">
             <h3>Estado de denuncia</h3>
         </div>
