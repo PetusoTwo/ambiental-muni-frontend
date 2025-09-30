@@ -26,12 +26,12 @@
 
 #--------------------------------------------------------------------
 
-# CI_ENVIRONMENT = development  # DESCOMENTA
-# AMBIENTAL_DENOUNCE_KEY_JWT=''
-# AMBIENTAL_DENOUNCE_EMAIL_PASSWORD
-# AMBIENTAL_DENOUNCE_EMAIL_DENOUNCE_QUERY_LINK = ''
-# AMBIENTAL_DENOUNCE_EMAIL_HOST = ''
-# AMBIENTAL_DENOUNCE_EMAIL_USERNAME = ''
+#CI_ENVIRONMENT = development  # DESCOMENTAR
+#AMBIENTAL_DENOUNCE_KEY_JWT=NuevaClaveAmbiental2025! # DESCOMENTAR
+#AMBIENTAL_DENOUNCE_EMAIL_PASSWORD = lrcyfopiwlbksvbt # DESCOMENTAR
+#AMBIENTAL_DENOUNCE_EMAIL_DENOUNCE_QUERY_LINK = '' # DESCOMENTAR
+#AMBIENTAL_DENOUNCE_EMAIL_HOST = smtp.gmail.com # DESCOMENTAR
+#AMBIENTAL_DENOUNCE_EMAIL_USERNAME = munijloenlinea@gmail.com # DESCOMENTAR
 
 #--------------------------------------------------------------------
 
@@ -39,7 +39,7 @@
 
 #--------------------------------------------------------------------
 
-# app.baseURL = 'http://localhost/ambiental-muni-frontend/backend' # DESCOMENTA
+#app.baseURL = 'http://localhost/denuncias-ambiental/backend/' # DESCOMENTAR
 
 # If you have trouble with `.`, you could also use `_`.
 
@@ -61,17 +61,17 @@
 
 #--------------------------------------------------------------------
 
-# database.default.hostname = localhost # DESCOMENTA
+#database.default.hostname = localhost  # DESCOMENTAR
 
-# database.default.database = denuncias_ambientales # DESCOMENTA
+#database.default.database = denuncias_ambientales # DESCOMENTAR
 
-# database.default.username = root # DESCOMENTA
+#database.default.username = root # DESCOMENTAR
 
-# database.default.password =  # DESCOMENTA
+#database.default.password =  Rakion2016123! # DESCOMENTAR
 
-# database.default.DBDriver = MySQLi # DESCOMENTA
+#database.default.DBDriver = MySQLi  # DESCOMENTAR
 
-# database.default.DBPrefix = # DESCOMENTA
+#database.default.DBPrefix = 
 
 # database.default.port = 3306
 
@@ -121,6 +121,5 @@
 
 # logger.threshold = 4
 
-# PEGAS AQUI ABAJO LA URL DEL FRONTEN ESTE ES UN EJEMPLO: 
-# LO DESCOMENTAS 
-#FRONTEND_URL = 'http://localhost:4200/'# DESCOMENTA
+
+#FRONTEND_URL = 'http://localhost:4200/' # DESCOMENTAR
