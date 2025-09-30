@@ -17,40 +17,46 @@ class AuthController extends ResourceController
         helper('cookie');
     }
     public function login()
-    {
-        $model = new User();
-        $formData = $this->request->getJSON(assoc: true);
-        $email =  $formData["email"];
-        $password =  $formData["password"];
+{
+    $model = new User();
 
-        try {
+    // Intenta leer JSON primero
+    $formData = $this->request->getJSON(true);
 
-            $data = $model->verifyUser($email, $password);
+    // Si no llega JSON, prueba con POST normal
+    if (!$formData) {
+        $formData = $this->request->getPost();
+    }
 
-            if ($data == null) {
-                $response = new Response(false, "Credenciales ingresadas son invalidas");
-                return $this->respond($response, 500);
-            }
+    $email = $formData["email"] ?? null;
+    $password = $formData["password"] ?? null;
 
-            $payload = array(
-                "email" => $email,
-                "password" => $password,
-                'id' => (int) $data['id'],
-                'name' => $data['name']
-            );
+    log_message('debug', "LOGIN DEBUG - Email recibido: {$email}, Password recibido: {$password}");
 
-            $this->createJWTSessionToken($payload);
+    try {
+        $data = $model->verifyUser($email, $password);
 
-            return $this->respond($payload, 200);
-
-        } catch (Exception $e) {
-
+        if ($data == null) {
             $response = new Response(false, "Credenciales ingresadas son invalidas");
-            return $this->respond($response, 400);
-
+            return $this->respond($response, 500);
         }
 
+        $payload = [
+            "email" => $email,
+            'id'    => (int) $data['id'],
+            'name'  => $data['name']
+        ];
+
+        $this->createJWTSessionToken($payload);
+
+        return $this->respond($payload, 200);
+
+    } catch (Exception $e) {
+        $response = new Response(false, "Error: " . $e->getMessage());
+        return $this->respond($response, 400);
     }
+}
+
 
     public function logout()
     {
