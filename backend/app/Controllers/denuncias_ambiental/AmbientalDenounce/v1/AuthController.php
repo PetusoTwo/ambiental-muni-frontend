@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\AmbientalDenounce\v1;
+namespace App\Controllers\denuncias_ambiental\AmbientalDenounce\v1;
 
 use App\Libraries\AmbientalDenounce\Response;
 use App\Models\denuncias_ambiental\AmbientalDenounce\User;
@@ -59,37 +59,78 @@ class AuthController extends ResourceController
     }
 
 
+    // public function validateSession()
+    // {
+
+    //     if (isset($_COOKIE['token'])) {
+
+    //         try {
+
+    //             $token = JWT::decode($_COOKIE['token'], new Key($_ENV["AMBIENTAL_DENOUNCE_KEY_JWT"], 'HS256'));
+
+    //             $data = [
+    //                 'approval' => true,
+    //                 'userInformation' => [
+    //                     'email' => $token->email,
+    //                     'id' => $token->id,
+    //                     'name' => $token->name
+    //                 ]
+    //             ];
+
+    //             return $this->respond($data, 200);
+
+    //         } catch (Exception $e) {
+
+    //             return $this->respond(['approval' => false], 500);
+
+    //         }
+
+    //     } else {
+
+    //         return $this->respond(['approval' => false], 200);
+    //     }
+
+    // }
+
     public function validateSession()
     {
-
-        if (isset($_COOKIE['token'])) {
-
-            try {
-
-                $token = JWT::decode($_COOKIE['token'], new Key($_ENV["AMBIENTAL_DENOUNCE_KEY_JWT"], 'HS256'));
-
-                $data = [
-                    'approval' => true,
-                    'userInformation' => [
-                        'email' => $token->email,
-                        'id' => $token->id,
-                        'name' => $token->name
-                    ]
-                ];
-
-                return $this->respond($data, 200);
-
-            } catch (Exception $e) {
-
-                return $this->respond(['approval' => false], 500);
-
+        try {
+            if (!isset($_COOKIE['token'])) {
+                return $this->respond([
+                    'success' => false,
+                    'message' => 'No token cookie found'
+                ], 200);
             }
 
-        } else {
+            if (empty($_COOKIE['token'])) {
+                return $this->respond([
+                    'success' => false,
+                    'message' => 'Token cookie is empty'
+                ], 200);
+            }
 
-            return $this->respond(['approval' => false], 200);
+            $token = JWT::decode(
+                $_COOKIE['token'],
+                new Key($_ENV["AMBIENTAL_DENOUNCE_KEY_JWT"], 'HS256')
+            );
+
+            return $this->respond([
+                'success' => true,
+                'approval' => true,
+                'userInformation' => [
+                    'email' => $token->email ?? null,
+                    'id'    => $token->id ?? null,
+                    'name'  => $token->name ?? null
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            return $this->respond([
+                'success' => false,
+                'approval' => false,
+                'message' => $e->getMessage()
+            ], 200);
         }
-
     }
 
     private function createJWTSessionToken(array $payload)
@@ -99,6 +140,16 @@ class AuthController extends ResourceController
 
         $jwt_token = JWT::encode($payload, $secret_key, 'HS256');
 
-        set_cookie("token", $jwt_token, time() + (60 * 180), '', "/", httpOnly: true, secure: false);
+        // Mejor manera en CI4
+        set_cookie([
+            'name'     => 'token',
+            'value'    => $jwt_token,
+            'expire'   => 60 * 180,
+            'httponly' => true,
+            'secure'   => false,
+            'path'     => '/',
+        ]);
     }
+
+    
 }

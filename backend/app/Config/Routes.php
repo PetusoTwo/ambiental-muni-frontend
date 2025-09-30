@@ -1,7 +1,9 @@
 <?php
 
-$routes->group('denunciaambiental', ['namespace' => 'App\Controllers\AmbientalDenounce\v1'], static function ($routes) {
-
+$routes->group('denunciaambiental', ['namespace' => 'App\Controllers\denuncias_ambiental\AmbientalDenounce\v1'], static function ($routes) {
+    $routes->options('(:any)', static function () {
+        return;
+    });
     //GET ROUTES
     $routes->get('findPublicInformationByDenounceId', 'FormController::findPublicInformationByDenounceId');
     $routes->get('findDenounceTracking', 'FormController::findDenounceTracking');
