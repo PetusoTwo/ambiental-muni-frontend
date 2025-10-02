@@ -146,7 +146,8 @@ i.bi-check {
     height: 100vh;
     z-index: 9999;
     transform: translateY(0);
-    background-color: hsla(0, 0%, 0%, 0.637);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
     transition: background-color 1s ease, transform .3s ease-in;
 
     &.closed {
