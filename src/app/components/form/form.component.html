@@ -1,5 +1,42 @@
 <main class="form-layout">
     <div class="global-container">
+        <!-- Indicador de pasos uwu -->
+        <div class="steps-indicator">
+            <div class="step" [ngClass]="{'active': formActualStep === 0, 'completed': formActualStep > 0}">
+                <div class="step-circle">
+                    <i class="bi bi-person" *ngIf="formActualStep >= 0"></i>
+                </div>
+                <span class="step-label">Denunciante</span>
+            </div>
+            
+            <div class="step-connector" [ngClass]="{'completed': formActualStep > 0}"></div>
+            
+            <div class="step" [ngClass]="{'active': formActualStep === 1, 'completed': formActualStep > 1}">
+                <div class="step-circle">
+                    <i class="bi bi-person" *ngIf="formActualStep >= 1"></i>
+                </div>
+                <span class="step-label">Denunciado</span>
+            </div>
+            
+            <div class="step-connector" [ngClass]="{'completed': formActualStep > 1}"></div>
+            
+            <div class="step" [ngClass]="{'active': formActualStep === 2, 'completed': formActualStep > 2}">
+                <div class="step-circle">
+                    <i class="bi bi-clipboard" *ngIf="formActualStep >= 2"></i>
+                </div>
+                <span class="step-label">Detalles</span>
+            </div>
+            
+            <div class="step-connector" [ngClass]="{'completed': formActualStep > 2}"></div>
+            
+            <div class="step" [ngClass]="{'active': formActualStep === 3, 'completed': formActualStep > 3}">
+                <div class="step-circle">
+                    <i class="bi bi-file-text" *ngIf="formActualStep >= 3"></i>
+                </div>
+                <span class="step-label">Resumen</span>
+            </div>
+        </div>
+
         <section [ngClass]="{ 'expand': formActualStep === 1, 'reduce': formActualStep === 4 }">
         
             @if(formActualStep === 4) {
@@ -15,6 +52,7 @@
         </section>
     </div>
 </main>
+
 <div class="error-popup-bg" [ngClass]="{'closed': !openModal}">
     <div class="error-popup">
         <div class="head">
