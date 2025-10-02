@@ -5,22 +5,22 @@
             <label for="hasPreviousDenounce">
                 ¿Has realizado denuncias previas?
                 <div class="switch">
-                    <div class="ball"></div>
                     <input type="radio" id="hasPreviousDenounce" name="has-previous-denounce" (click)="processRadio($event)" [checked]="isChecked('hasPreviousDenounce')">
+                    <div class="ball"></div>
                 </div>
             </label>
             <label for="hasResponseDenounce">
                 ¿Obtuvo respuesta?
                 <div class="switch">
-                    <div class="ball"></div>
                     <input type="radio" id="hasResponseDenounce" name="has-response-denounce" (click)="processRadio($event)" [checked]="isChecked('hasResponseDenounce')">
+                    <div class="ball"></div>
                 </div>
             </label>
             <label for="keepIdentity">
                 ¿Desea que se mantenga en reserva su identidad?
                 <div class="switch">
-                    <div class="ball"></div>
                     <input type="radio" id="keepIdentity" name="keep-identity-denounce" (click)="processRadio($event)" [checked]="isChecked('keepIdentity')">
+                    <div class="ball"></div>
                 </div>
             </label>
         </div>
@@ -34,7 +34,7 @@
                                 ¿Ante que entidades?
                                 <strong>(*)</strong>
                             </div>
-                            <input type="text" id="directed-entity" name="directed-entity" pattern="{{ textInputPattern }}" [(ngModel)]="this.denounce.previousDenounce.directedEntity" [disabled]="!denounce.previousDenounce.hasPreviousDenounce">
+                            <input type="text" id="directed-entity" name="directed-entity" pattern="{{textInputPattern}}" [(ngModel)]="this.denounce.previousDenounce.directedEntity" [disabled]="!denounce.previousDenounce.hasPreviousDenounce" >
                         </label>
                     }
                     @if (denounce.previousDenounce.hasResponseDenounce) {
@@ -43,7 +43,7 @@
                                 ¿Cual fue la respuesta?
                                 <strong>(*)</strong>
                             </div>
-                            <input type="text" id="entity-response" name="entity-response" pattern="{{ textInputPattern }}" [(ngModel)]="this.denounce.previousDenounce.entityResponse" [disabled]="!denounce.previousDenounce.hasResponseDenounce">
+                            <textarea type="text" id="entity-response" name="entity-response" pattern="{{textInputPattern}}" [(ngModel)]="this.denounce.previousDenounce.entityResponse" [disabled]="!denounce.previousDenounce.hasResponseDenounce"></textarea>
                         </label>
                     }
                 </div>
@@ -53,22 +53,23 @@
                 <label for="communication-media">
                     Medio de comunicacion
                     <select name="communication-media" id="communication-media" [(ngModel)]="this.denounce.previousDenounce.communicationMedia">
+                        <option value="" selected>Seleccione un medio</option>
                         <option value="radio">Radio</option>
-                        <option value="redes sociales">Redes Sociales</option>
                         <option value="correo electronico">Email</option>
+                        <option value="redes sociales">Redes Sociales</option>
                         <option value="TV">TV</option>
-                        <option value="internet" selected>Internet</option>
+                        <option value="internet">Internet</option>
                         <option value="otro">Otro</option>
                     </select>
                 </label>
                 <label for="source">
                     Fuente
                     <select name="source" id="source" [(ngModel)]="this.denounce.previousDenounce.source">
+                        <option value="" selected>Seleccione una fuente</option>
                         <option value="revista">Revista</option>
                         <option value="articulo">Articulo</option>
-                        <option value="sitio web" selected>Sitio Web</option>
+                        <option value="sitio web">Sitio Web</option>
                         <option value="entrevista">Entrevista</option>
-                        <option value="otro">Otro</option>
                     </select>
                 </label>
             </div>

@@ -17,66 +17,100 @@
     
     .container {
         &.switchable-container {
-            display: flex;
-            flex-direction: column;
+            /* Grid de 3 columnas horizontalmente */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             
+            /* Responsive para tablets */
+            @media (max-width: 1024px) {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            /* Responsive para móviles */
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
             label {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 15px 20px;
-                background: #f8fafc;
-                border: 2px solid #e2e8f0;
-                border-radius: 12px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-weight: 500;
-                color: #475569;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 20px 15px !important;
+                background: #f8fafc !important;
+                border: 2px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                cursor: pointer !important;
+                transition: all 0.3s ease !important;
+                font-weight: 500 !important;
+                color: #475569 !important;
+                text-align: center !important;
+                min-height: 120px !important;
+                gap: 12px !important;
+                margin-bottom: 0 !important;
+                position: relative !important;
                 
                 &:hover {
-                    background: #f1f5f9;
-                    border-color: #cbd5e1;
-                    transform: translateY(-1px);
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    background: #f1f5f9 !important;
+                    border-color: #cbd5e1 !important;
+                    transform: translateY(-2px) !important;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+                }
+                
+                /* Estado activo cuando el switch está encendido */
+                &.active {
+                    background: linear-gradient(135deg, #e0e7ff, #f0f4ff) !important;
+                    border-color: #6366f1 !important;
+                    color: #3730a3 !important;
+                    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15) !important;
+                    transform: translateY(-2px) !important;
                 }
                 
                 .switch {
-                    position: relative;
-                    width: 50px;
-                    height: 26px;
-                    background: #cbd5e1;
-                    border-radius: 13px;
-                    transition: all 0.3s ease;
-                    
-                    .ball {
-                        position: absolute;
-                        top: 3px;
-                        left: 3px;
-                        width: 20px;
-                        height: 20px;
-                        background: white;
-                        border-radius: 50%;
-                        transition: all 0.3s ease;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                    }
+                    position: relative !important;
+                    width: 54px !important;
+                    height: 30px !important;
+                    background: #cbd5e1 !important;
+                    border-radius: 15px !important;
+                    transition: all 0.3s ease !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    padding: 3px !important;
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
                     
                     input {
-                        opacity: 0;
-                        width: 0;
-                        height: 0;
-                        
-                        &:checked + .ball {
-                            transform: translateX(24px);
-                        }
-                        
-                        &:checked ~ .switch {
-                            background: #4f46e5;
-                        }
+                        opacity: 0 !important;
+                        width: 0 !important;
+                        height: 0 !important;
+                        position: absolute !important;
+                        pointer-events: none !important;
                     }
                     
-                    input:checked ~ & {
-                        background: #4f46e5;
+                    .ball {
+                        position: absolute !important;
+                        top: 3px !important;
+                        left: 3px !important;
+                        width: 24px !important;
+                        height: 24px !important;
+                        background: white !important;
+                        border-radius: 50% !important;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+                        z-index: 2 !important;
+                    }
+                    
+                    /* Estado activo del switch */
+                    &.switch-active {
+                        background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+                        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 12px rgba(99, 102, 241, 0.3) !important;
+                        
+                        .ball {
+                            transform: translateX(24px) !important;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+                        }
                     }
                 }
             }
@@ -94,30 +128,30 @@
             }
             
             label {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                font-weight: 500;
-                color: #374151;
-                margin-bottom: 0;
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
+                font-weight: 500 !important;
+                color: #374151 !important;
+                margin-bottom: 0 !important;
                 
                 select {
-                    width: 100%;
-                    padding: 12px 16px;
-                    border: 2px solid #e2e8f0;
-                    border-radius: 8px;
-                    background-color: white;
-                    color: #374151;
-                    font-size: 14px;
-                    font-weight: 400;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
+                    width: 100% !important;
+                    padding: 12px 16px !important;
+                    border: 2px solid #e2e8f0 !important;
+                    border-radius: 8px !important;
+                    background-color: white !important;
+                    color: #374151 !important;
+                    font-size: 14px !important;
+                    font-weight: 400 !important;
+                    cursor: pointer !important;
+                    transition: all 0.3s ease !important;
                     
                     /* Eliminar scroll personalizado */
-                    appearance: auto;
-                    -webkit-appearance: menulist;
-                    -moz-appearance: menulist;
+                    appearance: auto !important;
+                    -webkit-appearance: menulist !important;
+                    -moz-appearance: menulist !important;
                     
                     /* Override de estilos globales */
                     background-image: none !important;
@@ -126,20 +160,20 @@
                     background-size: initial !important;
                     
                     &:focus {
-                        outline: none;
-                        border-color: #4f46e5;
-                        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+                        outline: none !important;
+                        border-color: #4f46e5 !important;
+                        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
                     }
                     
                     &:hover {
-                        border-color: #cbd5e1;
+                        border-color: #cbd5e1 !important;
                     }
                     
                     /* Estilos para las opciones */
                     option {
-                        padding: 10px;
-                        background-color: white;
-                        color: #374151;
+                        padding: 10px !important;
+                        background-color: white !important;
+                        color: #374151 !important;
                     }
                 }
             }
@@ -150,7 +184,7 @@
 /* Separador */
 hr {
     margin: 30px 0 !important;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #e2e8f0 !important;
 }
 
 /* Contenido - Datos del denunciado */
@@ -158,15 +192,16 @@ hr {
     padding: 0 30px 30px 30px; /* Sin padding superior */
     
     h2 {
-        margin: 0 0 25px 0; /* Sin margen superior */
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1e293b;
+        margin: 0 0 25px 0 !important;
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        color: #1e293b !important;
+        text-align: center !important;
     }
     
     /* El componente hijo manejará su propio espaciado */
     app-person-information-form {
-        display: block;
+        display: block !important;
         
         /* Override cualquier margen superior del componente hijo */
         ::ng-deep .form-container {
@@ -180,54 +215,85 @@ hr {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .previous-denounces-container {
-        padding: 20px 20px 0 20px;
-        
         .container.switchable-container {
-            gap: 15px;
+            grid-template-columns: 1fr !important;
+            gap: 15px !important;
             
             label {
-                padding: 12px 16px;
-                font-size: 14px;
+                min-height: 100px !important;
+                padding: 16px 12px !important;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .previous-denounces-container {
+        padding: 20px 20px 0 20px !important;
+        
+        .container.switchable-container {
+            grid-template-columns: 1fr !important;
+            gap: 15px !important;
+            
+            label {
+                padding: 14px 12px !important;
+                font-size: 14px !important;
+                min-height: 90px !important;
+                
+                .switch {
+                    width: 50px !important;
+                    height: 28px !important;
+                    
+                    .ball {
+                        width: 22px !important;
+                        height: 22px !important;
+                    }
+                    
+                    &.switch-active .ball {
+                        transform: translateX(22px) !important;
+                    }
+                }
             }
         }
         
         .media-container {
-            gap: 15px;
+            gap: 15px !important;
         }
     }
     
     .content {
-        padding: 0 20px 20px 20px;
+        padding: 0 20px 20px 20px !important;
     }
 }
 
 @media (max-width: 480px) {
     .previous-denounces-container {
-        padding: 15px 15px 0 15px;
+        padding: 15px 15px 0 15px !important;
         
         h2 {
-            font-size: 1.25rem;
-            margin-bottom: 20px;
+            font-size: 1.25rem !important;
+            margin-bottom: 20px !important;
         }
         
         .container.switchable-container {
             label {
-                padding: 10px 14px;
-                font-size: 13px;
+                padding: 12px 10px !important;
+                font-size: 13px !important;
+                min-height: 80px !important;
                 
                 .switch {
-                    width: 44px;
-                    height: 24px;
+                    width: 46px !important;
+                    height: 26px !important;
                     
                     .ball {
-                        width: 18px;
-                        height: 18px;
-                        
-                        &:checked {
-                            transform: translateX(20px);
-                        }
+                        width: 20px !important;
+                        height: 20px !important;
+                    }
+                    
+                    &.switch-active .ball {
+                        transform: translateX(20px) !important;
                     }
                 }
             }
@@ -235,11 +301,11 @@ hr {
     }
     
     .content {
-        padding: 0 15px 15px 15px;
+        padding: 0 15px 15px 15px !important;
         
         h2 {
-            font-size: 1.25rem;
-            margin-bottom: 20px;
+            font-size: 1.25rem !important;
+            margin-bottom: 20px !important;
         }
     }
 }
