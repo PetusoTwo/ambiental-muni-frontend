@@ -53,6 +53,7 @@
     </div>
 </main>
 
+<!-- Modal de error -->
 <div class="error-popup-bg" [ngClass]="{'closed': !openModal}">
     <div class="error-popup">
         <div class="head">
@@ -65,6 +66,36 @@
         <hr>
         <div class="footer">
             <button (click)="toggleModal()" id="close-error-popup-btn">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- NUEVO Modal para conocer datos del denunciado -->
+<div class="denounced-question-modal-bg" [ngClass]="{'closed': !showDenouncedQuestionModal}">
+    <div class="denounced-question-modal">
+        <div class="modal-head">
+            <div class="icon-container">
+                <i class="bi bi-question-circle"></i>
+            </div>
+            <h3>Información del Denunciado</h3>
+        </div>
+        
+        <div class="modal-content">
+            <p>¿Conoce los datos completos de la persona o entidad que desea denunciar?</p>
+            <div class="info-text">
+                <small>Si conoce los datos, podrá proporcionar información detallada del denunciado. Si no los conoce, puede continuar con su denuncia sin estos datos.</small>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn-modal btn-no" (click)="handleDenouncedDataQuestion(false)">
+                <i class="bi bi-x-circle"></i>
+                No conozco los datos
+            </button>
+            <button class="btn-modal btn-yes" (click)="handleDenouncedDataQuestion(true)">
+                <i class="bi bi-check-circle"></i>
+                Sí, conozco los datos
+            </button>
         </div>
     </div>
 </div>
