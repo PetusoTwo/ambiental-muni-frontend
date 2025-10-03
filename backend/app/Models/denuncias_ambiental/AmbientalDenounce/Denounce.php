@@ -93,7 +93,6 @@ class Denounce extends Model
             'denounces' => $castedResult,
             'registers' => $realRegister
         ];
-
     }
 
     public function findDetailDenounce(int $id) {
