@@ -51,7 +51,9 @@
         <div class="input-with-action">
             <label for="dni" class="input-label">
                 <span class="label-text">Documento de Identidad
-                <span class="required">*</span>
+                @if (!isDenounced) {
+                    <span class="required">*</span>
+                }
                 </span>
             </label>
             <div class="input-container">
@@ -70,7 +72,9 @@
             <label for="name">
                 <div class="important">
                     Nombres
-                    <strong>(*)</strong>
+                    @if (!isDenounced) {
+                        <strong>(*)</strong>
+                    }
                 </div>
                 <input type="text" id="name" name="name" pattern="{{ namesPattern }}" placeholder="Nombres"
                     [(ngModel)]="naturalPerson.name" [disabled]="hasResponseInNatural" class="form-input">
@@ -81,7 +85,9 @@
             <label for="paternal-surname">
                 <div class="important">
                     Apellido Paterno
-                    <strong>(*)</strong>
+                    @if (!isDenounced) {
+                        <strong>(*)</strong>
+                    }
                 </div>
                 <input type="text" id="paternal-surname" name="paternal-surname" pattern="{{ namesPattern }}"
                     placeholder="Apellido Paterno" [(ngModel)]="naturalPerson.paternalSurname"
@@ -93,7 +99,9 @@
             <label for="mother-surname">
                 <div class="important">
                     Apellido Materno
-                    <strong>(*)</strong>
+                    @if (!isDenounced) {
+                        <strong>(*)</strong>
+                    }
                 </div>
                 <input type="text" id="mother-surname" name="mother-surname" pattern="{{ namesPattern }}"
                     placeholder="Apellido Materno" [(ngModel)]="naturalPerson.motherSurname"
@@ -110,7 +118,9 @@
         <div class="input-with-action">
             <label for="ruc" class="input-label">
                 <span class="label-text">RUC
-                <span class="required">(*)</span>
+                @if (!isDenounced) {
+                    <span class="required">(*)</span>
+                }
                 </span>
             </label>
             <div class="input-container">
@@ -127,7 +137,9 @@
     <div class="input-group">
         <label for="trade-name" class="input-label">
             <span class="label-text">Razón Social
-            <span class="required">(*)</span>
+            @if (!isDenounced) {
+                <span class="required">(*)</span>
+            }
             </span>
         </label>
         <input type="text" id="trade-name" name="trade-name" pattern="{{ tradeNamePattern }}" placeholder="Empresa SAC"
@@ -151,8 +163,9 @@
     <div class="input-group">
         <label for="address" class="input-label">
             <span class="label-text">Dirección
-            <span class="required">(*)</span>
-
+            @if (!isDenounced) {
+                <span class="required">(*)</span>
+            }
             </span>
         </label>
         <input type="text" id="address" name="address" pattern="{{ addressPattern }}"
@@ -170,11 +183,11 @@
 
         <div class="input-group">
             <label for="first-phone" class="input-label">
-                @if (!isDenounced) {
                 <span class="label-text">Celular 1
-                <span class="required">(*)</span>
-                </span>
+                @if (!isDenounced) {
+                    <span class="required">(*)</span>
                 }
+                </span>
             </label>
             <input type="tel" id="first-phone" name="first-phone" pattern="{{ phonePattern }}" placeholder="123456789"
                 [(ngModel)]="person.firstPhone" class="form-input">
@@ -191,13 +204,11 @@
 
     <div class="input-group">
         <label for="email" class="input-label">
-            @if (!isDenounced) {
             <span class="label-text">Correo Electrónico
-            <span class="required">(*)</span>
-
-            </span>
-
+            @if (!isDenounced) {
+                <span class="required">(*)</span>
             }
+            </span>
         </label>
         <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" [(ngModel)]="person.email"
             class="form-input">
