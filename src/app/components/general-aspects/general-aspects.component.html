@@ -1,18 +1,62 @@
-<div>
-    <h2>ASPECTOS GENERALES</h2>
-    <div class="container">
-        <label for="reception-media">
-            Medio de Recepcion de la denuncia
-            <input type="text" id="reception-media" name="reception-media" [value]="denounce.generalAspects.receptionMedia" [disabled]="true">
-        </label>
-        <label for="denounce-date">
-            Fecha de la denuncia
-            <input type="date" id="denounce-date" name="denounce-date" [value]="date" [disabled]="true">
-        </label>
-        <label for="denounce-code">
-            Codigo
-            <input type="text" id="denounce-code" name="denounce-code" [value]="denounce.generalAspects.code" [disabled]="true">
-        </label>
+<div class="general-aspects-container">
+    <div class="section-header">
+        <div class="header-icon">
+            <i class="bi bi-clipboard-data"></i>
+        </div>
+        <h2>ASPECTOS GENERALES</h2>
+    </div>
+    
+    <div class="aspects-grid">
+        <div class="aspect-card">
+            <div class="card-icon">
+                <i class="bi bi-pc-display"></i>
+            </div>
+            <label for="reception-media" class="card-label">
+                <span class="label-title">Medio de Recepción</span>
+                <span class="label-subtitle">Cómo se recibió la denuncia</span>
+            </label>
+            <input 
+                type="text" 
+                id="reception-media" 
+                name="reception-media" 
+                [value]="denounce.generalAspects.receptionMedia" 
+                [disabled]="true"
+                class="readonly-input">
+        </div>
+
+        <div class="aspect-card">
+            <div class="card-icon">
+                <i class="bi bi-calendar-event"></i>
+            </div>
+            <label for="denounce-date" class="card-label">
+                <span class="label-title">Fecha de Denuncia</span>
+                <span class="label-subtitle">Cuándo se realizó</span>
+            </label>
+            <input 
+                type="date" 
+                id="denounce-date" 
+                name="denounce-date" 
+                [value]="date" 
+                [disabled]="true"
+                class="readonly-input">
+        </div>
+
+        <div class="aspect-card">
+            <div class="card-icon">
+                <i class="bi bi-hash"></i>
+            </div>
+            <label for="denounce-code" class="card-label">
+                <span class="label-title">Código</span>
+                <span class="label-subtitle">Identificador único</span>
+            </label>
+            <input 
+                type="text" 
+                id="denounce-code" 
+                name="denounce-code" 
+                [value]="denounce.generalAspects.code" 
+                [disabled]="true"
+                class="readonly-input">
+        </div>
     </div>
 </div>
 <hr>
