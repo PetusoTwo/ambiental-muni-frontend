@@ -1,0 +1,218 @@
+USE denuncias_ambientales;
+
+-- ==============================
+-- usp_findDenounceForPDFById
+-- ==============================
+DROP PROCEDURE IF EXISTS usp_findDenounceForPDFById;
+DELIMITER $$
+
+CREATE PROCEDURE usp_findDenounceForPDFById(IN p_id INT)
+BEGIN
+    SELECT 
+        d.id AS idDenounce,
+        d.code,
+        d.reception_media,
+        d.date,
+        d.has_previous_denounce AS hasPreviousDenounce,
+        d.has_response AS hasResponse,
+        d.directed_entity,
+        d.entity_response,
+        d.comunication_media AS communicationMedia,
+        d.source,
+        d.keep_identity AS keepIdentity,
+        d.address,
+        d.reference,
+        d.facts_description AS factsDescription,
+        d.ambiental_promise AS ambientalPromise,
+        d.proof_description AS proofDescription
+    FROM denounce d
+    WHERE d.id = p_id;
+END$$
+DELIMITER ;
+
+-- ==============================
+-- usp_findDenouncesByOffset
+-- ==============================
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS usp_findDenouncesByOffset$$
+
+CREATE PROCEDURE usp_findDenouncesByOffset (
+    IN p_denouncer_doc_number VARCHAR(11),
+    IN p_denounced_doc_number VARCHAR(11),
+    IN p_date DATE,
+    IN p_denounce_type VARCHAR(35),
+    IN p_offset INT,
+    OUT p_real_registers INT
+)
+BEGIN
+    -- Contar registros que cumplen filtros
+    SELECT COUNT(*) INTO p_real_registers
+    FROM denounce AS D
+    INNER JOIN person_denounce AS PD1 ON D.id = PD1.id_denounce AND PD1.is_affected = 1
+    INNER JOIN person AS P1 ON PD1.id_person = P1.id
+    INNER JOIN person_denounce AS PD2 ON D.id = PD2.id_denounce AND PD2.is_affected = 0
+    INNER JOIN person AS P2 ON PD2.id_person = P2.id
+    WHERE (P1.doc_number = p_denouncer_doc_number COLLATE utf8mb4_general_ci OR p_denouncer_doc_number IS NULL)
+      AND (D.date = COALESCE(p_date, D.date) OR p_date IS NULL)
+      AND ((SELECT DS.type 
+            FROM denounce_action AS DA
+            INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+            WHERE DA.id_denounce = D.id
+            ORDER BY DA.date DESC 
+            LIMIT 1) = p_denounce_type COLLATE utf8mb4_general_ci OR p_denounce_type IS NULL)
+      AND (P2.doc_number = p_denounced_doc_number COLLATE utf8mb4_general_ci OR p_denounced_doc_number IS NULL);
+
+    -- Seleccionar registros con paginación
+    SELECT 
+        D.id AS idDenounce,
+        CASE
+            WHEN P1.is_natural_person = 1 
+                THEN CONCAT(P1.name, ' ', P1.paternal_surname, ' ', P1.mother_surname)
+            WHEN P1.is_natural_person = 0 
+                THEN P1.trade_name
+            ELSE 'Not found denouncer'
+        END AS denouncer,
+        P1.doc_number AS denouncerDocNumber,
+        CASE
+            WHEN P2.is_natural_person = 1 
+                THEN CONCAT(P2.name, ' ', P2.paternal_surname, ' ', P2.mother_surname)
+            WHEN P2.is_natural_person = 0 
+                THEN P2.trade_name
+            ELSE 'Not found denounced'
+        END AS denounced,
+        P2.doc_number AS denouncedDocNumber,
+        D.facts_description AS reason,
+        D.proof_description AS proofDescription,
+        DATE_FORMAT(D.date, '%d-%m-%Y') AS date,
+        (SELECT DS.type 
+         FROM denounce_action AS DA
+         INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+         WHERE DA.id_denounce = D.id
+         ORDER BY DA.date DESC 
+         LIMIT 1) AS state,
+         D.keep_identity AS anonymous
+    FROM 
+        denounce AS D
+    INNER JOIN 
+        person_denounce AS PD1 ON D.id = PD1.id_denounce AND PD1.is_affected = 1
+    INNER JOIN 
+        person AS P1 ON PD1.id_person = P1.id
+    INNER JOIN 
+        person_denounce AS PD2 ON D.id = PD2.id_denounce AND PD2.is_affected = 0
+    INNER JOIN 
+        person AS P2 ON PD2.id_person = P2.id
+    WHERE 
+        (P1.doc_number = p_denouncer_doc_number COLLATE utf8mb4_general_ci OR p_denouncer_doc_number IS NULL)
+        AND (D.date = COALESCE(p_date, D.date) OR p_date IS NULL)
+        AND ((SELECT DS.type 
+              FROM denounce_action AS DA
+              INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+              WHERE DA.id_denounce = D.id
+              ORDER BY DA.date DESC 
+              LIMIT 1) = p_denounce_type COLLATE utf8mb4_general_ci OR p_denounce_type IS NULL)
+        AND (P2.doc_number = p_denounced_doc_number COLLATE utf8mb4_general_ci OR p_denounced_doc_number IS NULL)
+    LIMIT 10 OFFSET p_offset;
+END$$
+
+DELIMITER ;
+-- ==============================
+-- usp_findDetailDenounce
+-- ==============================
+DROP PROCEDURE IF EXISTS usp_findDetailDenounce;
+DELIMITER $$
+
+CREATE PROCEDURE usp_findDetailDenounce(IN p_id INT)
+BEGIN
+    SELECT 
+        d.id AS idDenounce,
+        d.code,
+        d.date,
+        d.has_previous_denounce AS hasPreviousDenounce,
+        d.has_response AS hasResponse,
+        d.keep_identity AS keepIdentity,
+        d.facts_description AS factsDescription,
+        d.ambiental_promise AS ambientalPromise,
+        d.proof_description AS proofDescription
+    FROM denounce d
+    WHERE d.id = p_id;
+END$$
+DELIMITER ;
+
+-- ==============================
+-- usp_updateStateDenounce
+-- ==============================
+DROP PROCEDURE IF EXISTS usp_updateStateDenounce;
+DELIMITER $$
+
+CREATE PROCEDURE usp_updateStateDenounce(
+    IN p_id INT,
+    IN p_newState INT,
+    IN p_description TEXT
+)
+BEGIN
+    INSERT INTO denounce_action(id_denounce, id_denounce_status, description)
+    VALUES (p_id, p_newState, p_description COLLATE utf8mb4_general_ci);
+END$$
+DELIMITER ;
+
+-- ==============================
+-- usp_findDenounceTracking
+-- ==============================
+DROP PROCEDURE IF EXISTS usp_findDenounceTracking;
+DELIMITER $$
+
+CREATE PROCEDURE usp_findDenounceTracking(
+    IN p_id INT,
+    IN p_consultant VARCHAR(20),
+    IN p_showAll BOOLEAN
+)
+BEGIN
+    IF (p_consultant COLLATE utf8mb4_general_ci = 'ADMIN' AND p_showAll) THEN
+        SELECT 
+            da.id AS idTracking,
+            d.id AS idDenounce,
+            ds.type AS status,
+            da.description,
+            da.date
+        FROM denounce_action da
+        INNER JOIN denounce d ON da.id_denounce = d.id
+        INNER JOIN denounce_status ds ON da.id_denounce_status = ds.id
+        WHERE d.id = p_id
+        ORDER BY da.date DESC;
+    ELSE
+        SELECT 
+            d.id AS idDenounce,
+            ds.type AS status,
+            da.description,
+            da.date
+        FROM denounce_action da
+        INNER JOIN denounce d ON da.id_denounce = d.id
+        INNER JOIN denounce_status ds ON da.id_denounce_status = ds.id
+        WHERE d.id = p_id
+        ORDER BY da.date DESC;
+    END IF;
+END$$
+DELIMITER ;
+
+-- ==============================
+-- usp_findPublicInformationByDenounceId
+-- ==============================
+DROP PROCEDURE IF EXISTS usp_findPublicInformationByDenounceId;
+DELIMITER $$
+
+CREATE PROCEDURE usp_findPublicInformationByDenounceId(IN p_id INT)
+BEGIN
+    SELECT 
+        p.id AS idPerson,
+        p.doc_number AS docNumber,
+        p.name,
+        p.paternal_surname AS paternalSurname,
+        p.mother_surname AS motherSurname,
+        p.trade_name AS tradeName,
+        p.is_natural_person AS isNatural
+    FROM person_denounce pd
+    INNER JOIN person p ON pd.id_person = p.id
+    WHERE pd.id_denounce = p_id;
+END$$
+DELIMITER ;
