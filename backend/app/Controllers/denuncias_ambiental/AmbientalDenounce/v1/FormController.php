@@ -129,23 +129,49 @@ class FormController extends ResourceController
             }
             $idDenounce = $db->insertID();
 
-            // Insert persons
+            // Insert denunciante (siempre requerido)
             if (!$personTbl->insert($denouncerData)) {
                 throw new Exception("Error al guardar datos del denunciante");
             }
             $idDenouncer = $db->insertID();
 
-            if (!$personTbl->insert($denouncedData)) {
-                throw new Exception("Error al guardar datos del denunciado");
+            // Insert denunciado SOLO si viene en el formulario
+            $idDenounced = null;
+            if (!empty($formData['denounced']) && !empty($formData['denounced']['name'])) {
+                if (!$personTbl->insert($denouncedData)) {
+                    throw new Exception("Error al guardar datos del denunciado");
+                }
+                $idDenounced = $db->insertID();
             }
-            $idDenounced = $db->insertID();
 
-            // Insert person-denounce relationships
+            // Insert relación del denunciante
             $personDenouncerData = getPersonDenounceData($idDenounce, $idDenouncer, true);
-            $personDenouncedData = getPersonDenounceData($idDenounce, $idDenounced, false);
-
             $personDenounceTbl->insert($personDenouncerData);
-            $personDenounceTbl->insert($personDenouncedData);
+
+            // Insert relación del denunciado solo si existe
+            if ($idDenounced !== null) {
+                $personDenouncedData = getPersonDenounceData($idDenounce, $idDenounced, false);
+                $personDenounceTbl->insert($personDenouncedData);
+            }
+
+
+            // Insert persons
+            // if (!$personTbl->insert($denouncerData)) {
+            //     throw new Exception("Error al guardar datos del denunciante");
+            // }
+            // $idDenouncer = $db->insertID();
+
+            // if (!$personTbl->insert($denouncedData)) {
+            //     throw new Exception("Error al guardar datos del denunciado");
+            // }
+            // $idDenounced = $db->insertID();
+
+            // // Insert person-denounce relationships
+            // $personDenouncerData = getPersonDenounceData($idDenounce, $idDenouncer, true);
+            // $personDenouncedData = getPersonDenounceData($idDenounce, $idDenounced, false);
+
+            // $personDenounceTbl->insert($personDenouncerData);
+            // $personDenounceTbl->insert($personDenouncedData);
 
             // Insert initial status
             $denounceActionTbl->insert([
