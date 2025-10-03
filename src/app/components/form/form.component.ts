@@ -34,35 +34,42 @@ export class FormComponent {
   }
 
   changeStep(): void {
-
-    const result: ValidationError = this._validators[this.formActualStep].validate();
-
+    // Si el usuario eligió no conocer los datos del denunciado y estamos en el paso 2,
+    // no validar el paso 1 (denunciado)
+    const stepToValidate = this.skipDenouncedData && this.formActualStep === 2 ? 0 : this.formActualStep;
+    
+    const result: ValidationError = this._validators[stepToValidate].validate();
+  
     if (!result.success) {
       this.processValidationError(result.error);
       return;
     }
-
+  
     // Si estamos en el paso 0 (denunciante), mostrar el modal para preguntar sobre datos del denunciado
     if (this.formActualStep === 0) {
       this.showDenouncedQuestionModal = true;
       return;
     }
-
+  
     if (this.formActualStep === 3) {
       this.sendForm();
       return;
     };
-
+  
     this.formActualStep++;
-
   }
 
   backStep(): void {
-
     if (this.formActualStep === 0) return;
 
+    // Si estamos saltando el paso del denunciado y retrocedemos desde el paso 2,
+    // ir directamente al paso 0
+    if (this.skipDenouncedData && this.formActualStep === 2) {
+      this.formActualStep = 0;
+      return;
+    }
+
     this.formActualStep--;
-    
   }
 
   // Nueva función para manejar la respuesta del modal de datos del denunciado

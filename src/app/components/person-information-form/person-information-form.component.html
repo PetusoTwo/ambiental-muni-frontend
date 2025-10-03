@@ -1,112 +1,150 @@
 <div class="form-container">
     <div class="form-header">
-        <div class="person-type-selector">
-            <div class="selector-tabs">
-                <div class="tab-option">
-                    <input type="radio" id="natural-person" [(ngModel)]="personType" name="person-type" value="NATURAL" class="tab-input">
-                    <label for="natural-person" class="tab-label">
-                        <div class="tab-content">
-                            <div class="tab-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
-                                </svg>
-                            </div>
-                            <span class="tab-text">Persona Natural</span>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="tab-option">
-                    <input type="radio" id="juridical-person" [(ngModel)]="personType" name="person-type" value="JURIDIC" class="tab-input">
-                    <label for="juridical-person" class="tab-label">
-                        <div class="tab-content">
-                            <div class="tab-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 7V3H2V21H22V7H12ZM6 19H4V17H6V19ZM6 15H4V13H6V15ZM6 11H4V9H6V11ZM6 7H4V5H6V7ZM10 19H8V17H10V19ZM10 15H8V13H10V15ZM10 11H8V9H10V11ZM10 7H8V5H10V7ZM20 19H12V17H14V15H12V13H14V11H12V9H20V19ZM18 11H16V13H18V11ZM18 15H16V17H18V15Z" fill="currentColor"/>
-                                </svg>
-                            </div>
-                            <span class="tab-text">Persona Jurídica</span>
-                        </div>
-                    </label>
-                </div>
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="bi bi-person-vcard"></i>
             </div>
+            <h3>Información Personal</h3>
+            <p>Complete los datos </p>
         </div>
     </div>
 
     <div class="form-content">
-        @if (personType === 'NATURAL') {
-        <div class="form-section animate-fade-in">
-            <ng-container *ngTemplateOutlet="naturalPersonTemplate"></ng-container>
+        <!-- Selector de tipo de persona -->
+        <div class="person-type-selector">
+            <div class="type-option" [class.active]="personType === 'NATURAL'">
+                <input type="radio" id="natural-person" [(ngModel)]="personType" name="person-type" value="NATURAL" (change)="updateIsNaturalEntity()">
+                <label for="natural-person">
+                    <div class="option-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="option-text">
+                        <span class="title">Persona Natural</span>
+                        <span class="subtitle">Individuo o ciudadano</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="type-option" [class.active]="personType === 'JURIDIC'">
+                <input type="radio" id="juridical-person" [(ngModel)]="personType" name="person-type" value="JURIDIC" (change)="updateIsNaturalEntity()">
+                <label for="juridical-person">
+                    <div class="option-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="option-text">
+                        <span class="title">Persona Jurídica</span>
+                        <span class="subtitle">Empresa u organización</span>
+                    </div>
+                </label>
+            </div>
         </div>
-        } @else if (personType === 'JURIDIC') {
-        <div class="form-section animate-fade-in">
-            <ng-container *ngTemplateOutlet="juridicalPersonTemplate"></ng-container>
+
+        <!-- Contenido del formulario -->
+        <div class="form-fields">
+            @if (personType === 'NATURAL') {
+                <div class="form-section animate-fade-in">
+                    <ng-container *ngTemplateOutlet="naturalPersonTemplate"></ng-container>
+                </div>
+            } @else if (personType === 'JURIDIC') {
+                <div class="form-section animate-fade-in">
+                    <ng-container *ngTemplateOutlet="juridicalPersonTemplate"></ng-container>
+                </div>
+            }
         </div>
-        }
     </div>
 </div>
 
 <ng-template #naturalPersonTemplate>
-    <div class="input-group">
-        <div class="input-with-action">
-            <label for="dni" class="input-label">
-                <span class="label-text">Documento de Identidad
+    <!-- Documento de identidad con búsqueda -->
+    <div class="field-group search-field">
+        <label class="field-label">
+            <span class="label-text">
+                <i class="bi bi-card-text"></i>
+                Documento de Identidad
                 @if (!isDenounced) {
                     <span class="required">*</span>
                 }
-                </span>
-            </label>
-            <div class="input-container">
-                <input type="text" id="dni" name="dni" placeholder="12345678" pattern="{{ dniPattern }}"
-                    [(ngModel)]="naturalPerson.dni" class="form-input">
-                <button type="button" class="action-button" (click)="requestInformation()">
-                    <span class="button-text">Buscar</span>
-                    <span class="button-icon">🔍</span>
-                </button>
-            </div>
+            </span>
+        </label>
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="dni" 
+                name="dni" 
+                placeholder="Ingrese DNI" 
+                pattern="{{ dniPattern }}"
+                [(ngModel)]="naturalPerson.dni" 
+                class="form-input">
+            <button type="button" class="search-btn" (click)="requestInformation()">
+                <i class="bi bi-search"></i>
+                <span>Buscar</span>
+            </button>
         </div>
     </div>
 
+    <!-- Nombres -->
     <div class="form-row">
-        <div class="input-group">
-            <label for="name">
-                <div class="important">
+        <div class="field-group">
+            <label class="field-label">
+                <span class="label-text">
+                    <i class="bi bi-person-badge"></i>
                     Nombres
                     @if (!isDenounced) {
-                        <strong>(*)</strong>
+                        <span class="required">*</span>
                     }
-                </div>
-                <input type="text" id="name" name="name" pattern="{{ namesPattern }}" placeholder="Nombres"
-                    [(ngModel)]="naturalPerson.name" [disabled]="hasResponseInNatural" class="form-input">
+                </span>
             </label>
+            <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                pattern="{{ namesPattern }}" 
+                placeholder="Nombres completos"
+                [(ngModel)]="naturalPerson.name" 
+                [disabled]="hasResponseInNatural" 
+                class="form-input">
         </div>
 
-        <div class="input-group">
-            <label for="paternal-surname">
-                <div class="important">
+        <div class="field-group">
+            <label class="field-label">
+                <span class="label-text">
+                    <i class="bi bi-person-badge"></i>
                     Apellido Paterno
                     @if (!isDenounced) {
-                        <strong>(*)</strong>
+                        <span class="required">*</span>
                     }
-                </div>
-                <input type="text" id="paternal-surname" name="paternal-surname" pattern="{{ namesPattern }}"
-                    placeholder="Apellido Paterno" [(ngModel)]="naturalPerson.paternalSurname"
-                    [disabled]="hasResponseInNatural" class="form-input">
+                </span>
             </label>
+            <input 
+                type="text" 
+                id="paternal-surname" 
+                name="paternal-surname" 
+                pattern="{{ namesPattern }}"
+                placeholder="Apellido paterno" 
+                [(ngModel)]="naturalPerson.paternalSurname"
+                [disabled]="hasResponseInNatural" 
+                class="form-input">
         </div>
 
-        <div class="input-group">
-            <label for="mother-surname">
-                <div class="important">
+        <div class="field-group">
+            <label class="field-label">
+                <span class="label-text">
+                    <i class="bi bi-person-badge"></i>
                     Apellido Materno
                     @if (!isDenounced) {
-                        <strong>(*)</strong>
+                        <span class="required">*</span>
                     }
-                </div>
-                <input type="text" id="mother-surname" name="mother-surname" pattern="{{ namesPattern }}"
-                    placeholder="Apellido Materno" [(ngModel)]="naturalPerson.motherSurname"
-                    [disabled]="hasResponseInNatural" class="form-input">
+                </span>
             </label>
+            <input 
+                type="text" 
+                id="mother-surname" 
+                name="mother-surname" 
+                pattern="{{ namesPattern }}"
+                placeholder="Apellido materno" 
+                [(ngModel)]="naturalPerson.motherSurname"
+                [disabled]="hasResponseInNatural" 
+                class="form-input">
         </div>
     </div>
 
@@ -114,103 +152,172 @@
 </ng-template>
 
 <ng-template #juridicalPersonTemplate>
-    <div class="input-group">
-        <div class="input-with-action">
-            <label for="ruc" class="input-label">
-                <span class="label-text">RUC
+    <!-- RUC con búsqueda -->
+    <div class="field-group search-field">
+        <label class="field-label">
+            <span class="label-text">
+                <i class="bi bi-building"></i>
+                RUC
                 @if (!isDenounced) {
-                    <span class="required">(*)</span>
+                    <span class="required">*</span>
                 }
-                </span>
-            </label>
-            <div class="input-container">
-                <input type="text" id="ruc" name="ruc" pattern="{{ rucPattern }}" placeholder="12345678987"
-                    [(ngModel)]="juridicPerson.ruc" class="form-input">
-                <button type="button" class="action-button" (click)="requestInformation()">
-                    <span class="button-text">Buscar</span>
-                    <span class="button-icon">🔍</span>
-                </button>
-            </div>
+            </span>
+        </label>
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="ruc" 
+                name="ruc" 
+                pattern="{{ rucPattern }}" 
+                placeholder="Ingrese RUC"
+                [(ngModel)]="juridicPerson.ruc" 
+                class="form-input">
+            <button type="button" class="search-btn" (click)="requestInformation()">
+                <i class="bi bi-search"></i>
+                <span>Buscar</span>
+            </button>
         </div>
     </div>
 
-    <div class="input-group">
-        <label for="trade-name" class="input-label">
-            <span class="label-text">Razón Social
-            @if (!isDenounced) {
-                <span class="required">(*)</span>
-            }
+    <!-- Razón Social -->
+    <div class="field-group">
+        <label class="field-label">
+            <span class="label-text">
+                <i class="bi bi-building"></i>
+                Razón Social
+                @if (!isDenounced) {
+                    <span class="required">*</span>
+                }
             </span>
         </label>
-        <input type="text" id="trade-name" name="trade-name" pattern="{{ tradeNamePattern }}" placeholder="Empresa SAC"
-            [(ngModel)]="juridicPerson.tradeName" [disabled]="hasResponseInJuridic" class="form-input">
+        <input 
+            type="text" 
+            id="trade-name" 
+            name="trade-name" 
+            pattern="{{ tradeNamePattern }}" 
+            placeholder="Nombre de la empresa"
+            [(ngModel)]="juridicPerson.tradeName" 
+            [disabled]="hasResponseInJuridic" 
+            class="form-input">
+    </div>
+
+    <!-- Representante Legal -->
+    <div class="field-group">
+        <label class="field-label">
+            <span class="label-text">
+                <i class="bi bi-person-check"></i>
+                Representante Legal
+            </span>
+        </label>
+        <input 
+            type="text" 
+            id="legal-representator" 
+            name="legal-representator" 
+            pattern="{{ namesPattern }}"
+            placeholder="Nombre del representante legal" 
+            [(ngModel)]="person.legalRepresentator" 
+            class="form-input">
     </div>
 
     <ng-container *ngTemplateOutlet="sharedInfo"></ng-container>
 </ng-template>
 
 <ng-template #sharedInfo>
-    @if (personType === 'JURIDIC') {
-    <div class="input-group">
-        <label for="legal-representator" class="input-label">
-            <span class="label-text">Representante Legal</span>
-        </label>
-        <input type="text" id="legal-representator" name="legal-representator" pattern="{{ namesPattern }}"
-            placeholder="Nombre Completo del Representante" [(ngModel)]="person.legalRepresentator" class="form-input">
-    </div>
-    }
-
-    <div class="input-group">
-        <label for="address" class="input-label">
-            <span class="label-text">Dirección
-            @if (!isDenounced) {
-                <span class="required">(*)</span>
-            }
+    <!-- Dirección -->
+    <div class="field-group">
+        <label class="field-label">
+            <span class="label-text">
+                <i class="bi bi-geo-alt"></i>
+                Dirección
+                @if (!isDenounced) {
+                    <span class="required">*</span>
+                }
             </span>
         </label>
-        <input type="text" id="address" name="address" pattern="{{ addressPattern }}"
-            placeholder="Calle Virrey Toledo N° 123" [(ngModel)]="person.address" class="form-input">
+        <input 
+            type="text" 
+            id="address" 
+            name="address" 
+            pattern="{{ addressPattern }}"
+            placeholder="Dirección completa" 
+            [(ngModel)]="person.address" 
+            class="form-input">
     </div>
 
+    <!-- Teléfonos -->
     <div class="form-row">
-        <div class="input-group">
-            <label for="fixed-phone" class="input-label">
-                <span class="label-text">Teléfono Fijo</span>
-            </label>
-            <input type="tel" id="fixed-phone" name="fixed-phone" pattern="{{ fixedPhonePattern }}" placeholder="123456"
-                [(ngModel)]="person.fixedPhone" class="form-input">
-        </div>
-
-        <div class="input-group">
-            <label for="first-phone" class="input-label">
-                <span class="label-text">Celular 1
-                @if (!isDenounced) {
-                    <span class="required">(*)</span>
-                }
+        <div class="field-group">
+            <label class="field-label">
+                <span class="label-text">
+                    <i class="bi bi-telephone"></i>
+                    Teléfono Fijo
                 </span>
             </label>
-            <input type="tel" id="first-phone" name="first-phone" pattern="{{ phonePattern }}" placeholder="123456789"
-                [(ngModel)]="person.firstPhone" class="form-input">
+            <input 
+                type="tel" 
+                id="fixed-phone" 
+                name="fixed-phone" 
+                pattern="{{ fixedPhonePattern }}" 
+                placeholder="123456"
+                [(ngModel)]="person.fixedPhone" 
+                class="form-input">
         </div>
 
-        <div class="input-group">
-            <label for="second-phone" class="input-label">
-                <span class="label-text">Celular 2</span>
+        <div class="field-group">
+            <label class="field-label">
+                <span class="label-text">
+                    <i class="bi bi-phone"></i>
+                    Celular 1
+                    @if (!isDenounced) {
+                        <span class="required">*</span>
+                    }
+                </span>
             </label>
-            <input type="tel" id="second-phone" name="second-phone" pattern="{{ phonePattern }}" placeholder="123456789"
-                [(ngModel)]="person.secondPhone" class="form-input">
+            <input 
+                type="tel" 
+                id="first-phone" 
+                name="first-phone" 
+                pattern="{{ phonePattern }}" 
+                placeholder="987654321"
+                [(ngModel)]="person.firstPhone" 
+                class="form-input">
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">
+                <span class="label-text">
+                    <i class="bi bi-phone"></i>
+                    Celular 2
+                </span>
+            </label>
+            <input 
+                type="tel" 
+                id="second-phone" 
+                name="second-phone" 
+                pattern="{{ phonePattern }}" 
+                placeholder="123456789"
+                [(ngModel)]="person.secondPhone" 
+                class="form-input">
         </div>
     </div>
 
-    <div class="input-group">
-        <label for="email" class="input-label">
-            <span class="label-text">Correo Electrónico
-            @if (!isDenounced) {
-                <span class="required">(*)</span>
-            }
+    <!-- Email -->
+    <div class="field-group">
+        <label class="field-label">
+            <span class="label-text">
+                <i class="bi bi-envelope"></i>
+                Correo Electrónico
+                @if (!isDenounced) {
+                    <span class="required">*</span>
+                }
             </span>
         </label>
-        <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" [(ngModel)]="person.email"
+        <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="correo@ejemplo.com" 
+            [(ngModel)]="person.email"
             class="form-input">
     </div>
 </ng-template>
