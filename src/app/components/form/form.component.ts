@@ -24,6 +24,10 @@ export class FormComponent {
   openModal: boolean = false;
   formActualStep = 0;
   denounce: Denounce = createEmptyDenounce();
+  
+  // Nueva propiedad para controlar el modal de datos del denunciado
+  showDenouncedQuestionModal: boolean = false;
+  skipDenouncedData: boolean = false;
 
   constructor() {
     this._validators = getValidators(this.denounce);
@@ -35,6 +39,12 @@ export class FormComponent {
 
     if (!result.success) {
       this.processValidationError(result.error);
+      return;
+    }
+
+    // Si estamos en el paso 0 (denunciante), mostrar el modal para preguntar sobre datos del denunciado
+    if (this.formActualStep === 0) {
+      this.showDenouncedQuestionModal = true;
       return;
     }
 
@@ -53,6 +63,21 @@ export class FormComponent {
 
     this.formActualStep--;
     
+  }
+
+  // Nueva función para manejar la respuesta del modal de datos del denunciado
+  handleDenouncedDataQuestion(knowsData: boolean): void {
+    this.showDenouncedQuestionModal = false;
+    
+    if (knowsData) {
+      // Si conoce los datos, ir al paso 1 (denunciado)
+      this.formActualStep = 1;
+      this.skipDenouncedData = false;
+    } else {
+      // Si no conoce los datos, saltar al paso 2 (detalles)
+      this.formActualStep = 2;
+      this.skipDenouncedData = true;
+    }
   }
 
   sendForm(): void {
