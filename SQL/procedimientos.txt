@@ -1,51 +1,71 @@
-USE denuncias_ambientales;
-
--- ==============================
--- usp_findDenounceForPDFById
--- ==============================
-DROP PROCEDURE IF EXISTS usp_findDenounceForPDFById;
 DELIMITER $$
-
-CREATE PROCEDURE usp_findDenounceForPDFById(IN p_id INT)
-BEGIN
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_findDenounceForPDFById` (IN `p_id` INT)   BEGIN
     SELECT 
-        d.id AS idDenounce,
+        -- Aspectos Generales de la Denuncia
         d.code,
-        d.reception_media,
-        d.date,
+        d.reception_media AS receptionMedia,
+        DATE_FORMAT(d.date, '%d-%m-%Y') AS date,
         d.has_previous_denounce AS hasPreviousDenounce,
-        d.has_response AS hasResponse,
-        d.directed_entity,
-        d.entity_response,
+        d.has_response AS hasResponseDenounce,
+        d.directed_entity AS directedEntity,
+        d.entity_response AS entityResponse,
         d.comunication_media AS communicationMedia,
         d.source,
         d.keep_identity AS keepIdentity,
-        d.address,
-        d.reference,
+        
+        -- Datos del Denunciante
+        P1.is_natural_person AS denouncer_is_natural, 
+        P1.doc_number AS denouncer_doc_number,
+        P1.name AS denouncer_name,
+        P1.paternal_surname AS denouncer_paternal_surname,
+        P1.mother_surname AS denouncer_mother_surname,
+        P1.trade_name AS denouncer_trade_name,
+        P1.legal_representator AS denouncer_legal_representator,
+        P1.address AS denouncer_address,
+        P1.fixed_phone AS denouncer_fixed_phone,
+        P1.first_phone AS denouncer_first_phone,
+        P1.second_phone AS denouncer_second_phone,
+        P1.email AS denouncer_email,
+        
+        -- Datos del Denunciado 
+        P2.is_natural_person AS denounced_is_natural, 
+        P2.doc_number AS denounced_doc_number,
+        P2.name AS denounced_name,
+        P2.paternal_surname AS denounced_paternal_surname,
+        P2.mother_surname AS denounced_mother_surname,
+        P2.trade_name AS denounced_trade_name,
+        P2.legal_representator AS denounced_legal_representator,
+        P2.address AS denounced_address,
+        P2.fixed_phone AS denounced_fixed_phone,
+        P2.first_phone AS denounced_first_phone,
+        
+        -- Hechos y Promesas Ambientales
+        d.address AS facts_address,
+        d.reference AS facts_reference,
         d.facts_description AS factsDescription,
         d.ambiental_promise AS ambientalPromise,
-        d.proof_description AS proofDescription
-    FROM denounce d
-    WHERE d.id = p_id;
+        
+        -- Pruebas y Causas Ambientales
+        d.proof_description AS proofDescription,
+        (SELECT GROUP_CONCAT(dac.id_ambiental_cause SEPARATOR ',') 
+         FROM denounce_ambiental_cause dac 
+         WHERE dac.id_denounce = d.id) AS ambientalCauses
+
+    FROM denounce AS d
+    LEFT JOIN person_denounce AS PD1 ON d.id = PD1.id_denounce AND PD1.is_affected = 1
+    LEFT JOIN person AS P1 ON PD1.id_person = P1.id
+    
+    LEFT JOIN person_denounce AS PD2 ON d.id = PD2.id_denounce AND PD2.is_affected = 0
+    LEFT JOIN person AS P2 ON PD2.id_person = P2.id
+    
+    WHERE d.id = p_id
+    GROUP BY d.id;
 END$$
-DELIMITER ;
 
--- ==============================
--- usp_findDenouncesByOffset
--- ==============================
-DELIMITER $$
-
-DROP PROCEDURE IF EXISTS usp_findDenouncesByOffset$$
-
-CREATE PROCEDURE usp_findDenouncesByOffset (
-    IN p_denouncer_doc_number VARCHAR(11),
-    IN p_denounced_doc_number VARCHAR(11),
-    IN p_date DATE,
-    IN p_denounce_type VARCHAR(35),
-    IN p_offset INT,
-    OUT p_real_registers INT
-)
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_findDenouncesByOffset` (IN `p_denouncer_doc_number` VARCHAR(11), IN `p_denounced_doc_number` VARCHAR(11), IN `p_date` DATE, IN `p_denounce_type` VARCHAR(35), IN `p_offset` INT, OUT `p_real_registers` INT)   BEGIN
     -- Contar registros que cumplen filtros
     SELECT COUNT(*) INTO p_real_registers
     FROM denounce AS D
@@ -115,59 +135,7 @@ BEGIN
     LIMIT 10 OFFSET p_offset;
 END$$
 
-DELIMITER ;
--- ==============================
--- usp_findDetailDenounce
--- ==============================
-DROP PROCEDURE IF EXISTS usp_findDetailDenounce;
-DELIMITER $$
-
-CREATE PROCEDURE usp_findDetailDenounce(IN p_id INT)
-BEGIN
-    SELECT 
-        d.id AS idDenounce,
-        d.code,
-        d.date,
-        d.has_previous_denounce AS hasPreviousDenounce,
-        d.has_response AS hasResponse,
-        d.keep_identity AS keepIdentity,
-        d.facts_description AS factsDescription,
-        d.ambiental_promise AS ambientalPromise,
-        d.proof_description AS proofDescription
-    FROM denounce d
-    WHERE d.id = p_id;
-END$$
-DELIMITER ;
-
--- ==============================
--- usp_updateStateDenounce
--- ==============================
-DROP PROCEDURE IF EXISTS usp_updateStateDenounce;
-DELIMITER $$
-
-CREATE PROCEDURE usp_updateStateDenounce(
-    IN p_id INT,
-    IN p_newState INT,
-    IN p_description TEXT
-)
-BEGIN
-    INSERT INTO denounce_action(id_denounce, id_denounce_status, description)
-    VALUES (p_id, p_newState, p_description COLLATE utf8mb4_general_ci);
-END$$
-DELIMITER ;
-
--- ==============================
--- usp_findDenounceTracking
--- ==============================
-DROP PROCEDURE IF EXISTS usp_findDenounceTracking;
-DELIMITER $$
-
-CREATE PROCEDURE usp_findDenounceTracking(
-    IN p_id INT,
-    IN p_consultant VARCHAR(20),
-    IN p_showAll BOOLEAN
-)
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_findDenounceTracking` (IN `p_id` INT, IN `p_consultant` VARCHAR(20), IN `p_showAll` BOOLEAN)   BEGIN
     IF (p_consultant COLLATE utf8mb4_general_ci = 'ADMIN' AND p_showAll) THEN
         SELECT 
             da.id AS idTracking,
@@ -193,26 +161,72 @@ BEGIN
         ORDER BY da.date DESC;
     END IF;
 END$$
-DELIMITER ;
 
--- ==============================
--- usp_findPublicInformationByDenounceId
--- ==============================
-DROP PROCEDURE IF EXISTS usp_findPublicInformationByDenounceId;
-DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_findDetailDenounce` (IN `p_id_denounce` INT)   BEGIN
+    DECLARE v_proofs TEXT;
 
-CREATE PROCEDURE usp_findPublicInformationByDenounceId(IN p_id INT)
-BEGIN
+    -- Obtener las rutas de las pruebas concatenadas
+    SELECT GROUP_CONCAT(P.path SEPARATOR ',') INTO v_proofs
+    FROM proof AS P
+    WHERE P.id_denounce = p_id_denounce;
+
+    -- Seleccionar el detalle completo de la denuncia
     SELECT 
-        p.id AS idPerson,
-        p.doc_number AS docNumber,
-        p.name,
-        p.paternal_surname AS paternalSurname,
-        p.mother_surname AS motherSurname,
-        p.trade_name AS tradeName,
-        p.is_natural_person AS isNatural
-    FROM person_denounce pd
-    INNER JOIN person p ON pd.id_person = p.id
-    WHERE pd.id_denounce = p_id;
+        D.code COLLATE utf8mb4_general_ci AS code,
+        D.reception_media COLLATE utf8mb4_general_ci AS receptionMedia,
+        D.date,
+        D.has_previous_denounce AS hasPreviousDenounce,
+        D.has_response AS hasResponse,
+        D.directed_entity COLLATE utf8mb4_general_ci AS directedEntity,
+        D.entity_response COLLATE utf8mb4_general_ci AS entityResponse,
+        D.comunication_media COLLATE utf8mb4_general_ci AS comunicationMedia,
+        D.source COLLATE utf8mb4_general_ci AS source,
+        D.keep_identity AS keepIdentity,
+        D.address COLLATE utf8mb4_general_ci AS address,
+        D.reference COLLATE utf8mb4_general_ci AS reference,
+        D.facts_description COLLATE utf8mb4_general_ci AS factsDescription,
+        D.ambiental_promise COLLATE utf8mb4_general_ci AS ambientalPromise,
+        D.proof_description COLLATE utf8mb4_general_ci AS proofDescription,
+        COALESCE(v_proofs, 'NO PRESENTO PRUEBAS') COLLATE utf8mb4_general_ci AS proofs,
+        GROUP_CONCAT(DISTINCT AC.type SEPARATOR ',') COLLATE utf8mb4_general_ci AS ambientalCauses
+    FROM denounce AS D
+    LEFT JOIN denounce_ambiental_cause AS DAC ON D.id = DAC.id_denounce
+    LEFT JOIN ambiental_cause AS AC ON DAC.id_ambiental_cause = AC.id
+    WHERE D.id = p_id_denounce
+    GROUP BY D.id;
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_findProofById` (IN `p_id_denounce` INT)   BEGIN
+    SELECT 
+        PR.path COLLATE utf8mb4_general_ci AS path
+    FROM proof AS PR
+    WHERE PR.id_denounce = p_id_denounce;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_findPublicInformationByDenounceId` (IN `p_id_denounce` INT)   BEGIN
+    SELECT
+        DATE_FORMAT(D.date, '%d-%m-%Y') AS date,
+        CASE
+            WHEN P2.is_natural_person = 1 
+                THEN CONCAT(P2.name, ' ', P2.paternal_surname, ' ', P2.mother_surname)
+            WHEN P2.is_natural_person = 0 
+                THEN P2.trade_name
+            ELSE 'Not found denounced'
+        END COLLATE utf8mb4_general_ci AS denouncedName,
+        P2.doc_number COLLATE utf8mb4_general_ci AS denouncedDocNumber,
+        D.ambiental_promise COLLATE utf8mb4_general_ci AS ambientalPromise,
+        P2.is_natural_person AS isNatural
+    FROM denounce AS D
+    INNER JOIN person_denounce AS PD2 
+        ON D.id = PD2.id_denounce AND PD2.is_affected = 0
+    INNER JOIN person AS P2 
+        ON PD2.id_person = P2.id
+    WHERE D.id = p_id_denounce;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_updateStateDenounce` (IN `p_id` INT, IN `p_newState` INT, IN `p_description` TEXT)   BEGIN
+    INSERT INTO denounce_action(id_denounce, id_denounce_status, description)
+    VALUES (p_id, p_newState, p_description COLLATE utf8mb4_general_ci);
+END$$
+
 DELIMITER ;
