@@ -74,6 +74,7 @@ class Denounce extends Model
 
     }
 
+    // FUNCION PARA EL FILTRADO DE DENUNCIAS CON PAGINACION
     public function findDenouncesByOffset(int | null $denouncerDocNumber, int | null $denouncedDocNumber, string | null $date, string | null $denounceType, int $offset): array {
 
         $sql = 'CALL usp_findDenouncesByOffset(?, ?, ?, ?, ?, @realRegisters)';
@@ -94,7 +95,8 @@ class Denounce extends Model
             'registers' => $realRegister
         ];
     }
-
+    
+    // FUNCION VER LOS DETALLES DE LA DENUNCIA
     public function findDetailDenounce(int $id) {
 
         $sql = 'CALL usp_findDetailDenounce(?)';
