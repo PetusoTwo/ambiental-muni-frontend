@@ -23,7 +23,7 @@ class ExportPDF {
         $mpdf->useTemplate($tpl);
 
         $mpdf->SetFont('Arial', 'N', 8);
-        $mpdf->WriteText(71, 46, $this->data['receptionMedia']);
+        $mpdf->WriteText(71, 46, $this->data['reception_media']);
         $mpdf->WriteText(132, 46.3, $this->data['code']);
         $mpdf->WriteText(71, 53.7, $this->data['date']);
 
@@ -225,8 +225,8 @@ class ExportPDF {
 
     private function fillFactsDataInPDF(Mpdf $mpdf)
     {
-        $mpdf->WriteText(43.6, 225.6, $this->data['factsAddress']);
-        $mpdf->WriteText(43.6, 231.6, $this->data['factsReference']);
+        $mpdf->WriteText(43.6, 225.6, $this->data['address']);
+        $mpdf->WriteText(43.6, 231.6, $this->data['reference']);
         $mpdf->SetXY(15, 236.6);
         $mpdf->MultiCell(185, 4, $this->data['factsDescription'], 0, 'J');
     }
@@ -239,7 +239,7 @@ class ExportPDF {
         $mpdf->MultiCell(180, 4, $proofDescription, 0, 'J');
     }
 
-    private function isNatural(int $docNumber): int {
+    private function isNatural(string $docNumber): int {
         return strlen($docNumber) === 8;
     }
 
