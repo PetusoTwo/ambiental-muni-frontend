@@ -16,214 +16,76 @@ use SebastianBergmann\LinesOfCode\IllogicalValuesException;
 class FormController extends ResourceController
 {
 
-    public function requestPDF() {
+    public function requestPDF()
+{
+    $model = new Denounce();
+    $id = $this->request->getGet('id');
 
-        $model = new Denounce();
-
-        $id = $this->request->getGet('id');
-
-        if (!$id) throw new IllogicalValuesException('No especifico id', 500);
-
-        $pdfData = $model->findDenounceForPDFById($id);
-
-        $export = new ExportPDF($pdfData);
-
-        $export->create();
-
-        $this->response->setContentType('application/pdf');
-        
+    if (!$id) {
+        throw new \RuntimeException('No se especificó un ID de denuncia', 500);
     }
 
-    // public function saveForm() 
-    // {
-    //     try {
-    //         // Validate input JSON
-    //         $formData = $this->request->getJSON(true);
-    //         if (!isset($formData['proof']) || !isset($formData['proof']['proofData'])) {
-    //             return $this->respond(new Response(false, "Datos del formulario inválidos"), 400);
-    //         }
+    $pdfData = $model->findDenounceForPDFById($id);
 
-    //         // Setup storage paths
-    //         $projectDir = dirname(getcwd());
-    //         $storagePath = $projectDir . '/storage/uploads/';
+    if (empty($pdfData)) {
+        throw new \RuntimeException('No se encontraron datos para la denuncia con ID: ' . $id, 404);
+    }
 
-    //         // Create storage directory if it doesn't exist
-    //         if (!is_dir($storagePath)) {
-    //             if (!mkdir($storagePath, 0777, true)) {
-    //                 throw new Exception("No se pudo crear el directorio de almacenamiento");
-    //             }
-    //         }
+    
+    $denouncerName = ($pdfData['denouncer_is_natural'] ?? 1) == 1
+        ? ($pdfData['denouncer_name'] ?? 'S/N') . '-' . ($pdfData['denouncer_paternal_surname'] ?? 'S/A') . '-' . ($pdfData['denouncer_mother_surname'] ?? 'S/A')
+        : ($pdfData['denouncer_trade_name'] ?? 'SIN RAZÓN SOCIAL');
 
-    //         $tempFiles = [];
-    //         $files = $formData['proof']['proofData'];
-
-    //         // Process files if any
-    //         if (!empty($files)) {
-    //             foreach ($files as $file) {
-    //                 // Validate required file data
-    //                 if (!isset($file['data']) || !isset($file['proofPath']) || !isset($file['proofType'])) {
-    //                     throw new Exception("Datos de archivo incompletos");
-    //                 }
-
-    //                 // Sanitize filename and create full path
-    //                 $safeFileName = basename($file['proofPath']);
-    //                 $fullPath = $storagePath . $safeFileName;
-
-    //                 // Decode and validate base64 content
-    //                 $fileBuffer = base64_decode($file['data'], true);
-    //                 if ($fileBuffer === false) {
-    //                     throw new Exception("Error decodificando archivo: " . $file['name']);
-    //                 }
-
-    //                 // Save file
-    //                 if (file_put_contents($fullPath, $fileBuffer) === false) {
-    //                     throw new Exception("Error guardando archivo: " . $file['name']);
-    //                 }
-
-    //                 // Validate file format
-    //                 $formatValidator = new FileFormatValidator($file['proofType'], $fullPath);
-    //                 $tempFiles[] = $formatValidator;
-
-    //                 if (!$formatValidator->isValid()) {
-    //                     // Clean up temporary files if validation fails
-    //                     foreach ($tempFiles as $tempFile) {
-    //                         @unlink($tempFile->getPath());
-    //                     }
-    //                     return $this->respond(new Response(false, 
-    //                         "Formato inválido en archivo " . $file['name']), 400);
-    //                 }
-    //             }
-    //         }
-
-    //         // Start database transaction
-    //         helper('form_helper');
-    //         $db = \Config\Database::connect();
-    //         $db->transException(true)->transStart();
-
-    //         // Extract form data
-    //         $generalAspects = $formData['generalAspects'] ?? null;
-    //         $previousDenounce = $formData['previousDenounce'] ?? null;
-    //         $ambientalPromises = $formData['ambientalPromises'] ?? null;
-    //         $proof = $formData['proof'] ?? null;
-
-    //         if (!$generalAspects || !$previousDenounce || !$ambientalPromises) {
-    //             throw new Exception("Datos del formulario incompletos");
-    //         }
-
-    //         // Get table instances
-    //         $denounceTbl = $db->table('denounce');
-    //         $personTbl = $db->table('person');
-    //         $personDenounceTbl = $db->table('person_denounce');
-    //         $denounceAmbientalCauseTbl = $db->table('denounce_ambiental_cause');
-    //         $denounceActionTbl = $db->table('denounce_action');
-    //         $proofTbl = $db->table('proof');
-
-    //         // Process form data
-    //         $denounceData = getDenounceData($generalAspects, $previousDenounce, $ambientalPromises, $proof);
-    //         $denouncerData = getPersonData($formData['denouncer']);
-    //         $denouncedData = getPersonData($formData['denounced']);
-
-    //         // Insert main denounce
-    //         if (!$denounceTbl->insert($denounceData)) {
-    //             throw new Exception("Error al guardar la denuncia");
-    //         }
-    //         $idDenounce = $db->insertID();
-
-    //         // Insert denunciante (siempre requerido)
-    //         if (!$personTbl->insert($denouncerData)) {
-    //             throw new Exception("Error al guardar datos del denunciante");
-    //         }
-    //         $idDenouncer = $db->insertID();
-
-    //         // Insert denunciado SOLO si viene en el formulario
-    //         $idDenounced = null;
-    //         if (!empty($formData['denounced']) && !empty($formData['denounced']['name'])) {
-    //             if (!$personTbl->insert($denouncedData)) {
-    //                 throw new Exception("Error al guardar datos del denunciado");
-    //             }
-    //             $idDenounced = $db->insertID();
-    //         }
-
-    //         // Insert relación del denunciante
-    //         $personDenouncerData = getPersonDenounceData($idDenounce, $idDenouncer, true);
-    //         $personDenounceTbl->insert($personDenouncerData);
-
-    //         // Insert relación del denunciado solo si existe
-    //         if ($idDenounced !== null) {
-    //             $personDenouncedData = getPersonDenounceData($idDenounce, $idDenounced, false);
-    //             $personDenounceTbl->insert($personDenouncedData);
-    //         }
+    $denouncedName = ($pdfData['denounced_is_natural'] ?? 1) == 1
+        ? ($pdfData['denounced_name'] ?? 'S/N') . '-' . ($pdfData['denounced_paternal_surname'] ?? 'S/A') . '-' . ($pdfData['denounced_mother_surname'] ?? 'S/A')
+        : ($pdfData['denounced_trade_name'] ?? 'SIN RAZÓN SOCIAL');
 
 
-    //         // Insert persons
-    //         // if (!$personTbl->insert($denouncerData)) {
-    //         //     throw new Exception("Error al guardar datos del denunciante");
-    //         // }
-    //         // $idDenouncer = $db->insertID();
+    $dataForPDF = [
+        // Aspectos generales
+        "reception_media" => $pdfData['receptionMedia'] ?? 'NO ESPECIFICA',
+        "code" => $pdfData['code'] ?? 'NO ESPECIFICA',
+        "date" => $pdfData['date'] ?? date('Y-m-d'),
 
-    //         // if (!$personTbl->insert($denouncedData)) {
-    //         //     throw new Exception("Error al guardar datos del denunciado");
-    //         // }
-    //         // $idDenounced = $db->insertID();
+        "denouncerDocNumber" => $pdfData['denouncer_doc_number'] ?? 'SIN DATOS',
+        "denouncer" => $denouncerName, 
+        "denouncerLegalRepresentator" => $pdfData['denouncer_legal_representator'] ?? 'NO ESPECIFICA',
+        "denouncerAddress" => $pdfData['denouncer_address'] ?? 'SIN DATOS',
+        "denouncerFixedPhone" => $pdfData['denouncer_fixed_phone'] ?? 'NO TIENE',
+        "denouncerFirstPhone" => $pdfData['denouncer_first_phone'] ?? 'NO TIENE',
+        "denouncerSecondPhone" => $pdfData['denouncer_second_phone'] ?? 'NO TIENE',
+        "denouncerEmail" => $pdfData['denouncer_email'] ?? 'NO TIENE',
 
-    //         // // Insert person-denounce relationships
-    //         // $personDenouncerData = getPersonDenounceData($idDenounce, $idDenouncer, true);
-    //         // $personDenouncedData = getPersonDenounceData($idDenounce, $idDenounced, false);
+        "denouncedDocNumber" => $pdfData['denounced_doc_number'] ?? 'SIN DATOS',
+        "denounced" => $denouncedName, 
+        "denouncedLegalRepresentator" => $pdfData['denounced_legal_representator'] ?? 'NO ESPECIFICA',
+        "denouncedAddress" => $pdfData['denounced_address'] ?? 'SIN DATOS',
+        "denouncedFixedPhone" => $pdfData['denounced_fixed_phone'] ?? 'NO TIENE',
+        "denouncedFirstPhone" => $pdfData['denounced_first_phone'] ?? 'NO TIENE',
+        "denouncedSecondPhone" => 'NO TIENE',
 
-    //         // $personDenounceTbl->insert($personDenouncerData);
-    //         // $personDenounceTbl->insert($personDenouncedData);
+        "hasPreviousDenounce" => (int) ($pdfData['hasPreviousDenounce'] ?? 0),
+        "hasResponse" => (int) ($pdfData['hasResponseDenounce'] ?? 0),
+        "directedEntity" => $pdfData['directedEntity'] ?? 'NO ESPECIFICA',
+        "entityResponse" => $pdfData['entityResponse'] ?? 'NO ESPECIFICA',
+        "comunicationMedia" => $pdfData['communicationMedia'] ?? 'NO ESPECIFICA',
+        "source" => $pdfData['source'] ?? 'NO ESPECIFICA',
+        "keepIdentity" => (int) ($pdfData['keepIdentity'] ?? 0),
+        "address" => $pdfData['facts_address'] ?? 'NO TIENE',
+        "reference" => $pdfData['facts_reference'] ?? 'NO TIENE',
+        "factsDescription" => $pdfData['factsDescription'] ?? 'NO TIENE',
+        "ambientalPromise" => $pdfData['ambientalPromise'] ?? 'NO TIENE',
+        "proofDescription" => $pdfData['proofDescription'] ?? 'NO ESPECIFICA',
+        "ambientalCauses" => $pdfData['ambientalCauses'] ?? ''
+    ];
 
-    //         // Insert initial status
-    //         $denounceActionTbl->insert([
-    //             "id_denounce" => $idDenounce,
-    //             "id_denounce_status" => 1,
-    //             "description" => "Se registro la denuncia"
-    //         ]);
+    $export = new \App\Libraries\AmbientalDenounce\ExportPDF($dataForPDF);
+    $export->create();
 
-    //         // Process environmental causes
-    //         foreach ($ambientalPromises['causes'] as $cause) {
-    //             $denounceAmbientalCauseTbl->insert([
-    //                 "id_ambiental_cause" => $cause,
-    //                 "id_denounce" => $idDenounce
-    //             ]);
-    //         }
+    $this->response->setContentType('application/pdf');
+}
 
-    //         // Process proof files
-    //         if (!empty($files)) {
-    //             foreach ($files as $file) {
-    //                 $proofTbl->insert([
-    //                     "id_denounce" => $idDenounce,
-    //                     "path" => $file['proofPath']
-    //                 ]);
-    //             }
-    //         }
-
-    //         // Send confirmation email
-    //         $email = new EmailProvider();
-    //         $emailName = $denouncerData['is_natural_person'] ? $denouncerData['name'] : $denouncerData['trade_name'];
-    //         $email->sendEmail($denouncerData['email'], $emailName, $idDenounce, $denounceData['ambiental_promise']);
-
-    //         // Complete transaction
-    //         $db->transComplete();
-
-    //         return $this->respond(new Response(true, "Denuncia enviada satisfactoriamente"), 200);
-
-    //     } catch (Exception $e) {
-    //         // Clean up any temporary files
-    //         if (!empty($tempFiles)) {
-    //             foreach ($tempFiles as $tempFile) {
-    //                 @unlink($tempFile->getPath());
-    //             }
-    //         }
-
-    //         // Log error
-    //         log_message('error', '[SaveForm] ' . $e->getMessage());
-
-    //         return $this->respond(new Response(false, 
-    //             "Ha ocurrido un error en el servidor: " . $e->getMessage()), 500);
-    //     }
-    // }
-
+    
     public function saveForm() 
 {
     try {
