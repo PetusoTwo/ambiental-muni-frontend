@@ -194,99 +194,108 @@
             <h3>Información Detallada de la Denuncia</h3>
         </div>
         <div class="container">
+            <!-- Primera sección: Información básica -->
             <div class="content" [ngClass]="{'viewed': actualModalView !== 0, 'on-view': actualModalView === 0 }">
-                <div class="row">
-                    <h4>Código de Denuncia</h4>
-                    <span>{{ denounceDetails.code }}</span>
+                <div class="info-grid two-columns">
+                    <div class="info-section">
+                        <h4>Código de Denuncia</h4>
+                        <p class="value">{{ denounceDetails.code }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Fecha de Registro</h4>
+                        <p class="value">{{ denounceDetails.date }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Dirección del Hecho</h4>
+                        <p class="value">{{ denounceDetails.address }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Referencia</h4>
+                        <p class="value">{{ denounceDetails.reference }}</p>
+                    </div>
                 </div>
-                <div class="row">
-                    <h4>Fecha de Registro</h4>
-                    <span>{{ denounceDetails.date }}</span>
-                </div>
-                <div class="row">
-                    <h4>Dirección del Hecho</h4>
-                    <span>{{ denounceDetails.address }}</span>
-                </div>
-                <div class="row">
-                    <h4>Referencia</h4>
-                    <span>{{ denounceDetails.reference }}</span>
-                </div>
-                <div class="row facts-description">
+                <div class="info-section">
                     <h4>Descripción del Hecho</h4>
-                    <span>{{ denounceDetails.factsDescription }}</span>
+                    <p class="value highlight">{{ denounceDetails.factsDescription }}</p>
                 </div>
             </div>
+
+            <!-- Segunda sección: Información adicional -->
             <div class="content" [ngClass]="{'viewed': actualModalView === 2, 'on-view': actualModalView === 1, 'unviewed': actualModalView !== 1 }">
-                <div class="row">
-                    <h4>Entidad Dirigida</h4>
-                    <span>{{ denounceDetails.hasPreviousDenounce === 1 ? denounceDetails.directedEntity : 'NO REALIZÓ NINGUNA DENUNCIA PREVIA' }}</span>
-                </div>
-                <div class="row">
-                    <h4>Respuesta de Entidad</h4>
-                    <span>{{ denounceDetails.hasResponse === 1 ? denounceDetails.entityResponse : 'SIN RESPUESTA' }}</span>
-                </div>
-                <div class="row">
-                    <h4>Mantener Identidad Privada</h4>
-                    <span>{{ denounceDetails.keepIdentity === 1 ? 'SÍ' : 'NO' }}</span>
-                </div>
-                <div class="row comunication-media">
-                    <h4>Medio de Comunicación</h4>
-                    <span>{{ denounceDetails.comunicationMedia }}</span>
-                </div>
-                <div class="row source">
-                    <h4>Fuente</h4>
-                    <span>{{ denounceDetails.source }}</span>
+                <div class="info-grid">
+                    <div class="info-section">
+                        <h4>Entidad Dirigida</h4>
+                        <p class="value">{{ denounceDetails.hasPreviousDenounce === 1 ? denounceDetails.directedEntity : 'No realizó ninguna denuncia previa' }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Respuesta de Entidad</h4>
+                        <p class="value">{{ denounceDetails.hasResponse === 1 ? denounceDetails.entityResponse : 'Sin respuesta' }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Mantener Identidad Privada</h4>
+                        <span class="status-badge {{ denounceDetails.keepIdentity === 1 ? 'yes' : 'no' }}">
+                            {{ denounceDetails.keepIdentity === 1 ? 'Sí' : 'No' }}
+                        </span>
+                    </div>
+                    <div class="info-section">
+                        <h4>Medio de Comunicación</h4>
+                        <p class="value">{{ denounceDetails.comunicationMedia }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Fuente</h4>
+                        <p class="value">{{ denounceDetails.source }}</p>
+                    </div>
                 </div>
             </div>
+
+            <!-- Tercera sección: Información ambiental y pruebas -->
             <div class="content" [ngClass]="{'on-view': actualModalView === 2, 'unviewed': actualModalView !== 2 }">
-                <div class="row ambiental-promise">
-                    <h4>Compromiso Ambiental</h4>
-                    <span>{{ denounceDetails.ambientalPromise }}</span>
-                </div>
-                <div class="row">
-                    <h4>Causas Ambientales</h4>
-                    <div class="ambiental-container">
-                        <ul>
-                            @let ambientalCause = denounceDetails.ambientalCauses.split(',');
+                <div class="info-grid">
+                    <div class="info-section">
+                        <h4>Compromiso Ambiental</h4>
+                        <p class="value highlight">{{ denounceDetails.ambientalPromise }}</p>
+                    </div>
+                    <div class="info-section">
+                        <h4>Causas Ambientales</h4>
+                        @let ambientalCause = denounceDetails.ambientalCauses.split(',');
+                        <ul class="ambiental-list">
                             @for (cause of ambientalCause; track $index) {
                                 <li>{{ cause }}</li>
                             }
                         </ul>
                     </div>
-                </div>
-                <div class="row">
-                    <h4>Pruebas Adjuntadas</h4>
-                    <div class="proof-container">
+                    <div class="info-section">
+                        <h4>Pruebas Adjuntadas</h4>
                         @if (denounceDetails.proofs) {
                             @let proofs = denounceDetails.proofs.split(',');
-                            <ul>
+                            <ul class="proof-list">
                                 @for (proof of proofs; track $index) {
                                     @let proofName = proof.split('/')[2];
                                     @let extension = proofName.split('.')[1];
-                                    <li (click)="requestProof(proof)">
+                                    <li class="proof-item" (click)="requestProof(proof)">
                                         @switch (extension) {
                                             @case ('pdf') {
-                                                <i class="bi bi-file-pdf"></i>
+                                                <i class="bi bi-file-pdf-fill"></i>
                                             }
                                             @case ('mp4') {
-                                                <i class="bi bi-camera-video"></i>
+                                                <i class="bi bi-camera-video-fill"></i>
                                             }
                                             @default {
-                                                <i class="bi bi-image"></i>
+                                                <i class="bi bi-image-fill"></i>
                                             }
                                         }
-                                        <p>{{ proofName }}</p>
+                                        <p class="filename">{{ proofName }}</p>
                                     </li>
                                 }
                             </ul>
                         } @else {
-                            <p>No hay pruebas disponibles</p>
+                            <div class="no-proofs">No hay pruebas disponibles</div>
                         }
                     </div>
-                </div>
-                <div class="row proof-description">
-                    <h4>Descripción de las Pruebas</h4>
-                    <span>{{ denounceDetails.proofDescription.length === 0 ? 'NO ESPECIFICA' : denounceDetails.proofDescription }}</span>
+                    <div class="info-section">
+                        <h4>Descripción de las Pruebas</h4>
+                        <p class="value">{{ denounceDetails.proofDescription.length === 0 ? 'No especifica' : denounceDetails.proofDescription }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,14 +316,20 @@
             <h3>Actualizar Estado de la Denuncia</h3>
         </div>
         <div class="content">
-            <h4>Estado Actual <span class="old-state">{{ updateDenounceModalInformation.oldState }}</span></h4>
-            <h4>Nuevo Estado <span class="new-state">{{ updateDenounceModalInformation.newState }}</span></h4>
-            <h4>Descripción de Acciones Realizadas</h4>
-            <textarea 
-                name="description-update-modal" 
-                id="description-update-modal" 
-                [(ngModel)]="updateDenounceModalInformation.description"
-                placeholder="Describa las acciones realizadas o los motivos del cambio de estado..."></textarea>
+            <div class="info-section">
+                <h4>Estado Actual <span class="old-state">{{ updateDenounceModalInformation.oldState }}</span></h4>
+            </div>
+            <div class="info-section">
+                <h4>Nuevo Estado <span class="new-state">{{ updateDenounceModalInformation.newState }}</span></h4>
+            </div>
+            <div class="info-section">
+                <h4>Descripción de Acciones Realizadas</h4>
+                <textarea 
+                    name="description-update-modal" 
+                    id="description-update-modal" 
+                    [(ngModel)]="updateDenounceModalInformation.description"
+                    placeholder="Describa las acciones realizadas o los motivos del cambio de estado..."></textarea>
+            </div>
         </div>
         <div class="footer">
             <button class="close-modal-btn" (click)="toggleShowUpdateDenounceModal()">Cancelar</button>
