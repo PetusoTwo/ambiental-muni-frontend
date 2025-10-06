@@ -1,286 +1,652 @@
-.content {
-    flex: 1 0 100px;
+/* Modal de tracking mejorado */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal.closed {
+    display: none;
+}
+
+.popup {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    max-width: 1000px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-
-    .public-information {
-
-        h4 {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: clamp(14px, 2vw, 18px);
-            margin: 6px 0;
-        }
-        
-        span {
-            font-size: clamp(12px, 2vw, 16px);
-            margin-left: 12px;
-            border-radius: 20px;
-            text-align: center;
-            padding: 2px 14px;
-            cursor: default;
-            background-color: white;
-            font-weight: 100;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        span.person-type {
-            color: white;
-
-            &.natural {
-                background-color: hsl(221, 100%, 57%);
-            }
-
-            &.juridic {
-                background-color: hsl(340, 100%, 56%);
-            }
-        }
-
-    }
-
-    .wrapper {
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding: 0 16px;
-        flex: 1 0 100px;
-
-        &::-webkit-scrollbar-thumb {
-            background-color: black;
-        }
-
-    }
-
+    animation: modalSlideIn 0.3s ease;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    transition: height 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header del modal */
+.popup .head {
+    background: #1e1b4b;
+    color: white;
+    padding: 24px 32px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.popup .head h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    color: white;
+}
+
+/* Separador */
+hr {
+    margin: 0;
+    border: none;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+/* Contenido principal */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+/* Información pública mejorada */
+.public-information {
+    padding: 24px 32px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.public-information h4 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+.public-information span {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    text-align: center;
+    padding: 6px 12px;
+    cursor: default;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    color: #374151;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-left: 16px;
+}
+
+.public-information span.person-type {
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+}
+
+.public-information span.person-type.natural {
+    background: linear-gradient(135deg, #4361ee, #3a56d4);
+    border-color: #4361ee;
+}
+
+.public-information span.person-type.juridic {
+    background: linear-gradient(135deg, #7209b7, #5f1a87);
+    border-color: #7209b7;
+}
+
+/* Wrapper de tabla */
+.wrapper {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    background: white;
+}
+
+.wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.wrapper::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.wrapper::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Tabla mejorada */
 table {
     width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 8px 0;
-
-    thead {
-        position: sticky;
-        top: 0px;
-
-        th {
-
-            font-size: clamp(8px, 2vw, 20px);
-            text-align: center;
-            padding: 10px 8px;
-
-            &:last-child {
-                border-radius: 0 12px 0 0;
-                box-shadow: 5px 0 1px hsl(0, 0%, 95%);
-            }
-    
-            &:first-child {
-                border-radius: 12px 0 0 0;
-                box-shadow: -5px 0 1px hsl(0, 0%, 95%);
-            }
-
-        }
-
-        background-color: black;
-        color: white;
-
-    }
-
-    tbody {
-
-        tr {
-            background-color: white;
-            color: black;
-        }
-
-        td {
-
-            text-align: center;
-            font-size: clamp(8px, 1.5vw, 16px);
-            padding: 8px 6px;
-
-            div.state-container {
-
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                div.state {
-                
-                    border-radius: 20px;
-                    text-align: center;
-                    padding: 2px 6px;
-                    cursor: default;
-                    text-transform: capitalize;
-                    width: 30%;
-    
-                    &.received {
-                        background-color: hsl(45, 100%, 51%);
-                    }
-    
-                    &.registered {
-                        background-color: hsl(354, 100%, 56%);
-                    }
-    
-                    &.served {
-                        background-color: hsl(133, 58%, 41%);
-                        cursor: default;
-                    }
-    
-                    &.registered, &.served {
-                        color: white;
-                    }
-    
-                }
-
-            }
-
-        }
-
-        tr:has(td:nth-child(3)) {
-
-            td:nth-child(2) {
-
-                div.state {
-                    font-size: clamp(8px, 1.5vw, 12px);
-                    width: 90%;
-                }
-
-            }
-
-            td:nth-child(3) {
-                width: 60%;
-                text-align: justify;
-            }
-
-            td:nth-child(4) {
-
-                div.btn-container {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                
-                div.delete-btn {
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-                    width: 24px;
-                    padding: 8px 6px;
-                    border-radius: 12px;
-                    font-size: clamp(16px, 1.5vw, 18px);
-                    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
-                    transition: background-color .2s cubic-bezier(0.445, 0.05, 0.55, 0.95), color .2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
-                    
-                    background-color: hsl(354, 100%, 56%);
-                    color: white;
-
-                    &:hover {
-                        background-color: white;
-                        color: hsl(354, 100%, 56%);
-                    }
-
-                    &:active {
-                        background-color: hsl(354, 100%, 56%);
-                        color: white;
-                    }
-            
-                }
-
-
-            }
-
-        }
-
-    }
-
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    background: white;
+    table-layout: fixed; 
 }
 
-.modal .popup {
+/* Header de tabla */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 
+thead th {
+    background: #1e293b;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 16px 12px;
+    border: none;
     position: relative;
-
-    transition: height .2s cubic-bezier(0.075, 0.82, 0.165, 1);
-
-    @media screen and (height >= 600px) {
-        height: 550px;
-    }
-
-    .delete-warning-modal {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 5;
-        background-color: white;
-        display: flex;
-        flex-direction: column;
-
-        h3 {
-            font-size: clamp(18px, 4vw, 24px);
-        }
-
-        .content {
-            flex: 1 0 100px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            .warning-icon-container {
-
-                i.bi-exclamation-triangle {
-                    color: hsl(354, 100%, 56%);
-                    font-size: 80px;
-                }
-
-                i.bi-check {
-                    color: hsl(135, 85%, 40%);
-                    font-size: 180px;
-                }
-
-            }
-
-            button {
-                background-color: hsl(354, 100%, 56%);
-                color: white;
-                padding: 10px 20px;
-                font-size: clamp(14px, 2.5vw, 18px);
-            }
-
-            p {
-                font-size: clamp(16px, 2.5vw, 22px);
-            }
-
-            position: relative;
-
-            i.bi-x {
-                position: absolute;
-                top: -10px;
-                right: 20px;
-                font-size: 56px;
-                cursor: pointer;
-                color: hsl(0, 0%, 56%);
-                transition: color 0.3s ease;
-
-                &:hover {
-                    color: #ff0000;
-                }
-
-            }
-
-        }
-
-        &.closed {
-            display: none;
-        }
-
-    }
-
 }
 
-@media screen and (height < 600px) { 
-    .modal {
-        align-items: start;
+thead th:first-child {
+    border-radius: 0;
+}
+
+thead th:last-child {
+    border-radius: 0;
+}
+
+/* Filas de tabla */
+tbody tr {
+    background: white;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* Estilos para filas con descripción - CORREGIDO */
+tbody tr td:nth-child(2) .state {
+    font-size: 11px;
+    padding: 6px 16px;
+    min-width: 80px;
+}
+
+/* Para filas que tienen descripción (solo para admin) */
+tbody tr td:nth-child(3) {
+    text-align: left;
+    font-style: italic;
+    color: #6b7280;
+    max-width: 300px;
+    word-wrap: break-word;
+    line-height: 1.5;
+    padding: 16px 12px;
+    vertical-align: middle;
+}
+
+/* Asegurar que todas las celdas se muestren correctamente */
+tbody td {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    padding: 16px 12px;
+    vertical-align: middle;
+    border: none;
+    display: table-cell; /* Forzar visualización */
+}
+
+/* Columna de descripción alineada a la izquierda */
+tbody td:nth-child(3) {
+    text-align: left !important;
+}
+
+/* Columna de acciones centrada */
+tbody td:nth-child(4) {
+    text-align: center !important;
+}
+
+/* Contenedor de estado mejorado */
+.state-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.state {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    text-align: center;
+    padding: 6px 16px;
+    cursor: default;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+/* Definir anchos específicos para las columnas */
+thead th:nth-child(1) { /* Fecha y Hora */
+    width: 25%;
+}
+
+thead th:nth-child(2) { /* Estado */
+    width: 20%;
+}
+
+thead th:nth-child(3) { /* Descripción */
+    width: 40%;
+}
+
+thead th:nth-child(4) { /* Acciones */
+    width: 15%;
+}
+
+/* Para vista de civil (solo 2 columnas) */
+tbody tr:not(:has(td:nth-child(3))) td:nth-child(1) {
+    width: 50%;
+}
+
+tbody tr:not(:has(td:nth-child(3))) td:nth-child(2) {
+    width: 50%;
+}
+
+/* Responsive mejorado */
+@media screen and (max-width: 768px) {
+    .popup {
+        margin: 10px;
+        max-height: 95vh;
     }
+    
+    .public-information {
+        padding: 20px;
+    }
+    
+    .public-information h4 {
+        font-size: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .public-information span {
+        margin-left: 0;
+        font-size: 13px;
+    }
+    
+    table {
+        font-size: 12px;
+        table-layout: auto; /* En móvil permitir ajuste automático */
+    }
+    
+    thead th {
+        padding: 12px 8px;
+        font-size: 11px;
+    }
+    
+    tbody td {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+    
+    .state {
+        font-size: 9px;
+        padding: 4px 8px;
+        min-width: 60px;
+    }
+    
+    /* Ajustar anchos de columna en móvil */
+    thead th:nth-child(1) { width: 30%; }
+    thead th:nth-child(2) { width: 25%; }
+    thead th:nth-child(3) { width: 35%; }
+    thead th:nth-child(4) { width: 10%; }
+}
+
+@media screen and (max-width: 480px) {
+    .popup {
+        margin: 5px;
+        max-height: 98vh;
+    }
+    
+    .popup .head,
+    .popup .footer {
+        padding: 16px 20px;
+    }
+    
+    .public-information {
+        padding: 16px;
+    }
+    
+    .delete-warning-modal .content {
+        padding: 30px 20px;
+    }
+    
+    .delete-warning-modal .content p {
+        font-size: 14px;
+    }
+    
+    .warning-icon-container i.bi-exclamation-triangle {
+        font-size: 60px;
+    }
+    
+    .warning-icon-container i.bi-check {
+        font-size: 80px;
+    }
+    
+    /* Ocultar descripción en pantallas muy pequeñas y ajustar layout */
+    thead th:nth-child(3),
+    tbody td:nth-child(3) {
+        display: none;
+    }
+    
+    thead th:nth-child(1) { width: 40%; }
+    thead th:nth-child(2) { width: 35%; }
+    thead th:nth-child(4) { width: 25%; }
+}
+
+/* Footer del modal */
+.popup .footer {
+    padding: 20px 32px;
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.close-modal-btn {
+    padding: 12px 24px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    min-width: 120px;
+}
+
+.close-modal-btn:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* Modal de advertencia de eliminación */
+.delete-warning-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 15;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease;
+}
+
+.delete-warning-modal.closed {
+    display: none;
+}
+
+.delete-warning-modal .head {
+    background: #dc3545;
+    color: white;
+    padding: 24px 32px;
+    text-align: center;
+}
+
+.delete-warning-modal .head h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.delete-warning-modal .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    background: #ffffff;
+}
+
+.delete-warning-modal .content p {
+    font-size: 16px;
+    font-weight: 500;
+    color: #374151;
+    margin: 0 0 30px 0;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+.warning-icon-container {
+    margin: 20px 0 30px 0;
+}
+
+.warning-icon-container i.bi-exclamation-triangle {
+    color: #dc3545;
+    font-size: 80px;
+    filter: drop-shadow(0 4px 8px rgba(220, 53, 69, 0.3));
+}
+
+.warning-icon-container i.bi-check {
+    color: #198754;
+    font-size: 100px;
+    filter: drop-shadow(0 4px 8px rgba(25, 135, 84, 0.3));
+    animation: checkSuccess 0.8s ease-out;
+}
+
+@keyframes checkSuccess {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.delete-warning-modal .content button {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    color: white;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.delete-warning-modal .content button:hover {
+    background: linear-gradient(135deg, #b02a37, #8b1e2b);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+}
+
+/* Botón de cerrar */
+.delete-warning-modal .content i.bi-x {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-size: 32px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f3f4f6;
+}
+
+.delete-warning-modal .content i.bi-x:hover {
+    color: #dc3545;
+    background: #fee2e2;
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .popup {
+        margin: 10px;
+        max-height: 95vh;
+    }
+    
+    .public-information {
+        padding: 20px;
+    }
+    
+    .public-information h4 {
+        font-size: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .public-information span {
+        margin-left: 0;
+        font-size: 13px;
+    }
+    
+    table {
+        font-size: 12px;
+        table-layout: auto; /* En móvil permitir ajuste automático */
+    }
+    
+    thead th {
+        padding: 12px 8px;
+        font-size: 11px;
+    }
+    
+    tbody td {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+    
+    .state {
+        font-size: 9px;
+        padding: 4px 8px;
+        min-width: 60px;
+    }
+    
+    /* Ajustar anchos de columna en móvil */
+    thead th:nth-child(1) { width: 30%; }
+    thead th:nth-child(2) { width: 25%; }
+    thead th:nth-child(3) { width: 35%; }
+    thead th:nth-child(4) { width: 10%; }
+}
+
+@media screen and (max-width: 480px) {
+    .popup {
+        margin: 5px;
+        max-height: 98vh;
+    }
+    
+    .popup .head,
+    .popup .footer {
+        padding: 16px 20px;
+    }
+    
+    .public-information {
+        padding: 16px;
+    }
+    
+    .delete-warning-modal .content {
+        padding: 30px 20px;
+    }
+    
+    .delete-warning-modal .content p {
+        font-size: 14px;
+    }
+    
+    .warning-icon-container i.bi-exclamation-triangle {
+        font-size: 60px;
+    }
+    
+    .warning-icon-container i.bi-check {
+        font-size: 80px;
+    }
+    
+    /* Ocultar descripción en pantallas muy pequeñas y ajustar layout */
+    thead th:nth-child(3),
+    tbody td:nth-child(3) {
+        display: none;
+    }
+    
+    thead th:nth-child(1) { width: 40%; }
+    thead th:nth-child(2) { width: 35%; }
+    thead th:nth-child(4) { width: 25%; }
 }
