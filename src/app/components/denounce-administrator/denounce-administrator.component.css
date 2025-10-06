@@ -839,6 +839,100 @@ tbody td:last-child {
     background: #1e293b !important;
 }
 
+/* Modal de actualización de estado */
+.update-denounce-modal .popup {
+    max-width: 600px;
+}
+
+.update-denounce-modal .popup .container {
+    display: none;
+}
+
+.update-denounce-modal .popup .content {
+    position: static;
+    transform: none;
+    height: auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    opacity: 1;
+    pointer-events: all;
+    overflow: visible;
+}
+
+.update-denounce-modal .info-section h4 {
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 1;
+}
+
+.update-denounce-modal .info-section .value {
+    margin: 0;
+}
+
+/* Estados de modal */
+.old-state {
+    background: #fef2f2 !important;
+    color: #dc2626 !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #fecaca !important;
+    letter-spacing: 0.5px;
+}
+
+.new-state {
+    background: #f0fdf4 !important;
+    color: #16a34a !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #bbf7d0 !important;
+    letter-spacing: 0.5px;
+}
+
+/* Textarea mejorado */
+.update-denounce-modal textarea {
+    width: 100% !important;
+    min-height: 120px !important;
+    padding: 16px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    color: #374151 !important;
+    resize: vertical !important;
+    transition: all 0.2s ease !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+.update-denounce-modal textarea:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.update-denounce-modal textarea::placeholder {
+    color: #9ca3af !important;
+    font-weight: 400 !important;
+}
+
 /* Modal de actualización de estado - Footer específico */
 .update-denounce-modal .popup .footer {
     gap: 32px; /* Más espacio para el modal de actualización */
