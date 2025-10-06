@@ -1,41 +1,80 @@
-<main class="query-layout">
-    <section class="query-container" (keyup.enter)="getDenounceTrack()">
-        <h1>Consultar Denuncia</h1>
-        <div class="input-container">
-            <label for="query-id">Id de la Denuncia</label>
-            <input type="text" id="query-id" name="query-id" placeholder="Ingrese el ID de la denuncia" [(ngModel)]="idDenounce">
+<main class="query-layout" (keyup.enter)="getDenounceTrack()">
+
+    <!-- BUSCADOR (ARRIBA) -->
+    <section class="search-card">
+        <div class="search-head">
+            <h1>Consultar denuncia</h1>
+            <p class="muted">Introduce el identificador de la denuncia para ver su seguimiento</p>
         </div>
-        <div class="btn-container">
-            <button class="btn" (click)="getDenounceTrack()">Consultar</button>
+
+        <div class="search-body">
+            <label for="query-id" class="label-inline">Id de la Denuncia</label>
+            <div class="input-row">
+                <input
+                    type="text"
+                    id="query-id"
+                    name="query-id"
+                    placeholder="Ej. 10"
+                    [(ngModel)]="idDenounce"
+                    aria-label="Id de la denuncia">
+                <div class="input-actions">
+                    <button class="btn primary" (click)="getDenounceTrack()" aria-label="Consultar">
+                        <i class="bi bi-search" aria-hidden="true"></i> Consultar
+                    </button>
+                    
+                </div>
+            </div>
         </div>
+
+
     </section>
-    <section class="table-container">
-        <div class="wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha y Hora</th>
-                        <th>Estado</th>
-                        <th>Accion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (info of denouncesInformation; track $index) {
+
+    <!-- RESULTADOS (ABAJO) -->
+    <section class="results-card">
+        <header class="results-header">
+            <h2>Resultados</h2>
+            <div class="results-meta">
+                <span class="count" *ngIf="denouncesInformation?.length">Total: {{ denouncesInformation.length }}</span>
+            </div>
+        </header>
+
+        <div class="results-body">
+            <div class="table-wrapper">
+                <table class="results-table" role="table" aria-label="Resultados de seguimiento">
+                    <thead>
                         <tr>
-                            <td>{{ info.date }}</td>
-                            <td>
-                                <div class="state-container">
-                                    <div class="state {{ setStateStyle(info.state) }}">{{ info.state.toLowerCase() }}</div>
-                                </div>
-                            </td>
-                            <td>
-                                <button (click)="trackingModal.prepareTrackingModal(info.idDenounce)" >Ver mas informacion</button>
-                            </td>
+                            <th scope="col">Fecha y Hora</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Acción</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @for (info of denouncesInformation; track $index) {
+                            <tr>
+                                <td data-label="Fecha y Hora">{{ info.date }}</td>
+                                <td data-label="Estado">
+                                    <div class="state-container">
+                                        <div class="state {{ setStateStyle(info.state) }}">{{ info.state.toLowerCase() }}</div>
+                                    </div>
+                                </td>
+                                <td data-label="Acción">
+                                    <button class="btn small" (click)="trackingModal.prepareTrackingModal(info.idDenounce)">
+                                        Ver detalles
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        @if (!denouncesInformation || denouncesInformation.length === 0) {
+                            <tr class="empty-row">
+                                <td colspan="3" class="empty">No se encontraron resultados.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
+
 </main>
-<app-denounce-tracking-modal [consultant]="consultant" ></app-denounce-tracking-modal>
+
+<app-denounce-tracking-modal [consultant]="consultant"></app-denounce-tracking-modal>
