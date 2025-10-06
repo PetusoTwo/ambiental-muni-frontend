@@ -1,5 +1,6 @@
 <?php
-
+$routes->get('dni/(:num)', 'ConsultaApi::buscarDNI/$1');
+$routes->get('ruc/(:num)', 'ConsultaApi::buscarRUC/$1');
 $routes->group('denunciaambiental', ['namespace' => 'App\Controllers\denuncias_ambiental\AmbientalDenounce\v1'], static function ($routes) {
     $routes->options('(:any)', static function () {
         return;
