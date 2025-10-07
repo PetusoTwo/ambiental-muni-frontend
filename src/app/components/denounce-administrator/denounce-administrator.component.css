@@ -355,12 +355,15 @@ tbody td:last-child {
 
 .state.registered {background: linear-gradient(135deg,#4744ef,#461cb9) !important;
     color: black !important;
+    margin-bottom:8px;
 }
 .state.received {
     background: linear-gradient(135deg,#f59e0b,#f97316) !important;
+    margin-bottom:8px;
     color: black !important;}
 .state.served {
     background: linear-gradient(135deg,#10b926,#059618) !important;
+    margin-bottom:8px;
     color: black !important;
 }
 
