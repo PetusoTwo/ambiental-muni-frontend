@@ -126,36 +126,6 @@ export class PersonInformationFormComponent implements AfterContentInit {
     });
   }
 
-  getPersonData(): any {
-    if (this.personType === PersonType.NATURAL) {
-      return {
-        type: 'NATURAL',
-        dni: this.naturalPerson.dni,
-        name: this.naturalPerson.name,
-        paternalSurname: this.naturalPerson.paternalSurname,
-        motherSurname: this.naturalPerson.motherSurname,
-        address: this.person.address,
-        fixedPhone: this.person.fixedPhone,
-        firstPhone: this.person.firstPhone,
-        secondPhone: this.person.secondPhone,
-        email: this.person.email,
-        legalRepresentator: this.person.legalRepresentator
-      };
-    } else {
-      return {
-        type: 'JURIDIC',
-        ruc: this.juridicPerson.ruc,
-        tradeName: this.juridicPerson.tradeName,
-        address: this.person.address,
-        fixedPhone: this.person.fixedPhone,
-        firstPhone: this.person.firstPhone,
-        secondPhone: this.person.secondPhone,
-        email: this.person.email,
-        legalRepresentator: this.person.legalRepresentator
-      };
-    }
-  }
-
 }
 
 export enum PersonType {

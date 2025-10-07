@@ -148,12 +148,6 @@
                                              title="Ver historial">
                                             <i class="bi bi-card-checklist"></i>
                                         </div>
-                                        <!-- NUEVO BOTÓN -->
-                                        <div class="action-btn add-denounced-btn" 
-                                             (click)="openAddDenouncedModal(denounce.idDenounce)"
-                                             title="Agregar denunciado">
-                                            <i class="bi bi-person-plus"></i>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -349,13 +343,5 @@
         </div>
     </div>
 </div> 
-
-<app-person-information-modal
-    [showModal]="showAddDenouncedModal"
-    [modalTitle]="'Agregar Denunciado'"
-    [denounceId]="selectedDenounceIdForDenounced"
-    (modalClosed)="closeAddDenouncedModal()"
-    (personAdded)="onDenouncedAdded($event)">
-</app-person-information-modal>
 
 <app-denounce-tracking-modal [consultant]="consultant" (stateUpdate)="processDenounceStateUpdate($event)"></app-denounce-tracking-modal>
