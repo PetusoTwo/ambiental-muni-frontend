@@ -353,20 +353,15 @@ tbody td:last-child {
     border: 1px solid transparent !important;
 }
 
-.state.registered {
-    background: linear-gradient(135deg, var(--error-color), #b02a37) !important;
+.state.registered {background: linear-gradient(135deg,#4744ef,#461cb9) !important;
     color: rgb(2, 255, 137) !important;
 }
-
 .state.received {
-    background: linear-gradient(135deg, var(--warning-color), #e8590c) !important;
-    color: rgb(251, 255, 0) !important;
-}
-
+    background: linear-gradient(135deg,#f59e0b,#f97316) !important;
+    color: rgb(251, 255, 0) !important;}
 .state.served {
-    background: linear-gradient(135deg, var(--success-color), #146c43) !important;
+    background: linear-gradient(135deg,#10b926,#059618) !important;
     color: rgb(76, 0, 255) !important;
-    cursor: default !important;
 }
 
 .state:hover:not(.served) {

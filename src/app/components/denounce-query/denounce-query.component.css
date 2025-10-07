@@ -364,8 +364,8 @@ main.query-layout {
 }
 
 .state.received { background: linear-gradient(135deg,#f59e0b,#f97316); }
-.state.registered { background: linear-gradient(135deg,#ef4444,#b91c1c); }
-.state.served { background: linear-gradient(135deg,#10b981,#059669); }
+.state.registered { background: linear-gradient(135deg,#4744ef,#461cb9); }
+.state.served { background: linear-gradient(135deg,#10b926,#059618); }
 
 /* Empty row style */
 .empty-row td.empty {
