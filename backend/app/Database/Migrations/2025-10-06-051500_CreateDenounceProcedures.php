@@ -8,29 +8,49 @@ class CreateDenounceProcedures extends Migration
 {
     public function up()
     {
-        // --- Procedimiento: usp_findDenounceForPDFById ---
+        // --- Procedimiento: usp_findDenounceForPDFById --- (VERSIÓN CORREGIDA CON ANY_VALUE)
         $this->db->query("DROP PROCEDURE IF EXISTS `usp_findDenounceForPDFById`");
         $sql1 = <<<SQL
         CREATE PROCEDURE `usp_findDenounceForPDFById` (IN `p_id` INT)
         BEGIN
             SELECT 
-                d.code, d.reception_media AS receptionMedia, DATE_FORMAT(d.date, '%d-%m-%Y') AS date,
-                d.has_previous_denounce AS hasPreviousDenounce, d.has_response AS hasResponseDenounce,
-                d.directed_entity AS directedEntity, d.entity_response AS entityResponse,
-                d.comunication_media AS communicationMedia, d.source, d.keep_identity AS keepIdentity,
-                P1.is_natural_person AS denouncer_is_natural, P1.doc_number AS denouncer_doc_number,
-                P1.name AS denouncer_name, P1.paternal_surname AS denouncer_paternal_surname,
-                P1.mother_surname AS denouncer_mother_surname, P1.trade_name AS denouncer_trade_name,
-                P1.legal_representator AS denouncer_legal_representator, P1.address AS denouncer_address,
-                P1.fixed_phone AS denouncer_fixed_phone, P1.first_phone AS denouncer_first_phone,
-                P1.second_phone AS denouncer_second_phone, P1.email AS denouncer_email,
-                P2.is_natural_person AS denounced_is_natural, P2.doc_number AS denounced_doc_number,
-                P2.name AS denounced_name, P2.paternal_surname AS denounced_paternal_surname,
-                P2.mother_surname AS denounced_mother_surname, P2.trade_name AS denounced_trade_name,
-                P2.legal_representator AS denounced_legal_representator, P2.address AS denounced_address,
-                P2.fixed_phone AS denounced_fixed_phone, P2.first_phone AS denounced_first_phone,
-                d.address AS facts_address, d.reference AS facts_reference, d.facts_description AS factsDescription,
-                d.ambiental_promise AS ambientalPromise, d.proof_description AS proofDescription,
+                ANY_VALUE(d.code) AS code,
+                ANY_VALUE(d.reception_media) AS receptionMedia,
+                ANY_VALUE(DATE_FORMAT(d.date, '%d-%m-%Y')) AS date,
+                ANY_VALUE(d.has_previous_denounce) AS hasPreviousDenounce,
+                ANY_VALUE(d.has_response) AS hasResponseDenounce,
+                ANY_VALUE(d.directed_entity) AS directedEntity,
+                ANY_VALUE(d.entity_response) AS entityResponse,
+                ANY_VALUE(d.comunication_media) AS communicationMedia,
+                ANY_VALUE(d.source) AS source,
+                ANY_VALUE(d.keep_identity) AS keepIdentity,
+                ANY_VALUE(P1.is_natural_person) AS denouncer_is_natural,
+                ANY_VALUE(P1.doc_number) AS denouncer_doc_number,
+                ANY_VALUE(P1.name) AS denouncer_name,
+                ANY_VALUE(P1.paternal_surname) AS denouncer_paternal_surname,
+                ANY_VALUE(P1.mother_surname) AS denouncer_mother_surname,
+                ANY_VALUE(P1.trade_name) AS denouncer_trade_name,
+                ANY_VALUE(P1.legal_representator) AS denouncer_legal_representator,
+                ANY_VALUE(P1.address) AS denouncer_address,
+                ANY_VALUE(P1.fixed_phone) AS denouncer_fixed_phone,
+                ANY_VALUE(P1.first_phone) AS denouncer_first_phone,
+                ANY_VALUE(P1.second_phone) AS denouncer_second_phone,
+                ANY_VALUE(P1.email) AS denouncer_email,
+                ANY_VALUE(P2.is_natural_person) AS denounced_is_natural,
+                ANY_VALUE(P2.doc_number) AS denounced_doc_number,
+                ANY_VALUE(P2.name) AS denounced_name,
+                ANY_VALUE(P2.paternal_surname) AS denounced_paternal_surname,
+                ANY_VALUE(P2.mother_surname) AS denounced_mother_surname,
+                ANY_VALUE(P2.trade_name) AS denounced_trade_name,
+                ANY_VALUE(P2.legal_representator) AS denounced_legal_representator,
+                ANY_VALUE(P2.address) AS denounced_address,
+                ANY_VALUE(P2.fixed_phone) AS denounced_fixed_phone,
+                ANY_VALUE(P2.first_phone) AS denounced_first_phone,
+                ANY_VALUE(d.address) AS facts_address,
+                ANY_VALUE(d.reference) AS facts_reference,
+                ANY_VALUE(d.facts_description) AS factsDescription,
+                ANY_VALUE(d.ambiental_promise) AS ambientalPromise,
+                ANY_VALUE(d.proof_description) AS proofDescription,
                 (SELECT GROUP_CONCAT(dac.id_ambiental_cause SEPARATOR ',') 
                  FROM denounce_ambiental_cause dac 
                  WHERE dac.id_denounce = d.id) AS ambientalCauses
@@ -44,6 +64,41 @@ class CreateDenounceProcedures extends Migration
         END
         SQL;
         $this->db->query($sql1);
+        // $this->db->query("DROP PROCEDURE IF EXISTS `usp_findDenounceForPDFById`");
+        // $sql1 = <<<SQL
+        // CREATE PROCEDURE `usp_findDenounceForPDFById` (IN `p_id` INT)
+        // BEGIN
+        //     SELECT 
+        //         d.code, d.reception_media AS receptionMedia, DATE_FORMAT(d.date, '%d-%m-%Y') AS date,
+        //         d.has_previous_denounce AS hasPreviousDenounce, d.has_response AS hasResponseDenounce,
+        //         d.directed_entity AS directedEntity, d.entity_response AS entityResponse,
+        //         d.comunication_media AS communicationMedia, d.source, d.keep_identity AS keepIdentity,
+        //         P1.is_natural_person AS denouncer_is_natural, P1.doc_number AS denouncer_doc_number,
+        //         P1.name AS denouncer_name, P1.paternal_surname AS denouncer_paternal_surname,
+        //         P1.mother_surname AS denouncer_mother_surname, P1.trade_name AS denouncer_trade_name,
+        //         P1.legal_representator AS denouncer_legal_representator, P1.address AS denouncer_address,
+        //         P1.fixed_phone AS denouncer_fixed_phone, P1.first_phone AS denouncer_first_phone,
+        //         P1.second_phone AS denouncer_second_phone, P1.email AS denouncer_email,
+        //         P2.is_natural_person AS denounced_is_natural, P2.doc_number AS denounced_doc_number,
+        //         P2.name AS denounced_name, P2.paternal_surname AS denounced_paternal_surname,
+        //         P2.mother_surname AS denounced_mother_surname, P2.trade_name AS denounced_trade_name,
+        //         P2.legal_representator AS denounced_legal_representator, P2.address AS denounced_address,
+        //         P2.fixed_phone AS denounced_fixed_phone, P2.first_phone AS denounced_first_phone,
+        //         d.address AS facts_address, d.reference AS facts_reference, d.facts_description AS factsDescription,
+        //         d.ambiental_promise AS ambientalPromise, d.proof_description AS proofDescription,
+        //         (SELECT GROUP_CONCAT(dac.id_ambiental_cause SEPARATOR ',') 
+        //          FROM denounce_ambiental_cause dac 
+        //          WHERE dac.id_denounce = d.id) AS ambientalCauses
+        //     FROM denounce AS d
+        //     LEFT JOIN person_denounce AS PD1 ON d.id = PD1.id_denounce AND PD1.is_affected = 1
+        //     LEFT JOIN person AS P1 ON PD1.id_person = P1.id
+        //     LEFT JOIN person_denounce AS PD2 ON d.id = PD2.id_denounce AND PD2.is_affected = 0
+        //     LEFT JOIN person AS P2 ON PD2.id_person = P2.id
+        //     WHERE d.id = p_id
+        //     GROUP BY d.id;
+        // END
+        // SQL;
+        // $this->db->query($sql1);
 
 
         // --- Procedimiento: usp_findDenouncesByOffset ---
