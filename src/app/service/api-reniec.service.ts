@@ -9,64 +9,53 @@ import { environment } from '../environment/environment-development';
 export class ApiReniecService {
 
   private httpClient: HttpClient = inject(HttpClient);
-  private BASE_URL: string = environment.API_RENIEC_URL;
-  private headers: HttpHeaders = new HttpHeaders({
-    'Authorization': `Bearer ${environment.API_RENIEC_TOKEN}`,
-    'Content-Type': 'application/json'
-  });
+  private BASE_URL: string = environment.PHP_BACKEND_URL;
 
   constructor() {}
 
   public requestDataByDni(dni: number): Observable<ReniecNaturalPersonInformation> {
-
-    const url: string = `${this.BASE_URL}/${environment.API_RENIEC_VERSION}/services/dni`;
-    const payload: Request = { documento: dni.toString() };
-
-    return this.httpClient.post<ReniecNaturalPersonInformation>(url, payload, { headers: this.headers, withCredentials: true });
+    // Usar la ruta del backend de CodeIgniter
+    const url: string = `${this.BASE_URL}/../dni/${dni}`;
+    return this.httpClient.get<ReniecNaturalPersonInformation>(url);
   }
 
   public requestDataByRuc(ruc: number): Observable<ReniecJuridicPersonInformation> {
-
-    const url: string = `${this.BASE_URL}/${environment.API_RENIEC_VERSION}/services/ruc`;
-    const payload: Request = { documento: ruc.toString() };
-
-    return this.httpClient.post<ReniecJuridicPersonInformation>(url, payload, { headers: this.headers, withCredentials: true });
+    // Usar la ruta del backend de CodeIgniter
+    const url: string = `${this.BASE_URL}/../ruc/${ruc}`;
+    return this.httpClient.get<ReniecJuridicPersonInformation>(url);
   }
-
 }
 
 export type ReniecNaturalPersonInformation = {
+  success: boolean;
   data: {
-    numero: string;
+    numero?: string;
     nombres: string;
     apellido_paterno: string;
     apellido_materno: string;
-    nombre_completo: string;
-    departamento: string;
-    provincia: string;
-    distrito: string;
-    direccion: string;
-    direccion_completa: string;
-    ubigeo_reniec: string;
-    ubigeo_sunat: string;
-    ubigeo: string[];
+    nombre_completo?: string;
+    departamento?: string;
+    provincia?: string;
+    distrito?: string;
+    direccion?: string;
+    direccion_completa?: string;
+    ubigeo_reniec?: string;
+    ubigeo_sunat?: string;
+    ubigeo?: string[];
   }
 }
 
 export type ReniecJuridicPersonInformation = {
+  success: boolean;
   data: {
-    numero: string;
+    numero?: string;
     nombre_o_razon_social: string;
-    departamento: string;
-    provincia: string;
-    distrito: string;
-    direccion: string;
-    direccion_completa: string;
-    ubigeo_sunat: string;
-    ubigeo: string[];
+    departamento?: string;
+    provincia?: string;
+    distrito?: string;
+    direccion?: string;
+    direccion_completa?: string;
+    ubigeo_sunat?: string;
+    ubigeo?: string[];
   }
-}
-
-type Request = {
-  documento: string;
 }

@@ -32,6 +32,7 @@ export class PersonInformationFormComponent implements AfterContentInit {
   hasResponseInJuridic: boolean = true;
   
   personType: PersonType = PersonType.JURIDIC;
+  isLoading: boolean = false;
 
   updateIsNaturalEntity() {
     this.person.isNatural = this.personType === PersonType.NATURAL;
@@ -50,44 +51,62 @@ export class PersonInformationFormComponent implements AfterContentInit {
   }
 
   requestInformation(): void {
-
-    this.person.isNatural ? this.requestPersonInformationByDni() : this.requestPersonInformationByRuc(); 
-    
+    this.isLoading = true;
+    this.person.isNatural ? this.requestPersonInformationByDni() : this.requestPersonInformationByRuc();
   }
 
   private requestPersonInformationByDni(): void {
-    this.apiReniec.requestDataByDni(this.naturalPerson.dni as number).subscribe(person => {
+    if (!this.naturalPerson.dni) {
+      this.hasResponseInNatural = false;
+      return;
+    }
 
-      if (Array.isArray(person.data)) {
-        
-        this.naturalPerson.name = person.data[0].nombres;
-        this.naturalPerson.paternalSurname = person.data[0].apellido_paterno;
-        this.naturalPerson.motherSurname = person.data[0].apellido_materno;
-        this.person.address = person.data[0].direccion_completa ?? person.data[0].direccion;
-
-      } else {
-
-        this.naturalPerson.name = person.data.nombres;
-        this.naturalPerson.paternalSurname = person.data.apellido_paterno;
-        this.naturalPerson.motherSurname = person.data.apellido_materno;
-        this.person.address = person.data.direccion_completa ?? person.data.direccion;
-
+    this.apiReniec.requestDataByDni(this.naturalPerson.dni as number).subscribe({
+      next: (person) => {
+        this.isLoading = false;
+        if (person.success && person.data) {
+          this.naturalPerson.name = person.data.nombres;
+          this.naturalPerson.paternalSurname = person.data.apellido_paterno;
+          this.naturalPerson.motherSurname = person.data.apellido_materno;
+          this.person.address = person.data.direccion_completa || person.data.direccion || '';
+          this.hasResponseInNatural = true;
+        } else {
+          this.hasResponseInNatural = false;
+          console.log('No se encontraron datos para el DNI');
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.hasResponseInNatural = false;
+        console.error('Error al consultar DNI');
       }
-
-      this.hasResponseInNatural = true;
-
-    }, error => this.hasResponseInNatural = false);
+    });
   }
 
   private requestPersonInformationByRuc(): void {
-    this.apiReniec.requestDataByRuc(this.juridicPerson.ruc as number).subscribe(person => {
+    if (!this.juridicPerson.ruc) {
+      this.hasResponseInJuridic = false;
+      return;
+    }
 
-      this.juridicPerson.tradeName = person.data.nombre_o_razon_social;
-      this.person.address = person.data.direccion_completa;
-
-      this.hasResponseInJuridic = true;
-
-    }, error => this.hasResponseInJuridic = false);
+    this.apiReniec.requestDataByRuc(this.juridicPerson.ruc as number).subscribe({
+      next: (person) => {
+        this.isLoading = false;
+        if (person.success && person.data) {
+          this.juridicPerson.tradeName = person.data.nombre_o_razon_social;
+          this.person.address = person.data.direccion_completa || person.data.direccion || '';
+          this.hasResponseInJuridic = true;
+        } else {
+          this.hasResponseInJuridic = false;
+          console.log('No se encontraron datos para el RUC');
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.hasResponseInJuridic = false;
+        console.error('Error al consultar RUC', );
+      }
+    });
   }
 
 }

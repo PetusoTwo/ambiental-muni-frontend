@@ -75,9 +75,14 @@
                 pattern="{{ dniPattern }}"
                 [(ngModel)]="naturalPerson.dni" 
                 class="form-input">
-            <button type="button" class="search-btn" (click)="requestInformation()">
-                <i class="bi bi-search"></i>
-                <span>Buscar</span>
+            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading">
+                @if (isLoading) {
+                    <i class="bi bi-arrow-clockwise spin"></i>
+                    <span>Buscando...</span>
+                } @else {
+                    <i class="bi bi-search"></i>
+                    <span>Buscar</span>
+                }
             </button>
         </div>
     </div>
@@ -172,9 +177,15 @@
                 placeholder="Ingrese RUC"
                 [(ngModel)]="juridicPerson.ruc" 
                 class="form-input">
-            <button type="button" class="search-btn" (click)="requestInformation()">
-                <i class="bi bi-search"></i>
-                <span>Buscar</span>
+            
+            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading">
+                @if (isLoading) {
+                    <i class="bi bi-arrow-clockwise spin"></i>
+                    <span>Buscando...</span>
+                } @else {
+                    <i class="bi bi-search"></i>
+                    <span>Buscar</span>
+                }
             </button>
         </div>
     </div>
