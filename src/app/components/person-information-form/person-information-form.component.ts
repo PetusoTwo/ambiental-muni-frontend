@@ -25,14 +25,31 @@ export class PersonInformationFormComponent implements AfterContentInit {
   dniPattern: string = '^\\d{1,8}';
   namesPattern: string = basicTextInputPattern;
   addressPattern: string = basicAddressPattern;
-  fixedPhonePattern: string = '^\\d{1,6}';
-  phonePattern: string = '^\\d{1,9}';
+  // Validación exacta: fijo = 6 dígitos, celular = 9 dígitos
+  fixedPhonePattern: string = '^\\d{6}$';
+  phonePattern: string = '^\\d{9}$';
 
   hasResponseInNatural: boolean = true;
   hasResponseInJuridic: boolean = true;
   
   personType: PersonType = PersonType.JURIDIC;
   isLoading: boolean = false;
+
+  // Contadores de dígitos para mostrar en la UI
+  get fixedPhoneLength(): number {
+    const v = this.person?.fixedPhone ?? '';
+    return v === null || v === undefined ? 0 : v.toString().length;
+  }
+
+  get firstPhoneLength(): number {
+    const v = this.person?.firstPhone ?? '';
+    return v === null || v === undefined ? 0 : v.toString().length;
+  }
+
+  get secondPhoneLength(): number {
+    const v = this.person?.secondPhone ?? '';
+    return v === null || v === undefined ? 0 : v.toString().length;
+  }
 
   updateIsNaturalEntity() {
     this.person.isNatural = this.personType === PersonType.NATURAL;

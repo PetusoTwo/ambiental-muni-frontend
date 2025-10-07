@@ -264,6 +264,49 @@
     font-weight: 400 !important;
 }
 
+/* Contenedor para posicionar el contador dentro del input */
+.field-group .input-with-counter {
+    position: relative;
+}
+
+/* Dejar espacio a la derecha del input para el contador */
+.field-group .input-with-counter .form-input {
+    padding-right: 64px; /* espacio para el contador */
+}
+
+/* Posicionar el contador dentro del input, al lado derecho centrado verticalmente */
+.field-group .input-with-counter .input-counter {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 0;
+    background: transparent;
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    color: var(--light-text);
+    pointer-events: none;
+}
+
+/* Estado inválido del contador (visible cuando hay error de longitud) */
+.field-group .input-with-counter .input-counter.invalid {
+    color: var(--error-color);
+    border-color: rgba(239,35,60,0.12);
+    background: rgba(239,35,60,0.04);
+}
+
+/* Ajustes responsive: reducir padding derecho en pantallas pequeñas */
+@media (max-width: 480px) {
+    .field-group .input-with-counter .form-input {
+        padding-right: 56px;
+    }
+    .field-group .input-with-counter .input-counter {
+        right: 8px;
+    }
+}
+
 /* Campo de búsqueda */
 .search-field {
     margin-bottom: var(--space-8);
@@ -309,6 +352,28 @@
 
 .search-btn i {
     font-size: var(--font-size-base) !important;
+}
+
+/* contador de dígitos para inputs */
+.input-counter {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--light-text);
+    display: inline-block;
+    background: rgba(0,0,0,0.02);
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+.input-counter.invalid {
+    color: var(--error-color);
+    border-color: rgba(239,35,60,0.12);
+    background: rgba(239,35,60,0.04);
+}
+
+/* Asegurar que el botón de búsqueda no se superponga al contador en móviles */
+.search-container .input-counter {
+    align-self: center;
 }
 
 /* Filas de formulario */
