@@ -8,7 +8,6 @@ class CreateDenounceProcedures extends Migration
 {
     public function up()
     {
-        
         // --- Procedimiento: usp_findDenounceForPDFById ---
         $this->db->query("DROP PROCEDURE IF EXISTS `usp_findDenounceForPDFById`");
         $sql1 = <<<SQL
@@ -87,25 +86,60 @@ class CreateDenounceProcedures extends Migration
         $this->db->query($sql2);
 
 
-        // --- Procedimiento: usp_findDenounceTracking ---
+        // --- Procedimiento: usp_findDenounceTracking --- (VERSIÓN ACTUALIZADA)
         $this->db->query("DROP PROCEDURE IF EXISTS `usp_findDenounceTracking`");
         $sql3 = <<<SQL
-        CREATE PROCEDURE `usp_findDenounceTracking` (IN `p_id` INT, IN `p_consultant` VARCHAR(20), IN `p_showAll` BOOLEAN)
+        CREATE PROCEDURE `usp_findDenounceTracking` (
+            IN `p_id_denounce` INT, 
+            IN `p_is_admin` VARCHAR(8), 
+            IN `p_showAll` TINYINT(1)
+        )
         BEGIN
-            IF (p_consultant COLLATE utf8mb4_general_ci = 'ADMIN' AND p_showAll) THEN
-                SELECT da.id AS idTracking, d.id AS idDenounce, ds.type AS status, da.description, da.date
-                FROM denounce_action da
-                INNER JOIN denounce d ON da.id_denounce = d.id
-                INNER JOIN denounce_status ds ON da.id_denounce_status = ds.id
-                WHERE d.id = p_id
-                ORDER BY da.date DESC;
-            ELSE
-                SELECT d.id AS idDenounce, ds.type AS status, da.description, da.date
-                FROM denounce_action da
-                INNER JOIN denounce d ON da.id_denounce = d.id
-                INNER JOIN denounce_status ds ON da.id_denounce_status = ds.id
-                WHERE d.id = p_id
-                ORDER BY da.date DESC;
+            IF (p_showAll = 0) THEN
+                IF (p_is_admin COLLATE utf8mb4_general_ci = 'ADMIN') THEN 
+                    SELECT 
+                        DA.id_denounce AS idDenounce, 
+                        DATE_FORMAT(DA.date, '%d-%m-%Y %H:%i:%s') AS date, 
+                        DS.type AS state, 
+                        DA.description
+                    FROM denounce_action AS DA
+                    INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+                    WHERE DA.id_denounce = p_id_denounce
+                    ORDER BY DA.date DESC
+                    LIMIT 1;
+                ELSEIF (p_is_admin COLLATE utf8mb4_general_ci = 'CIVIL') THEN
+                    SELECT 
+                        DA.id_denounce AS idDenounce, 
+                        DATE_FORMAT(DA.date, '%d-%m-%Y %H:%i:%s') AS date, 
+                        DS.type AS state
+                    FROM denounce_action AS DA
+                    INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+                    WHERE DA.id_denounce = p_id_denounce
+                    ORDER BY DA.date DESC
+                    LIMIT 1;
+                END IF;
+            ELSE 
+                IF (p_is_admin COLLATE utf8mb4_general_ci = 'ADMIN') THEN 
+                    SELECT 
+                        DA.id AS idTracking, 
+                        DA.id_denounce AS idDenounce, 
+                        DATE_FORMAT(DA.date, '%d-%m-%Y %H:%i:%s') AS date, 
+                        DS.type AS state, 
+                        DA.description
+                    FROM denounce_action AS DA
+                    INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+                    WHERE DA.id_denounce = p_id_denounce
+                    ORDER BY DA.date DESC;
+                ELSEIF (p_is_admin COLLATE utf8mb4_general_ci = 'CIVIL') THEN
+                    SELECT 
+                        DA.id_denounce AS idDenounce, 
+                        DATE_FORMAT(DA.date, '%d-%m-%Y %H:%i:%s') AS date, 
+                        DS.type AS state
+                    FROM denounce_action AS DA
+                    INNER JOIN denounce_status AS DS ON DA.id_denounce_status = DS.id
+                    WHERE DA.id_denounce = p_id_denounce
+                    ORDER BY DA.date DESC;
+                END IF;
             END IF;
         END
         SQL;
