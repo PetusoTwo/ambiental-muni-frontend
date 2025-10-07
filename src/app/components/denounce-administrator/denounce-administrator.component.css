@@ -354,14 +354,14 @@ tbody td:last-child {
 }
 
 .state.registered {background: linear-gradient(135deg,#4744ef,#461cb9) !important;
-    color: rgb(2, 255, 137) !important;
+    color: black !important;
 }
 .state.received {
     background: linear-gradient(135deg,#f59e0b,#f97316) !important;
-    color: rgb(251, 255, 0) !important;}
+    color: black !important;}
 .state.served {
     background: linear-gradient(135deg,#10b926,#059618) !important;
-    color: rgb(76, 0, 255) !important;
+    color: black !important;
 }
 
 .state:hover:not(.served) {
