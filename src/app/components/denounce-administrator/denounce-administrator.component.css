@@ -577,7 +577,6 @@ tbody td:last-child {
     overflow: hidden;
     position: relative;
     background: #ffffff;
-    min-height: 500px;
     display: flex;
     flex-direction: column;
 }
