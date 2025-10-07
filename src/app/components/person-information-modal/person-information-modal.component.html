@@ -1,0 +1,50 @@
+<div class="modal-overlay" [class.show]="showModal" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- Header del Modal -->
+    <div class="modal-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-person-plus"></i>
+        </div>
+        <h2>{{ modalTitle }}</h2>
+        <p>Complete la información del denunciado</p>
+      </div>
+      <button class="close-btn" (click)="closeModal()" type="button">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <!-- Contenido del Modal -->
+    <div class="modal-body">
+      <app-person-information-form 
+        [isDenounced]="true">
+      </app-person-information-form>
+    </div>
+
+    <!-- Footer del Modal -->
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        class="btn-secondary" 
+        (click)="closeModal()"
+        [disabled]="isLoading">
+        <i class="bi bi-x-circle"></i>
+        <span>Cancelar</span>
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn-primary" 
+        (click)="savePerson()"
+        [disabled]="isLoading">
+        @if (isLoading) {
+          <i class="bi bi-arrow-clockwise spin"></i>
+          <span>Guardando...</span>
+        } @else {
+          <i class="bi bi-check-circle"></i>
+          <span>Agregar Denunciado</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>

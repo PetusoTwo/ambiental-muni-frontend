@@ -378,9 +378,10 @@ tbody td:last-child {
 /* Botones de acción mejorados */
 .action-container {
     display: flex !important;
-    gap: 8px !important;
+    gap: 6px !important; /* Reducido de 8px a 6px */
     justify-content: center !important;
     align-items: center !important;
+    flex-wrap: wrap !important; /* Permitir que se envuelvan en pantallas pequeñas */
 }
 
 .action-btn {
@@ -433,6 +434,18 @@ tbody td:last-child {
 
 .state-historial-btn:hover {
     background: linear-gradient(135deg, var(--primary-dark), #2e44a6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--box-shadow-md) !important;
+}
+
+.add-denounced-btn {
+    background: linear-gradient(135deg, var(--success-color), #146c43) !important;
+    color: white !important;
+    border-color: var(--success-color) !important;
+}
+
+.add-denounced-btn:hover {
+    background: linear-gradient(135deg, #146c43, #0f5a2b) !important;
     transform: translateY(-2px) !important;
     box-shadow: var(--box-shadow-md) !important;
 }
@@ -956,6 +969,21 @@ tbody td:last-child {
         min-width: 100px !important;
         padding: 10px 16px !important;
         margin: 0 4px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .action-container {
+        gap: 4px !important;
+    }
+    
+    .action-btn {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    
+    .action-btn i {
+        font-size: 14px !important;
     }
 }
 

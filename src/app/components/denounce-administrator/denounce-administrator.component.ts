@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import FileSaver from 'file-saver';
 import { DenounceStateUpdateInformation, DenounceTrackingModalComponent } from '../denounce-tracking-modal/denounce-tracking-modal.component';
 import { UserService } from '../../service/user.service';
+import { PersonInformationModalComponent } from '../person-information-modal/person-information-modal.component';
 
 @Component({
   selector: 'app-denounce-administrator',
-  imports: [CommonModule, FormsModule, DenounceTrackingModalComponent],
+  imports: [CommonModule, FormsModule, DenounceTrackingModalComponent, PersonInformationModalComponent],
   templateUrl: './denounce-administrator.component.html',
   styleUrl: './denounce-administrator.component.css'
 })
@@ -60,6 +61,10 @@ export class DenounceAdministratorComponent {
   };
   realRegisters: number = 0;
   actualOffset: number = 1;
+
+  // Nuevas propiedades para el modal
+  showAddDenouncedModal: boolean = false;
+  selectedDenounceIdForDenounced: number = 0;
 
   constructor() {
     this.processFilter();
@@ -293,6 +298,25 @@ export class DenounceAdministratorComponent {
 
     this.denounces[$index].state = topState;
 
+  }
+
+  // Nuevos métodos para manejar el modal de denunciado
+  openAddDenouncedModal(denounceId: number): void {
+    this.selectedDenounceIdForDenounced = denounceId;
+    this.showAddDenouncedModal = true;
+  }
+
+  closeAddDenouncedModal(): void {
+    this.showAddDenouncedModal = false;
+    this.selectedDenounceIdForDenounced = 0;
+  }
+
+  onDenouncedAdded(personData: any): void {
+    // Aquí puedes actualizar la lista de denuncias si es necesario
+    console.log('Denunciado agregado:', personData);
+    
+    // Opcional: refrescar la lista de denuncias
+    this.processFilter(false);
   }
 
   get trackingModal(): DenounceTrackingModalComponent {
