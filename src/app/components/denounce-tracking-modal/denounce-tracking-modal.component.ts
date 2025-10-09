@@ -1,3 +1,4 @@
+
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { DenounceConsultant, DenouncePublicInformation, DenounceState, DenounceStateTrackingAdmin, DenounceStateTrackingCivil } from '../../util/form-types';
@@ -125,6 +126,18 @@ export class DenounceTrackingModalComponent {
       this._deleteResponseStatusCode = DeleteStatusCode.ERROR;
 
     });
+  }
+
+  // Método público para abrir el modal desde el padre
+  public openModal(idDenounce: number, localNumberDenounce?: number): void {
+    // Llamamos directamente al flujo interno que prepara y abre el modal
+    try {
+      this.prepareTrackingModal(idDenounce, localNumberDenounce);
+    } catch (err) {
+      console.warn('openModal: error al abrir modal de seguimiento', err);
+      // Fallback: intentar mostrar el modal si existe toggleModal
+      try { this.toggleModal(); } catch {}
+    }
   }
 
 }

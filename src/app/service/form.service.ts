@@ -81,6 +81,10 @@ export class FormService {
     return this.httpClient.delete<ServerResponse>(`${this.BASE_URL}/deleteDenounceState?idTracking=${idTracking}`);
   }
 
+  updateDenouncedData(data: any): Observable<any> {
+    return this.httpClient.post(`${this.BASE_URL}/update-denounced`, data);
+  }
+
 }
 
 export type ServerResponse = {

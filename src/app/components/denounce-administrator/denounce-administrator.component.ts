@@ -1,15 +1,22 @@
+
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormService } from '../../service/form.service';
-import { DenounceConsultant, DenounceState, DetailedDenounce, SummarizedDenounce } from '../../util/form-types';
+import { DenounceConsultant, DenounceState, DetailedDenounce, SummarizedDenounce, PersonInformation, JuridicPersonInformation } from '../../util/form-types';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import FileSaver from 'file-saver';
 import { DenounceStateUpdateInformation, DenounceTrackingModalComponent } from '../denounce-tracking-modal/denounce-tracking-modal.component';
 import { UserService } from '../../service/user.service';
+import { PersonInformationFormComponent } from '../person-information-form/person-information-form.component';
 
 @Component({
   selector: 'app-denounce-administrator',
-  imports: [CommonModule, FormsModule, DenounceTrackingModalComponent],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    DenounceTrackingModalComponent,
+    PersonInformationFormComponent
+  ],
   templateUrl: './denounce-administrator.component.html',
   styleUrl: './denounce-administrator.component.css'
 })
@@ -60,6 +67,9 @@ export class DenounceAdministratorComponent {
   };
   realRegisters: number = 0;
   actualOffset: number = 1;
+  showUpdateDenouncedModal: boolean = false;
+  denouncedToUpdate: PersonInformation | null = null;
+  selectedDenounceIdForDenounced: number = 0;
 
   constructor() {
     this.processFilter();
@@ -249,18 +259,41 @@ export class DenounceAdministratorComponent {
 
   requestProof(proof: string): void {
 
-    const [ _, __, filename ] = proof.split('/');
+    const tryDownload = (filenameParam: string): Promise<void | true> => {
+      const url = `/backend/denunciaambiental/requestProof?filename=${encodeURIComponent(filenameParam)}`;
 
-    this.formService.requestProof(filename).subscribe(resp => {
+      // intentar abrir en nueva pestaña (comportamiento preferido)
+      const opened = window.open(url, '_blank');
+      if (opened) return Promise.resolve(true);
 
-      const fileRawBytes: string = window.atob(resp.bytes);
-      const fileArrBuffer: ArrayBuffer = new ArrayBuffer(fileRawBytes.length);
-      const buffer: Uint8Array = new Uint8Array(fileArrBuffer);
-      for (let i = 0; i < fileRawBytes.length; i++) buffer[i] = fileRawBytes.charCodeAt(i);
-      const blob: Blob = new Blob([buffer]);
+      // fallback: fetch y forzar descarga
+      return fetch(url)
+        .then(resp => {
+          if (!resp.ok) throw resp;
+          return resp.blob();
+        })
+        .then(blob => {
+          const a = document.createElement('a');
+          const objectUrl = URL.createObjectURL(blob);
+          a.href = objectUrl;
+          const parts = filenameParam.split('/');
+          a.download = parts[parts.length - 1] || filenameParam;
+          document.body.appendChild(a);
+          a.click();
+          URL.revokeObjectURL(objectUrl);
+          a.remove();
+        });
+    };
 
-      FileSaver.saveAs(blob, filename);
+    const fullPath = proof;
+    const lastSegment = proof.split('/').pop() || proof;
 
+    // intentar con la ruta completa; si falla, reintentar con el nombre final
+    tryDownload(fullPath).catch(() => {
+      return tryDownload(lastSegment);
+    }).catch(err => {
+      console.error('requestProof error', err);
+      alert('Error al descargar la prueba. Revisa el servidor o la ruta del archivo.');
     });
 
   }
@@ -295,13 +328,69 @@ export class DenounceAdministratorComponent {
 
   }
 
+  isDenounceWithoutDenouncedData(denounce: SummarizedDenounce): boolean {
+    return denounce.denouncedDocNumber === 'SIN DATOS' || 
+           !denounce.denouncedDocNumber || 
+           denounce.denounced === 'SIN DATOS' || 
+           !denounce.denounced;
+  }
+
+  openUpdateDenouncedModal(idDenounce: number): void {
+    this.selectedDenounceIdForDenounced = idDenounce;
+    
+    // Crear un objeto PersonInformation vacío para el denunciado
+    this.denouncedToUpdate = {
+      entity: {
+        tradeName: '',
+        ruc: null
+      } as JuridicPersonInformation,
+      isNatural: false,
+      legalRepresentator: '',
+      address: '',
+      fixedPhone: '',
+      firstPhone: '',
+      secondPhone: '',
+      email: ''
+    };
+
+    this.showUpdateDenouncedModal = true;
+  }
+
+  closeUpdateDenouncedModal(): void {
+    this.showUpdateDenouncedModal = false;
+    this.denouncedToUpdate = null;
+    this.selectedDenounceIdForDenounced = 0;
+  }
+
+  updateDenouncedData(): void {
+    if (!this.denouncedToUpdate) return;
+
+    // Preparar los datos para enviar
+    const updateData = {
+      idDenounce: this.selectedDenounceIdForDenounced,
+      denounced: this.denouncedToUpdate
+    };
+
+    // Llamar al servicio para actualizar
+    this.formService.updateDenouncedData(updateData).subscribe({
+      next: (response) => {
+        console.log('Denunciado actualizado correctamente', response);
+        // Recargar la lista de denuncias
+        this.processFilter(false);
+        this.closeUpdateDenouncedModal();
+      },
+      error: (error) => {
+        console.error('Error al actualizar denunciado', error);
+      }
+    });
+  }
+
   get trackingModal(): DenounceTrackingModalComponent {
     return this._trackingModal;
   }
 
-  get consultant(): DenounceConsultant {
-    return DenounceConsultant.ADMIN;
-  }
+  // asegurar consultant para pasar al modal de tracking
+  public consultant: DenounceConsultant = DenounceConsultant.ADMIN;
 
 }
 

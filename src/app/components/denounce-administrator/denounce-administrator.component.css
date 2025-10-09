@@ -1,3 +1,5 @@
+
+
 /* Variables de colores y estilos - Optimizado para fondo blanco */
 :root {
     --primary-color: #4361ee;
@@ -935,6 +937,23 @@ tbody td:last-child {
     gap: 32px; /* Más espacio para el modal de actualización */
 }
 
+/* Botón de denunciado */
+.denounced-btn {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+}
+
+.denounced-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    transform: translateY(-2px);
+}
+
+.denounced-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 /* Responsive para botones */
 @media (max-width: 768px) {
     .popup .footer {
@@ -1008,4 +1027,22 @@ tbody td:last-child {
     .content .row span {
         font-size: 14px;
     }
+}
+
+/* Modal de actualización de denunciado */
+.update-denounced-modal .popup {
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.update-denounced-modal .content-denounced {
+    padding: var(--space-6);
+    overflow-y: auto;
+    max-height: calc(90vh - 200px);
+}
+
+/* Ajustes para el formulario dentro del modal */
+.update-denounced-modal app-person-information-form {
+    display: block;
 }
