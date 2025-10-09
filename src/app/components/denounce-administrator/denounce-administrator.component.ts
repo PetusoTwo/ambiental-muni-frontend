@@ -1,4 +1,3 @@
-
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormService } from '../../service/form.service';
 import { DenounceConsultant, DenounceState, DetailedDenounce, SummarizedDenounce, PersonInformation, JuridicPersonInformation } from '../../util/form-types';
@@ -8,6 +7,7 @@ import FileSaver from 'file-saver';
 import { DenounceStateUpdateInformation, DenounceTrackingModalComponent } from '../denounce-tracking-modal/denounce-tracking-modal.component';
 import { UserService } from '../../service/user.service';
 import { PersonInformationFormComponent } from '../person-information-form/person-information-form.component';
+import { environment } from '../../environment/environment-development';
 
 @Component({
   selector: 'app-denounce-administrator',
@@ -259,41 +259,85 @@ export class DenounceAdministratorComponent {
 
   requestProof(proof: string): void {
 
-    const tryDownload = (filenameParam: string): Promise<void | true> => {
-      const url = `/backend/denunciaambiental/requestProof?filename=${encodeURIComponent(filenameParam)}`;
+    // extraer nombre de archivo 
+    const parts = proof.split('/');
+    const filename = parts[2] ?? parts[parts.length - 1] ?? proof;
 
-      // intentar abrir en nueva pestaña (comportamiento preferido)
-      const opened = window.open(url, '_blank');
-      if (opened) return Promise.resolve(true);
+    // URL del endpoint del backend (aca estaba el error jiji)
+    const backendUrl = `${environment.PHP_BACKEND_URL}/requestProof?filename=${encodeURIComponent(filename)}`;
 
-      // fallback: fetch y forzar descarga
-      return fetch(url)
-        .then(resp => {
-          if (!resp.ok) throw resp;
-          return resp.blob();
-        })
-        .then(blob => {
-          const a = document.createElement('a');
-          const objectUrl = URL.createObjectURL(blob);
-          a.href = objectUrl;
-          const parts = filenameParam.split('/');
-          a.download = parts[parts.length - 1] || filenameParam;
-          document.body.appendChild(a);
-          a.click();
-          URL.revokeObjectURL(objectUrl);
-          a.remove();
-        });
+    // helper para descargar
+    const downloadBlob = (blob: Blob, name: string) => {
+      try {
+        FileSaver.saveAs(blob, name);
+      } catch {
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+        a.remove();
+      }
     };
 
-    const fullPath = proof;
-    const lastSegment = proof.split('/').pop() || proof;
+    // Primero: intentar por el servicio (flujo original)
+    this.formService.requestProof(filename).subscribe({
+      next: (resp: any) => {
+        try {
+          // 1) respuesta como Blob
+          if (resp instanceof Blob) {
+            downloadBlob(resp, filename);
+            return;
+          }
 
-    // intentar con la ruta completa; si falla, reintentar con el nombre final
-    tryDownload(fullPath).catch(() => {
-      return tryDownload(lastSegment);
-    }).catch(err => {
-      console.error('requestProof error', err);
-      alert('Error al descargar la prueba. Revisa el servidor o la ruta del archivo.');
+          // 2) respuesta con propiedad 'bytes' (base64)
+          if (resp && resp.bytes) {
+            const binary = window.atob(resp.bytes);
+            const len = binary.length;
+            const array = new Uint8Array(len);
+            for (let i = 0; i < len; i++) array[i] = binary.charCodeAt(i);
+            downloadBlob(new Blob([array]), filename);
+            return;
+          }
+
+          // 3) respuesta con propiedad 'file' (base64) u otra
+          if (resp && resp.file) {
+            const binary = window.atob(resp.file);
+            const len = binary.length;
+            const array = new Uint8Array(len);
+            for (let i = 0; i < len; i++) array[i] = binary.charCodeAt(i);
+            downloadBlob(new Blob([array]), filename);
+            return;
+          }
+
+          // 4) si la respuesta no es la esperada, fallback: abrir URL directa al backend
+          const opened = window.open(backendUrl, '_blank');
+          if (!opened) {
+            fetch(backendUrl)
+              .then(r => { if (!r.ok) throw r; return r.blob(); })
+              .then(b => downloadBlob(b, filename))
+              .catch(err => { console.error('requestProof fallback fetch error', err); alert('No se pudo descargar la prueba.'); });
+          }
+        } catch (err) {
+          console.error('requestProof processing error', err);
+          alert('Error procesando la prueba recibida.');
+        }
+      },
+      error: err => {
+        // Si falla el servicio, intentar abrir la URL directa al backend
+        console.warn('requestProof service failed, fallback to direct URL', err);
+        const opened = window.open(backendUrl, '_blank');
+        if (!opened) {
+          fetch(backendUrl)
+            .then(r => { if (!r.ok) throw r; return r.blob(); })
+            .then(b => downloadBlob(b, filename))
+            .catch(e => {
+              alert('Error al descargar la prueba.');
+            });
+        }
+      }
     });
 
   }

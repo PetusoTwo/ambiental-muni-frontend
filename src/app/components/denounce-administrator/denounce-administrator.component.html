@@ -255,7 +255,7 @@
                         @if (denounceDetails.proofs) {
                             @let proofs = denounceDetails.proofs.split(',');
                             <ul class="proof-list">
-                                @for (proof of proofs; track proof) {
+                                @for (proof of proofs; track $index) {
                                     @let proofName = proof.split('/')[2];
                                     @let extension = proofName.split('.')[1];
                                     <li class="proof-item" (click)="requestProof(proof)">
