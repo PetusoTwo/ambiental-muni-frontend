@@ -269,7 +269,6 @@ article.form-finished {
     background: linear-gradient(180deg, #ffffff, #fbfdff);
     border-radius: 12px;
     padding: 28px;
-    box-shadow: 0 12px 30px rgba(16,24,40,0.06);
 }
 
 .sending-body {
@@ -285,9 +284,35 @@ article.form-finished {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    background: linear-gradient(135deg,#f1f5f9,#eef2ff);
-    box-shadow: inset 0 -6px 12px rgba(0,0,0,0.03);
+    border-radius: 0;        
+    background: transparent; 
+    box-shadow: none;        
+    padding: 0;
+}
+
+/* Asegurar que el spinner esté en flujo normal (no absolute) y con tamaño correcto */
+.sending-icon .lds-ring {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 56px !important;
+    height: 56px !important;
+    color: hsl(193, 90%, 50%);
+}
+
+/* Ajuste de los anillos secundarios */
+.sending-icon .lds-ring div {
+    width: 44px !important;
+    height: 44px !important;
+    margin: 6px !important;
+    border-width: 6px !important;
+}
+
+/* Si hay otra definición absoluta de .lds-ring más abajo, esta regla ofrece precedencia */
+.sending-icon .lds-ring,
+.sending-icon .lds-ring div {
+    box-sizing: border-box;
 }
 
 /* Ajuste del texto explicativo */
@@ -332,7 +357,6 @@ article.form-finished {
     background: white;
     border-radius: 12px;
     padding: 32px;
-    box-shadow: 0 12px 30px rgba(16,24,40,0.06);
     text-align: center;
 }
 
