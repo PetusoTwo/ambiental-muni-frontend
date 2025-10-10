@@ -356,17 +356,21 @@ tbody td:last-child {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 8px 16px !important;
-    border-radius: var(--border-radius) !important;
-    font-weight: 700 !important;
-    font-size: 11px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    cursor: pointer !important;
-    transition: var(--transition-fast) !important;
-    box-shadow: var(--box-shadow-sm) !important;
-    border: 1px solid transparent !important;
+    width: 120px !important;        /* ancho fijo: ajustar según diseño */
+    min-width: 120px !important;
+    max-width: 120px !important;
+    border-radius: 10px !important;
+    height: 40px !important;        /* altura fija */
+    padding: 0 12px !important;     /* espacio lateral */
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    font-size: 13px !important;     /* tamaño de texto consistente */
+    line-height: 1 !important;
 }
+
 
 .state.registered {background: linear-gradient(135deg,#4744ef,#461cb9) !important;
     color: white !important;
