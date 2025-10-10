@@ -411,7 +411,7 @@ export class DenounceAdministratorComponent {
 
     // Preparar los datos para enviar
     const updateData = {
-      idDenounce: this.selectedDenounceIdForDenounced,
+      id_denounce: this.selectedDenounceIdForDenounced,
       denounced: this.denouncedToUpdate
     };
 
