@@ -1,5 +1,3 @@
-
-
 /* Variables de colores y estilos - Optimizado para fondo blanco */
 :root {
     --primary-color: #4361ee;
@@ -218,6 +216,21 @@ table {
     margin: 0 !important;
     box-shadow: none !important;
     min-width: 1200px; /* Asegurar ancho mínimo para scroll horizontal en móviles */
+}
+
+/* Limitar largo visual de la columna "Motivo" y mostrar ellipsis */
+.table-container table td.col-reason {
+    max-width: 220px;           /* ajustar según diseño */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Opcional: en pantallas pequeñas permitir multilínea truncada */
+@media (max-width: 768px) {
+    .table-container table td.col-reason {
+        max-width: 140px;
+    }
 }
 
 /* Header de tabla mejorado */
