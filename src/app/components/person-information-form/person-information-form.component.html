@@ -73,9 +73,10 @@
                 name="dni" 
                 placeholder="Ingrese DNI" 
                 pattern="{{ dniPattern }}"
+                minlength="8" maxlength="8" inputmode="numeric"
                 [(ngModel)]="naturalPerson.dni" 
                 class="form-input">
-            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading">
+            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading ">
                 @if (isLoading) {
                     <i class="bi bi-arrow-clockwise spin"></i>
                     <span>Buscando...</span>
@@ -85,6 +86,7 @@
                 }
             </button>
         </div>
+        <small class="field-error" *ngIf="">El DNI debe tener exactamente 8 dígitos numéricos.</small>
     </div>
 
     <!-- Nombres -->
@@ -175,10 +177,11 @@
                 name="ruc" 
                 pattern="{{ rucPattern }}" 
                 placeholder="Ingrese RUC"
+                minlength="11" maxlength="11" inputmode="numeric"
                 [(ngModel)]="juridicPerson.ruc" 
                 class="form-input">
             
-            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading">
+            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading ">
                 @if (isLoading) {
                     <i class="bi bi-arrow-clockwise spin"></i>
                     <span>Buscando...</span>
@@ -188,6 +191,7 @@
                 }
             </button>
         </div>
+        <small class="field-error" *ngIf="">El RUC debe tener exactamente 11 dígitos numéricos.</small>
     </div>
 
     <!-- Razón Social -->
