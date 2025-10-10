@@ -35,6 +35,10 @@ export class PersonInformationFormComponent implements AfterContentInit {
   personType: PersonType = PersonType.JURIDIC;
   isLoading: boolean = false;
 
+  // errores de formato para mostrar mensajes
+  dniError: boolean = false;
+  rucError: boolean = false;
+
   // Contadores de dígitos para mostrar en la UI
   get fixedPhoneLength(): number {
     const v = this.person?.fixedPhone ?? '';
@@ -49,6 +53,15 @@ export class PersonInformationFormComponent implements AfterContentInit {
   get secondPhoneLength(): number {
     const v = this.person?.secondPhone ?? '';
     return v === null || v === undefined ? 0 : v.toString().length;
+  }
+
+  // Contadores para DNI y RUC (para mostrar X/8 y X/11)
+  get dniLength(): number {
+    return String(this.naturalPerson?.dni ?? '').replace(/\D/g, '').length;
+  }
+
+  get rucLength(): number {
+    return String(this.juridicPerson?.ruc ?? '').replace(/\D/g, '').length;
   }
 
   updateIsNaturalEntity() {
@@ -70,6 +83,40 @@ export class PersonInformationFormComponent implements AfterContentInit {
   requestInformation(): void {
     this.isLoading = true;
     this.person.isNatural ? this.requestPersonInformationByDni() : this.requestPersonInformationByRuc();
+  }
+
+
+  onDigitsInput(event: Event, field: 'dni' | 'ruc'): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '');
+    input.value = digits; // actualiza valor mostrado
+
+    if (field === 'dni') {
+      // NO asignar a this.naturalPerson (getter). Asignar a this.person.entity
+      if (!this.person.entity) {
+        this.person.entity = {} as NaturalPersonInformation;
+      }
+      (this.person.entity as NaturalPersonInformation).dni = digits;
+      this.dniError = (digits.length > 0 && digits.length !== 8);
+    } else {
+      // NO asignar a this.juridicPerson (getter). Asignar a this.person.entity
+      if (!this.person.entity) {
+        this.person.entity = {} as JuridicPersonInformation;
+      }
+      (this.person.entity as JuridicPersonInformation).ruc = digits;
+      this.rucError = (digits.length > 0 && digits.length !== 11);
+    }
+  }
+
+  /**
+   * Valida si el identificador actual tiene la longitud correcta
+   */
+  isIdentifierValid(): boolean {
+    if (this.personType === PersonType.NATURAL) {
+      return /^\d{8}$/.test(String(this.naturalPerson?.dni ?? '').trim());
+    } else {
+      return /^\d{11}$/.test(String(this.juridicPerson?.ruc ?? '').trim());
+    }
   }
 
   private requestPersonInformationByDni(): void {

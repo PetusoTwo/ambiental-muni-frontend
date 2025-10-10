@@ -297,6 +297,22 @@
     background: rgba(239,35,60,0.04);
 }
 
+/* Ajuste: hacer que el wrapper del input con contador ocupe todo el ancho dentro de .search-container */
+.search-container .input-with-counter {
+    flex: 1;                 
+    display: flex;         
+    align-items: center;
+    position: relative;
+    min-width: 0;           
+}
+
+.search-container .input-with-counter .form-input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;           
+    padding-right: 64px;    
+}
+
 /* Ajustes responsive: reducir padding derecho en pantallas pequeñas */
 @media (max-width: 480px) {
     .field-group .input-with-counter .form-input {

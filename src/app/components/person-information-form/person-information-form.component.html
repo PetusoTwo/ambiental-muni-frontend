@@ -67,16 +67,20 @@
             </span>
         </label>
         <div class="search-container">
-            <input 
-                type="text" 
-                id="dni" 
-                name="dni" 
-                placeholder="Ingrese DNI" 
-                pattern="{{ dniPattern }}"
-                minlength="8" maxlength="8" inputmode="numeric"
-                [(ngModel)]="naturalPerson.dni" 
-                class="form-input">
-            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading ">
+            <div class="input-with-counter">
+                <input 
+                    type="text" 
+                    id="dni" 
+                    name="dni" 
+                    placeholder="Ingrese DNI" 
+                    pattern="{{ dniPattern }}"
+                    minlength="8" maxlength="8" inputmode="numeric"
+                    [(ngModel)]="naturalPerson.dni"
+                    (input)="onDigitsInput($event, 'dni')"
+                    class="form-input">
+                <div class="input-counter" [class.invalid]="dniLength > 0 && dniLength !== 8">{{ dniLength }}/8</div>
+            </div>
+            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading || !isIdentifierValid()">
                 @if (isLoading) {
                     <i class="bi bi-arrow-clockwise spin"></i>
                     <span>Buscando...</span>
@@ -171,17 +175,21 @@
             </span>
         </label>
         <div class="search-container">
-            <input 
-                type="text" 
-                id="ruc" 
-                name="ruc" 
-                pattern="{{ rucPattern }}" 
-                placeholder="Ingrese RUC"
-                minlength="11" maxlength="11" inputmode="numeric"
-                [(ngModel)]="juridicPerson.ruc" 
-                class="form-input">
+            <div class="input-with-counter">
+                <input 
+                    type="text" 
+                    id="ruc" 
+                    name="ruc" 
+                    pattern="{{ rucPattern }}" 
+                    placeholder="Ingrese RUC"
+                    minlength="11" maxlength="11" inputmode="numeric"
+                    [(ngModel)]="juridicPerson.ruc"
+                    (input)="onDigitsInput($event, 'ruc')"
+                    class="form-input">
+                <div class="input-counter" [class.invalid]="rucLength > 0 && rucLength !== 11">{{ rucLength }}/11</div>
+            </div>
             
-            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading ">
+            <button type="button" class="search-btn" (click)="requestInformation()" [disabled]="isLoading || !isIdentifierValid()">
                 @if (isLoading) {
                     <i class="bi bi-arrow-clockwise spin"></i>
                     <span>Buscando...</span>
