@@ -34,6 +34,16 @@ export class FormComponent {
   }
 
   changeStep(): void {
+    // Validación: si estamos en el paso 2 (DESCRIPCIÓN de hechos) no permitir avanzar si < 50 chars
+    if (this.formActualStep === 2) {
+        const desc = String(this.denounce?.ambientalPromises?.factsDescription ?? '').trim();
+        if (desc.length < 50) {
+            this.modalErrorMsg = 'La descripción de los hechos debe tener al menos 50 caracteres para continuar.';
+            this.toggleModal(); // abre el modal de error ya presente en la plantilla
+            return; // bloquea el avance
+        }
+    }
+
     // Si el usuario eligió no conocer los datos del denunciado y estamos en el paso 2,
     // no validar el paso 1 (denunciado)
     const stepToValidate = this.skipDenouncedData && this.formActualStep === 2 ? 0 : this.formActualStep;
