@@ -30,6 +30,7 @@
             <textarea name="description" id="description" 
                       placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*" 
                       (input)="validateTextArea($event)" 
+                      minlength="50" maxlength="1000"
                       [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
         </div>
     </div>
