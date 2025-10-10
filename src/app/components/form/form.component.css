@@ -251,6 +251,123 @@ article.form-finished {
     }
 }
 
+/* Formulario terminado: centrado y diseño del estado de envío/resultado */
+.form-finished .form-content,
+.form-content.form-finished-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    min-height: 60vh; 
+    box-sizing: border-box;
+}
+
+/* Contenedor de estado "Enviando" */
+.sending-state {
+    width: 100%;
+    max-width: 900px;
+    background: linear-gradient(180deg, #ffffff, #fbfdff);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 12px 30px rgba(16,24,40,0.06);
+}
+
+.sending-body {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.sending-icon {
+    flex: 0 0 auto;
+    width: 112px;
+    height: 112px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#f1f5f9,#eef2ff);
+    box-shadow: inset 0 -6px 12px rgba(0,0,0,0.03);
+}
+
+/* Ajuste del texto explicativo */
+.sending-text h2 {
+    margin: 0 0 6px 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.sending-text p {
+    margin: 0;
+    color: #475569;
+    line-height: 1.4;
+}
+
+/* Loader */
+.lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 56px;
+    height: 56px;
+}
+
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    margin: 6px;
+    border: 6px solid currentColor;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: currentColor transparent transparent transparent;
+}
+
+/* Resultado enviado: centrado y limpio */
+.result-state {
+    width: 100%;
+    max-width: 780px;
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 12px 30px rgba(16,24,40,0.06);
+    text-align: center;
+}
+
+.result-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.check-container {
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,#ecfdf5,#bbf7d0);
+    box-shadow: 0 20px 30px rgba(16,24,40,0.06);
+}
+
+i.bi-check {
+    font-size: 64px;
+    color: #059669;
+}
+
+/* Responsivo: reducir tamaños en pantallas pequeñas */
+@media (max-width: 640px) {
+    .sending-body { flex-direction: column; text-align: center; }
+    .sending-icon { width: 96px; height: 96px; }
+    .lds-ring { width: 48px; height: 48px; }
+    .lds-ring div { width: 36px; height: 36px; margin: 6px; border-width: 5px; }
+    .check-container { width: 110px; height: 110px; }
+}
+
 .lds-ring {
     position: absolute;
     top: 50%;

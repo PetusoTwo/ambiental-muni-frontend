@@ -102,23 +102,36 @@
 
 <ng-template #formFinished>
     <article id="form-finished">
-        <div class="form-content">
+        <div class="form-content form-finished-content">
             
             @if (!formSended) {
-                <h2>Enviando formulario</h2>
-                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-            } @else {
-                <h2>Formulario enviado correctamente</h2>
-                <div class="check-container">
-                    <i class="bi bi-check"></i>
+                <div class="sending-state" role="status" aria-live="polite">
+                    <div class="sending-body">
+                        <div class="sending-icon">
+                            <div class="lds-ring" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+                        </div>
+                        <div class="sending-text">
+                            <h2>Enviando formulario</h2>
+                            <p>Estamos procesando su denuncia. Esto puede tardar unos segundos, por favor no cierre la ventana.</p>
+                        </div>
+                    </div>
                 </div>
-                <p>
-                    Para hacer seguimiento de su denuncia, le hemos enviado una notificacion a su correo {{ denounce.denouncer.email }}.
-                    <strong>Si no encuentra el correo puede revisar su correo de spam o correo no deseado</strong>
-                </p>
-                <button type="button" id="newDenounceBtn" (click)="goToNewDenounce()">
-                    Realizar una nueva denuncia
-                </button>
+            } @else {
+                <div class="result-state">
+                    <div class="result-body">
+                        <div class="check-container">
+                            <i class="bi bi-check"></i>
+                        </div>
+                        <h2>Formulario enviado correctamente</h2>
+                        <p>
+                            Para hacer seguimiento de su denuncia, le hemos enviado una notificación a: <strong>{{ denounce.denouncer.email }}</strong>.
+                            Si no encuentra el correo revise su carpeta de spam o correo no deseado.
+                        </p>
+                        <button type="button" id="newDenounceBtn" (click)="goToNewDenounce()">
+                            Realizar una nueva denuncia
+                        </button>
+                    </div>
+                </div>
             }
 
         </div>
