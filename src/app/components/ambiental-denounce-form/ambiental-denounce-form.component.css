@@ -151,6 +151,61 @@ h4 strong {
     }
 }
 
+/* Contador para textarea (input-with-counter/shared style) */
+.input-with-counter {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+    width: 100%;
+}
+
+.input-with-counter textarea {
+    flex: 1;
+    min-width: 0;
+    resize: vertical;
+    /* padding general: deja espacio inferior para el contador */
+    padding: 16px;
+    padding-right: 16px;
+    padding-bottom: 44px; /* espacio para el contador en la esquina inferior derecha */
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+.input-counter {
+    position: absolute;
+    right: 12px;
+    bottom: 12px; /* ahora en la esquina inferior derecha */
+    background: rgba(255,255,255,0.95);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--neutral-600);
+    border: 1px solid rgba(0,0,0,0.06);
+    pointer-events: none;
+    z-index: 5;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.input-counter.invalid {
+    color: var(--error-500);
+    border-color: rgba(220,38,38,0.12);
+    background: rgba(254,226,226,0.9);
+}
+
+/* pequeño ajuste responsivo para que no tape el texto en pantallas pequeñas */
+@media (max-width: 480px) {
+    .input-with-counter textarea {
+        padding-bottom: 40px;
+    }
+    .input-counter {
+        right: 8px;
+        bottom: 8px;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
 /* Separador  */
 hr {
     border: none;

@@ -27,11 +27,19 @@
         </div>
         
         <div class="form-group">
-            <textarea name="description" id="description" 
-                      placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*" 
-                      (input)="validateTextArea($event)" 
-                      minlength="50" maxlength="1000"
-                      [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
+            <div class="input-with-counter">
+                <textarea name="description" id="description"
+                          placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*"
+                          (input)="validateTextArea($event); onFactsInput($event)"
+                          minlength="50" maxlength="1000"
+                          [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
+                <div class="input-counter" [class.invalid]="factsDescriptionLength > 0 && factsDescriptionLength < 50">
+                    {{ factsDescriptionLength }}/1000
+                </div>
+            </div>
+            <small class="field-error" *ngIf="factsDescriptionLength > 0 && factsDescriptionLength < 50">
+                La descripción debe tener al menos 50 caracteres.
+            </small>
         </div>
     </div>
 
@@ -104,10 +112,19 @@
         </div>
         
         <div class="form-group">
-            <textarea name="description" id="description" 
-                      placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*" 
-                      (input)="validateTextArea($event)" 
-                      [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
+            <div class="input-with-counter">
+                <textarea name="description" id="description"
+                          placeholder="Describa detalladamente los hechos observados, fecha, hora y circunstancias del incidente ambiental*"
+                          (input)="validateTextArea($event); onFactsInput($event)"
+                          minlength="50" maxlength="1000"
+                          [(ngModel)]="denounce.ambientalPromises.factsDescription"></textarea>
+                <div class="input-counter" [class.invalid]="factsDescriptionLength > 0 && factsDescriptionLength < 50">
+                    {{ factsDescriptionLength }}/1000
+                </div>
+            </div>
+            <small class="field-error" *ngIf="factsDescriptionLength > 0 && factsDescriptionLength < 50">
+                La descripción debe tener al menos 50 caracteres.
+            </small>
         </div>
     </div>
 

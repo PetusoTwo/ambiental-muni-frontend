@@ -79,6 +79,29 @@ export class AmbientalDenounceFormComponent implements AfterContentInit {
     validatorsValidateTextArea(e);
   }
 
+  /** Longitud actual de la descripción de los hechos */
+  get factsDescriptionLength(): number {
+    const txt = String(this.denounce?.ambientalPromises?.factsDescription ?? '');
+    return txt.length;
+  }
+
+  /**
+   * Handler para el textarea: recorta al max y mantiene el modelo sincronizado.
+   */
+  onFactsInput(e: Event): void {
+    const ta = e.target as HTMLTextAreaElement;
+    if (!ta) return;
+    // recortar al maxlength si es necesario
+    const max = 1000;
+    if (ta.value.length > max) {
+      ta.value = ta.value.slice(0, max);
+    }
+    // sincronizar con el modelo
+    if (this.denounce && this.denounce.ambientalPromises) {
+      this.denounce.ambientalPromises.factsDescription = ta.value;
+    }
+  }
+
 }
 
 type Causes = {
