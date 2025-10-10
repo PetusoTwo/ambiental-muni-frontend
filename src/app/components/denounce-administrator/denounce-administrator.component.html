@@ -100,8 +100,8 @@
                                     <span>{{ item.denouncedDocNumber }}</span>
                                     <span>{{ item.denounced }}</span>
                                 </td>
-                                <td class="col-reason" title="{{ item.reason }}">
-                                    {{ item.reason?.length > 25 ? (item.reason | slice:0:25) + '...' : item.reason }}
+                                <td class="col-reason" [title]="item.reason || ''">
+                                    {{ truncateReason(item.reason, 25) }}
                                 </td>
                                 <td>
                                     <span class="badge" [ngClass]="item.anonymous === 1 ? 'anonymous-yes' : 'anonymous-no'">

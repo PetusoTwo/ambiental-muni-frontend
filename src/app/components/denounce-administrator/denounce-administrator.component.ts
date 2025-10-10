@@ -429,6 +429,11 @@ export class DenounceAdministratorComponent {
     });
   }
 
+  truncateReason(reason: string | null | undefined, limit = 25): string {
+    const text = reason || '';
+    return text.length > limit ? text.slice(0, limit) + '...' : text;
+  }
+
   get trackingModal(): DenounceTrackingModalComponent {
     return this._trackingModal;
   }
