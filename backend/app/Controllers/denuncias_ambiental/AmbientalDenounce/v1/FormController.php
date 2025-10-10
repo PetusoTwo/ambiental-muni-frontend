@@ -95,7 +95,7 @@ class FormController extends ResourceController
             return $this->respond(new Response(false, "Datos del formulario inválidos"), 400);
         }
 
-        // Setup storage paths
+        //Setup storage paths
         $projectDir = dirname(getcwd());
         $storagePath = $projectDir . '/storage/uploads/';
 
@@ -375,5 +375,65 @@ class FormController extends ResourceController
         return $this->respond($resp, 200);
 
     }
+
+    public function updateDenounced()
+{
+    helper('form_helper');
+    $db = \Config\Database::connect();
+
+    try {
+        $requestData = $this->request->getJSON(true);
+
+        if (!isset($requestData['id_denounce']) || !isset($requestData['denounced'])) {
+            return $this->failValidationErrors('Faltan datos requeridos (id_denounce o denounced).');
+        }
+
+        $idDenounce = $requestData['id_denounce'];
+        $denouncedPayload = $requestData['denounced'];
+
+        $db->transException(true)->transStart();
+
+        // 1. Preparamos los datos de la persona a actualizar/insertar
+        $denouncedData = getPersonData($denouncedPayload);
+        
+        $personTbl = $db->table('person');
+        $personDenounceTbl = $db->table('person_denounce');
+
+        // 2. BUSCAMOS si ya existe un denunciado para esta denuncia
+        $existingDenounced = $personDenounceTbl
+            ->select('id_person')
+            ->where('id_denounce', $idDenounce)
+            ->where('is_affected', 0) // is_affected = 0 significa que es el denunciado
+            ->get()
+            ->getRowArray();
+
+        if ($existingDenounced) {
+            // 3. SI EXISTE: Actualizamos el registro de persona existente
+            $idPersonToUpdate = $existingDenounced['id_person'];
+            $personTbl->where('id', $idPersonToUpdate)->update($denouncedData);
+            log_message('info', '[updateDenounced] Se actualizó el denunciado para la denuncia ID: ' . $idDenounce);
+
+        } else {
+            // 4. SI NO EXISTE: Insertamos la nueva persona y creamos la relación
+            $personTbl->insert($denouncedData);
+            $idNewPerson = $db->insertID();
+
+            $personDenouncedRelationData = getPersonDenounceData($idDenounce, $idNewPerson, false);
+            $personDenounceTbl->insert($personDenouncedRelationData);
+            log_message('info', '[updateDenounced] Se insertó un nuevo denunciado para la denuncia ID: ' . $idDenounce);
+        }
+        
+        $db->transComplete();
+
+        return $this->respondUpdated([
+            'status' => 200,
+            'message' => 'Denunciado actualizado en la denuncia correctamente.'
+        ]);
+
+    } catch (Exception $e) {
+        log_message('error', '[updateDenounced] ' . $e->getMessage());
+        return $this->failServerError("Ha ocurrido un error en el servidor: " . $e->getMessage());
+    }
+}
 
 }
