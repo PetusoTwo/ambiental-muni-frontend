@@ -18,6 +18,7 @@ $routes->group('denunciaambiental', ['namespace' => 'App\Controllers\denuncias_a
     $routes->post('login', 'AuthController::login');
     $routes->post('validateSession', 'AuthController::validateSession');
     $routes->post('saveForm', 'FormController::saveForm');
+    $routes->post('update-denounced', 'FormController::updateDenounced');
 
     //PUT ROUTES
     $routes->put('updateDenounceState', 'FormController::updateDenounceState');
