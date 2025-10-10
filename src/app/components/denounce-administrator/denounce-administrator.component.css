@@ -356,18 +356,18 @@ tbody td:last-child {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 120px !important;        /* ancho fijo: ajustar según diseño */
+    width: 120px !important;        
     min-width: 120px !important;
     max-width: 120px !important;
     border-radius: 10px !important;
-    height: 40px !important;        /* altura fija */
-    padding: 0 12px !important;     /* espacio lateral */
+    height: 40px !important;        
+    padding: 0 12px !important;     
     box-sizing: border-box !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     text-align: center !important;
-    font-size: 13px !important;     /* tamaño de texto consistente */
+    font-size: 13px !important;     
     line-height: 1 !important;
 }
 
