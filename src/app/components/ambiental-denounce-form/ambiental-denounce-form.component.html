@@ -61,26 +61,45 @@
                 </select>
             </div>
 
-            <div class="causes-section">
-                <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
-                
-                <div class="radio-group" (click)="processRadio($event)">
-                    @for (cause of causes; track $index) {
-                        <label for="{{ cause.id }}">
-                            <input type="radio" 
-                                   id="{{ cause.id }}" 
-                                   name="environmental-cause" 
-                                   value="{{ $index + 1 }}" 
-                                   [checked]="isChecked($index + 1)">
-                            {{ cause.description }}
-                        </label>
-                    }
-                </div>
-            </div>
+            <!-- ...existing code... -->
+<div class="causes-section">
+    <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
+
+    <div class="radio-group" (click)="processRadio($event)">
+        @for (cause of causes; track $index) {
+            <label for="{{ cause.id }}">
+                <input type="checkbox"
+                       id="{{ cause.id }}"
+                       name="environmental-cause"
+                       value="{{ $index + 1 }}"
+                       [checked]="isChecked($index + 1)">
+                {{ cause.description }}
+            </label>
+        }
+    </div>
+</div>
+<!-- ...existing code... -->
+            
         </div>
     </div>
 </div>
-
+<!-- 
+<div class="causes-section">
+    <h4>CAUSAS DEL IMPACTO AMBIENTAL<strong>(*)</strong></h4>
+    
+    <div class="radio-group" (click)="processRadio($event)">
+        @for (cause of causes; track $index) {
+            <label for="{{ cause.id }}">
+                <input type="radio" 
+                       id="{{ cause.id }}" 
+                       name="environmental-cause" 
+                       value="{{ $index + 1 }}" 
+                       [checked]="isChecked($index + 1)">
+                {{ cause.description }}
+            </label>
+        }
+    </div>
+</div> -->
 
 <!-- 
 <div class="form-container">
