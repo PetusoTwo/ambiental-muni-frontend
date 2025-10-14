@@ -285,7 +285,8 @@
                     pattern="{{ fixedPhonePattern }}" 
                     minlength="6" maxlength="6" inputmode="numeric"
                     placeholder="123456"
-                    [(ngModel)]="person.fixedPhone" 
+                    [(ngModel)]="person.fixedPhone"
+                    (input)="onPhoneInput($event, 'fixed')"
                     class="form-input">
                 <div class="input-counter" [class.invalid]="fixedPhoneLength > 0 && fixedPhoneLength !== 6">{{ fixedPhoneLength }}/6</div>
             </div>
@@ -310,7 +311,8 @@
                     pattern="{{ phonePattern }}" 
                     minlength="9" maxlength="9" inputmode="numeric"
                     placeholder="987654321"
-                    [(ngModel)]="person.firstPhone" 
+                    [(ngModel)]="person.firstPhone"
+                    (input)="onPhoneInput($event, 'first')"
                     class="form-input">
                 <div class="input-counter" [class.invalid]="firstPhoneLength > 0 && firstPhoneLength !== 9">{{ firstPhoneLength }}/9</div>
             </div>
@@ -332,7 +334,8 @@
                     pattern="{{ phonePattern }}" 
                     minlength="9" maxlength="9" inputmode="numeric"
                     placeholder="123456789"
-                    [(ngModel)]="person.secondPhone" 
+                    [(ngModel)]="person.secondPhone"
+                    (input)="onPhoneInput($event, 'second')"
                     class="form-input">
                 <div class="input-counter" [class.invalid]="secondPhoneLength > 0 && secondPhoneLength !== 9">{{ secondPhoneLength }}/9</div>
             </div>

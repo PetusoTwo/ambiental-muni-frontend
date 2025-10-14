@@ -109,6 +109,34 @@ export class PersonInformationFormComponent implements AfterContentInit {
   }
 
   /**
+   * Permitir sólo dígitos en los campos de teléfono (maneja typing y pegar)
+   * field: 'fixed' | 'first' | 'second'
+   */
+  onPhoneInput(event: Event, field: 'fixed' | 'first' | 'second'): void {
+    const input = event.target as HTMLInputElement;
+    if (!input) { return; }
+    // limpiar todo lo que no sea dígito
+    let digits = input.value.replace(/\D/g, '');
+
+    // recortar al maxlength correspondiente (6 para fijo, 9 para celular)
+    const max = field === 'fixed' ? 6 : 9;
+    if (digits.length > max) { digits = digits.slice(0, max); }
+
+    // actualizar valor visible
+    input.value = digits;
+
+    // actualizar modelo (no se tocan demás estructuras)
+    if (!this.person) { return; }
+    if (field === 'fixed') {
+      this.person.fixedPhone = digits;
+    } else if (field === 'first') {
+      this.person.firstPhone = digits;
+    } else {
+      this.person.secondPhone = digits;
+    }
+  }
+
+  /**
    * Valida si el identificador actual tiene la longitud correcta
    */
   isIdentifierValid(): boolean {
